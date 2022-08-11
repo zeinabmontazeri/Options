@@ -1,15 +1,16 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: zeinab
- * Date: 8/10/22
- * Time: 5:12 PM
- */
 
 namespace App\Controller;
 
 
+use Symfony\Component\HttpFoundation\Response;
+
 class DefaultController
 {
-
+    public function index(): Response
+    {
+        return new Response(
+            'Hello Options!'
+        );
+    }
 }
