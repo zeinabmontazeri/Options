@@ -14,18 +14,18 @@ class Host
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
+    
     #[ORM\OneToOne(inversedBy: 'host', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_id = null;
+    private ?User $user = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    private ?bool $is_deleted = null;
+    private ?bool $isDeleted = null;
 
-    #[ORM\OneToMany(mappedBy: 'host_id', targetEntity: Experience::class)]
+    #[ORM\OneToMany(mappedBy: 'host', targetEntity: Experience::class)]
     private Collection $experiences;
 
     public function __construct()
@@ -38,38 +38,38 @@ class Host
         return $this->id;
     }
 
-    public function getUserId(): ?User
+    public function getUser(): ?User
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(User $user_id): self
+    public function setUser(User $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function isIsDeleted(): ?bool
+    public function isDeleted(): ?bool
     {
-        return $this->is_deleted;
+        return $this->isDeleted;
     }
 
-    public function setIsDeleted(bool $is_deleted): self
+    public function setIsDeleted(bool $isDeleted): self
     {
-        $this->is_deleted = $is_deleted;
+        $this->isDeleted = $isDeleted;
 
         return $this;
     }
@@ -86,7 +86,7 @@ class Host
     {
         if (!$this->experiences->contains($experience)) {
             $this->experiences->add($experience);
-            $experience->setHostId($this);
+            $experience->setHost($this);
         }
 
         return $this;
@@ -96,8 +96,8 @@ class Host
     {
         if ($this->experiences->removeElement($experience)) {
             // set the owning side to null (unless already changed)
-            if ($experience->getHostId() === $this) {
-                $experience->setHostId(null);
+            if ($experience->getHost() === $this) {
+                $experience->setHost(null);
             }
         }
 

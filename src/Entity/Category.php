@@ -19,12 +19,12 @@ class Category
     private ?string $name = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    private ?bool $is_deleted = null;
+    private ?bool $isDeleted = null;
 
-    #[ORM\OneToMany(mappedBy: 'category_id', targetEntity: Experience::class)]
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: Experience::class)]
     private Collection $experiences;
 
     public function __construct()
@@ -51,24 +51,24 @@ class Category
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->created_at = $createdAt;
 
         return $this;
     }
 
-    public function isIsDeleted(): ?bool
+    public function isDeleted(): ?bool
     {
-        return $this->is_deleted;
+        return $this->isDeleted;
     }
 
-    public function setIsDeleted(bool $is_deleted): self
+    public function setIsDeleted(bool $isDeleted): self
     {
-        $this->is_deleted = $is_deleted;
+        $this->isDeleted = $isDeleted;
 
         return $this;
     }
@@ -85,7 +85,7 @@ class Category
     {
         if (!$this->experiences->contains($experience)) {
             $this->experiences->add($experience);
-            $experience->setCategoryId($this);
+            $experience->setCategory($this);
         }
 
         return $this;
@@ -95,8 +95,8 @@ class Category
     {
         if ($this->experiences->removeElement($experience)) {
             // set the owning side to null (unless already changed)
-            if ($experience->getCategoryId() === $this) {
-                $experience->setCategoryId(null);
+            if ($experience->getCategory() === $this) {
+                $experience->setCategory(null);
             }
         }
 

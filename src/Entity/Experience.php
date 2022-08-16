@@ -25,18 +25,18 @@ class Experience
     private ?string $media = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    private ?bool $is_deleted = null;
+    private ?bool $isDeleted = null;
 
     #[ORM\ManyToOne(inversedBy: 'experiences')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Host $host_id = null;
+    private ?Host $host = null;
 
     #[ORM\ManyToOne(inversedBy: 'experiences')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Category $category_id = null;
+    private ?Category $category = null;
 
     public function getId(): ?int
     {
@@ -81,48 +81,48 @@ class Experience
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function isIsDeleted(): ?bool
+    public function isDeleted(): ?bool
     {
-        return $this->is_deleted;
+        return $this->isDeleted;
     }
 
-    public function setIsDeleted(bool $is_deleted): self
+    public function setIsDeleted(bool $isDeleted): self
     {
-        $this->is_deleted = $is_deleted;
+        $this->isDeleted = $isDeleted;
 
         return $this;
     }
 
-    public function getHostId(): ?Host
+    public function getHost(): ?Host
     {
-        return $this->host_id;
+        return $this->host;
     }
 
-    public function setHostId(?Host $host_id): self
+    public function setHost(?Host $host): self
     {
-        $this->host_id = $host_id;
+        $this->host = $host;
 
         return $this;
     }
 
-    public function getCategoryId(): ?Category
+    public function getCategory(): ?Category
     {
-        return $this->category_id;
+        return $this->category;
     }
 
-    public function setCategoryId(?Category $category_id): self
+    public function setCategory(?Category $category): self
     {
-        $this->category_id = $category_id;
+        $this->category = $category;
 
         return $this;
     }

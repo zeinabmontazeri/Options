@@ -16,19 +16,19 @@ class User
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $first_name = null;
+    private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $last_name = null;
+    private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $phone_number = null;
+    private ?string $phoneNumber = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $birth_date = null;
+    private ?\DateTimeInterface $birthDate = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $role = null;
@@ -37,12 +37,12 @@ class User
     private ?string $password = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column]
-    private ?bool $is_deleted = null;
+    private ?bool $isDeleted = null;
 
-    #[ORM\OneToOne(mappedBy: 'user_id', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'user_', cascade: ['persist', 'remove'])]
     private ?Host $host = null;
 
     public function getId(): ?int
@@ -52,24 +52,24 @@ class User
 
     public function getFirstName(): ?string
     {
-        return $this->first_name;
+        return $this->firstName;
     }
 
-    public function setFirstName(string $first_name): self
+    public function setFirstName(string $firstName): self
     {
-        $this->first_name = $first_name;
+        $this->firstName = $firstName;
 
         return $this;
     }
 
     public function getLastName(): ?string
     {
-        return $this->last_name;
+        return $this->lastName;
     }
 
-    public function setLastName(string $last_name): self
+    public function setLastName(string $lastName): self
     {
-        $this->last_name = $last_name;
+        $this->lastName = $lastName;
 
         return $this;
     }
@@ -88,24 +88,24 @@ class User
 
     public function getPhoneNumber(): ?string
     {
-        return $this->phone_number;
+        return $this->phoneNumber;
     }
 
-    public function setPhoneNumber(string $phone_number): self
+    public function setPhoneNumber(string $phoneNumber): self
     {
-        $this->phone_number = $phone_number;
+        $this->phone_number = $phoneNumber;
 
         return $this;
     }
 
     public function getBirthDate(): ?\DateTimeInterface
     {
-        return $this->birth_date;
+        return $this->birthDate;
     }
 
-    public function setBirthDate(?\DateTimeInterface $birth_date): self
+    public function setBirthDate(?\DateTimeInterface $birthDate): self
     {
-        $this->birth_date = $birth_date;
+        $this->birthDate = $birthDate;
 
         return $this;
     }
@@ -136,24 +136,24 @@ class User
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt = $createdAt;
 
         return $this;
     }
-
-    public function isIsDeleted(): ?bool
+    
+    public function isDeleted(): ?bool
     {
-        return $this->is_deleted;
+        return $this->isDeleted;
     }
 
-    public function setIsDeleted(bool $is_deleted): self
+    public function setIsDeleted(bool $isDeleted): self
     {
-        $this->is_deleted = $is_deleted;
+        $this->isDeleted = $isDeleted;
 
         return $this;
     }
@@ -166,8 +166,8 @@ class User
     public function setHost(Host $host): self
     {
         // set the owning side of the relation if necessary
-        if ($host->getUserId() !== $this) {
-            $host->setUserId($this);
+        if ($host->getUser() !== $this) {
+            $host->setUser($this);
         }
 
         $this->host = $host;
