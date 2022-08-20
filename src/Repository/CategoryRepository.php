@@ -38,7 +38,14 @@ class CategoryRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
+    public function getAllCategories(): array
+    {
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT g.id,g.name
+            FROM App\Entity\Category g'
+        );
+        return $query->getResult();
+    }
 //    /**
 //     * @return Category[] Returns an array of Category objects
 //     */
