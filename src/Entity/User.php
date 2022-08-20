@@ -8,9 +8,10 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-class User
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use SoftDeleteableEntity;
     
@@ -34,8 +35,8 @@ class User
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $birthDate = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $role = null;
+    #[ORM\Column]
+    private array $roles = [];
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
@@ -46,7 +47,7 @@ class User
     #[ORM\Column]
     private ?bool $isDeleted = null;
 
-    #[ORM\OneToOne(mappedBy: 'user_', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Host $host = null;
 
     public function getId(): ?int
@@ -97,7 +98,7 @@ class User
 
     public function setPhoneNumber(string $phoneNumber): self
     {
-        $this->phone_number = $phoneNumber;
+        $this->phoneNumber = $phoneNumber;
 
         return $this;
     }
@@ -114,15 +115,14 @@ class User
         return $this;
     }
 
-    public function getRole(): ?int
+    public function getRoles(): array
     {
-        return $this->role;
+        return $this->roles;
     }
 
-    public function setRole(int $role): self
+    public function setRoles(array $roles): self
     {
-        $this->role = $role;
-
+        $this->roles = $roles;
         return $this;
     }
 
@@ -134,7 +134,6 @@ class User
     public function setPassword(string $password): self
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -165,5 +164,15 @@ class User
         $this->host = $host;
 
         return $this;
+    }
+
+    public function eraseCredentials()
+    {
+        // TODO: Implement eraseCredentials() method.
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->getPhoneNumber();
     }
 }
