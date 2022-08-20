@@ -25,7 +25,6 @@ class UserRegisterService
         $user->setLastName($request->lastName);
         $user->setBirthDate(new \DateTime($request->birthDate));
         $user->setCreatedAt((new \DateTimeImmutable)->setTimestamp(time()));
-        $user->setIsDeleted(false);
         $userRepository->add($user, true);
         return new JsonResponse(['message' => 'success'], 201);
 
