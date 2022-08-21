@@ -48,21 +48,6 @@ class EventRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    /**
-     * @return Event[] Returns an array of Event objects
-     */
-    public function findByExampleField($value): array
-    {
-        return $this->createQueryBuilder('e')
-            ->andWhere('e.experience = :val')
-            ->setParameter('val', $value)
-            ->orderBy('e.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult();
-    }
-
-
 
 //    public function findOneBySomeField($value): ?Event
 //    {
