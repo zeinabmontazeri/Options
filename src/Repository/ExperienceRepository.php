@@ -39,6 +39,24 @@ class ExperienceRepository extends ServiceEntityRepository
         }
     }
 
+    public function ExperienceFilterByHostId($hostId)
+    {
+        return $this->createQueryBuilder('experience')
+            ->where('experience.host = :hostId')
+            ->setParameter('hostId', $hostId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function ExperienceFilterByCategoryId($categoryId)
+    {
+        return $this->createQueryBuilder('experience')
+            ->where('experience.category = :categoryId')
+            ->setParameter('categoryId', $categoryId)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Experience[] Returns an array of Experience objects
 //     */

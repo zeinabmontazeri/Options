@@ -15,12 +15,12 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 class Host
 {
     use SoftDeleteableEntity;
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-    
+
     #[ORM\OneToOne(inversedBy: 'host', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
