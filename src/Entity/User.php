@@ -155,6 +155,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->host;
     }
 
+    public function getFullName(): string
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
     public function setHost(Host $host): self
     {
         // set the owning side of the relation if necessary
