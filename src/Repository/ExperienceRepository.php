@@ -57,6 +57,18 @@ class ExperienceRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function purchasableExperience()
+    {
+        return $this->createQueryBuilder('experience')
+            ->join('experience.events', 'events')
+            ->where('events.capacity > 0')
+            ->andWhere('events.startsAt > :date')
+            ->setParameter('date', new \DateTime())
+            ->getQuery()
+            ->getResult();
+    }
+
+//    }
 //    /**
 //     * @return Experience[] Returns an array of Experience objects
 //     */

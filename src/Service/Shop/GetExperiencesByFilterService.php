@@ -2,14 +2,12 @@
 
 namespace App\Service\Shop;
 
-use App\Repository\EventRepository;
 use App\Repository\ExperienceRepository;
-use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class GetExperiencesByFilterService
 {
-    use GetExpectedExperienceData;
+    use ApplyExperienceDOTTrait;
 
     private array $validFilters = [
         'host_id',
@@ -17,31 +15,35 @@ class GetExperiencesByFilterService
         'purchasable',
     ];
 
-    /**
-     * @throws Exception
-     */
     public function getExperience(
         $filters,
-        EventRepository $eventRepository,
         ExperienceRepository $experienceRepository,
 
     ): JsonResponse|array
     {
         foreach ($filters as $filter => $value) {
             if (!in_array($filter, $this->validFilters)) {
-                return new JsonResponse(['error' => 'Invalid filter'], 400);
+                $result['ok'] = false;
+                $result['message'] = 'Invalid filter';
+                $result['status'] = 400;
+                return $result;
             } else {
                 if ($filter == 'host_id') {
-                    $result['Filtered By Host Id'] =
+                    $events['Filtered By Host Id'] =
                         self::parse($experienceRepository->ExperienceFilterByHostId((int)$value));
+
                 } else if ($filter == 'category_id') {
-                    $result['Filtered By Category Id'] =
+                    $events['Filtered By Category Id'] =
                         self::parse($experienceRepository->ExperienceFilterByCategoryId((int)$value));
                 } else {
-                    $result['Purchasable'] = self::parse($eventRepository->purchasableEvents());
+                    $events['purchasable'] = self::parse($experienceRepository->purchasableExperience());
                 }
+                $result['data'] = $events;
             }
         }
+        $result['ok'] = true;
+        $result['message'] = 'Experiences retrieved successfully.';
+        $result['status'] = 200;
         return $result;
 
     }

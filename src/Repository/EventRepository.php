@@ -39,22 +39,7 @@ class EventRepository extends ServiceEntityRepository
         }
     }
 
-    public function purchasableEvents()
-    {
-        //events that startsat is bigger thant date now and capacity is bigger that 0
-        return $this->createQueryBuilder('event')
-            ->where('event.capacity > 0')
-            ->andWhere('event.startsAt > :date')
-            ->setParameter('date', new \DateTime())
-            ->getQuery()
-            ->getResult();
 
-//        return $this->createQueryBuilder('event')
-//            ->where('event.startsAt' > date('Y-m-d H:i:s'))
-//            ->andWhere('event.capacity' > 0)
-//            ->getQuery()
-//            ->getResult();
-    }
 
 //    /**
 //     * @return Event[] Returns an array of Event objects
