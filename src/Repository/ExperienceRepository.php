@@ -39,6 +39,55 @@ class ExperienceRepository extends ServiceEntityRepository
         }
     }
 
+    public function getExperiencesByHostId($hostId)
+    {
+        return $this->createQueryBuilder('experience')
+            ->where('experience.host = :hostId')
+            ->setParameter('hostId', $hostId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function getExperienceByCategoryId($categoryId)
+    {
+        return $this->createQueryBuilder('experience')
+            ->where('experience.category = :categoryId')
+            ->setParameter("categoryId", $categoryId)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
+
+//    public function getEventList($experienceId)
+//    {
+////        return $this->createQueryBuilder('experience')
+////            ->where('experience.id = :experienceId')
+////            ->setParameter('experienceId', $experienceId)
+////            ->select('experience.events')
+////            ->getQuery()
+////            ->getResult();
+////    }
+//
+//        return $this->createQueryBuilder()
+//            ->select('event')
+//            ->from('App\Entity\Experience', 'experience')
+//            ->where('experience.id = :experienceId')
+//            ->setParameter('experienceId', $experienceId)
+//            ->select('experience.events')
+//            ->getQuery()
+//            ->getResult();
+
+
+//        return $this->createQueryBuilder('experience')
+//            ->select('events')
+//            ->leftJoin('experience.events', 'events')
+//            ->where('experience.id = :experienceId')
+//            ->setParameter('experienceId', $experienceId)
+//            ->getQuery()
+//            ->getResult();
+
 //    /**
 //     * @return Experience[] Returns an array of Experience objects
 //     */
