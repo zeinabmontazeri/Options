@@ -1,4 +1,5 @@
 <?php
+
 namespace App\DTO;
 class CategoryCollection
 {
