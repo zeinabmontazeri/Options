@@ -2,11 +2,12 @@
 
 namespace App\Controller\Shop;
 
-use App\Entity\Experience;
 use App\Repository\EventRepository;
+use App\Repository\ExperienceRepository;
 use App\Service\GetAllExperienceEventsService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/shop')]
@@ -14,16 +15,14 @@ class ExperienceEventListController extends AbstractController
 {
     #[Route('/experience/events/{id}', name: 'app_experience_event_list', methods: ['GET'])]
     public function index(
-        Experience                    $experience,
+        Request                       $request,
         EventRepository               $eventRepository,
-        GetAllExperienceEventsService $service): JsonResponse
+        ExperienceRepository          $experienceRepository,
+        GetAllExperienceEventsService $getAllExperienceEventsService): JsonResponse
     {
-        $events = $service->getExperienceEvents($experience, $eventRepository);
-        return new JsonResponse(
-            [
-                'ok' => true,
-                'data' => $events,
-                'status' => 200
-            ], 200);
+
+        $result = $getAllExperienceEventsService->getExperienceEvents(
+            (int)$request->get('id'), $experienceRepository, $eventRepository);
+        return new JsonResponse($result);
     }
 }
