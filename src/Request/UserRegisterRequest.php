@@ -57,6 +57,7 @@ class UserRegisterRequest extends BaseRequest
     public readonly ?string $gender;
 
     #[Assert\NotBlank]
+    #[Assert\NotNull]
     #[Assert\Choice(["user","host"])]
     public readonly ?string $role;
     
