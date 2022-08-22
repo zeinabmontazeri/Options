@@ -1,6 +1,7 @@
 <?php
 
 namespace App\DTO;
+
 class ExperienceCollection
 {
     public ?int $id;
@@ -9,5 +10,6 @@ class ExperienceCollection
     public ?string $description;
     public ?string $host;
     public ?string $media;
+    public ?\DateTimeImmutable $createdAt;
 
 }

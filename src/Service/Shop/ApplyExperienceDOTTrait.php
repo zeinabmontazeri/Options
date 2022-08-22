@@ -18,6 +18,7 @@ trait ApplyExperienceDOTTrait
             $experienceCollection->description = $experience->getDescription();
             $experienceCollection->host = $experience->getHost()->getFullName();
             $experienceCollection->media = $experience->getMedia();
+            $experienceCollection->createdAt = $experience->getCreatedAt();
             $experiencesData[] = $experienceCollection;
         }
         return $experiencesData;
