@@ -39,33 +39,23 @@ class ExperienceRepository extends ServiceEntityRepository
         }
     }
 
-    public function ExperienceFilterByHostId($hostId)
+    public function filteredExperience($array)
     {
-        return $this->createQueryBuilder('experience')
-            ->where('experience.host = :hostId')
-            ->setParameter('hostId', $hostId)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function ExperienceFilterByCategoryId($categoryId)
-    {
-        return $this->createQueryBuilder('experience')
-            ->where('experience.category = :categoryId')
-            ->setParameter('categoryId', $categoryId)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function purchasableExperience()
-    {
-        return $this->createQueryBuilder('experience')
-            ->join('experience.events', 'events')
-            ->where('events.capacity > 0')
-            ->andWhere('events.startsAt > :date')
-            ->setParameter('date', new \DateTime())
-            ->getQuery()
-            ->getResult();
+        $baseQuery = $this->createQueryBuilder('experience');
+        foreach ($array as $filter => $value) {
+            if (!is_null($value) and $filter != 'purchasable') {
+                $baseQuery = $baseQuery->where($baseQuery->expr()->in('experience.id', ":{$filter}"))
+                    ->setParameter("{$filter}", json_decode($value));
+            } else {
+                if ($value) {
+                    $baseQuery = $baseQuery->join('experience.events', 'events')
+                        ->where('events.capacity > 0')
+                        ->andWhere('events.startsAt > :date')
+                        ->setParameter('date', new \DateTime());
+                }
+            }
+        }
+        return $baseQuery->getQuery()->getResult();
     }
 
 //    }
