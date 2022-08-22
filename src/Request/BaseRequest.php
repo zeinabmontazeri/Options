@@ -15,7 +15,7 @@ abstract class BaseRequest
      */
     public function __construct(protected ValidatorInterface $validator)
     {
-        $this->populate($this->getRequest());
+        $this->populate($this->getRequest()->toArray());
         if ($this->autoValidateRequest()) {
             $this->validate();
         }
@@ -33,14 +33,9 @@ abstract class BaseRequest
         }
     }
 
-    public function getRequest(): array
+    public function getRequest(): Request
     {
-        $request = Request::createFromGlobals();
-        if ($request->getMethod() === 'GET') {
-            return $request->query->all();
-        } else {
-            return json_decode($request->getContent(), true);
-        }
+        return Request::createFromGlobals();
     }
 
     abstract public function populate(array $fields): void;
