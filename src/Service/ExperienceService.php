@@ -47,6 +47,7 @@ class ExperienceService
             $experience->setTitle($request->title);
             $experience->setDescription($request->description);
             $repository->add($experience, true);
+            $res['data']['id'] = $experience->getId();
             $res['message'] = 'Experience successfully created';
             $res['status'] = true;
         } else {
