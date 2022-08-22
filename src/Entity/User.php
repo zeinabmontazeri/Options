@@ -7,7 +7,8 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
-
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -15,6 +16,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use SoftDeleteableEntity;
     
+    public const ROLE_ADMIN = 'ROLE_ADMIN';
+    public const ROLE_HOST = 'ROLE_HOST';
+    public const ROLE_EXPERIENCER = 'ROLE_EXPERIENCER';
+
+    public const ROLE_HIERARCHY = [
+        self::ROLE_EXPERIENCER => [self::ROLE_EXPERIENCER],
+        self::ROLE_HOST => [self::ROLE_HOST, self::ROLE_EXPERIENCER],
+        self::ROLE_ADMIN => [self::ROLE_ADMIN, self::ROLE_HOST, self::ROLE_EXPERIENCER]
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
