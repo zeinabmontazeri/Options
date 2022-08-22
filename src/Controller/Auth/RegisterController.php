@@ -27,8 +27,9 @@ class RegisterController extends AbstractController
         try {
             $validatedRequest = new  UserRegisterRequest($validator);
             $res = $userRegisterService->register($validatedRequest, $userRepository,$hasher);
+            //TODO: We can generate token for user here
             return $this->json([
-                'data' => $res,
+                'data' => [],
                 'message' => 'User created successfully',
                 'status' => 'success',
             ], 200);

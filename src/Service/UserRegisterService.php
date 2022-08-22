@@ -23,6 +23,11 @@ class UserRegisterService
         if($existing_user)
             throw new Exception('User Already Exists');
             
+        $roles = [$request->role];
+
+        //Host have experiencer role too
+        if($request->role=="ROLE_HOST") $roles[] = "ROLE_EXPERIENCER";
+
         $user = new User();
         $user->setPhoneNumber($request->phoneNumber);
         $user->setFirstName($request->firstName);
@@ -33,7 +38,6 @@ class UserRegisterService
         $user->setPassword($hasher->hashPassword($user, $request->password));
         $userRepository->add($user, true);
         return $user;
-
     }
 
 

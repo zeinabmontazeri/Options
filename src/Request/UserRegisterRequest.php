@@ -58,7 +58,7 @@ class UserRegisterRequest extends BaseRequest
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Choice(["user","host"])]
+    #[Assert\Choice(["ROLE_EXPERIENCER","ROLE_HOST"])]
     public readonly ?string $role;
     
     protected function autoValidateRequest(): bool
