@@ -28,7 +28,7 @@ class EventService
         $event->setLink($request->link);
         $event->setPrice($request->price);
 
-//        $repository->add($event, true);
+       $repository->add($event, true);
         return "event created successfully with id: {$event->getId()}";
     }
 }
