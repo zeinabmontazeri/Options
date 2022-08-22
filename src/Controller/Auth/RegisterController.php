@@ -14,7 +14,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Route('/auth/', name: 'auth.')]
+#[Route('api/v1/auth/', name: 'auth.')]
 class RegisterController extends AbstractController
 {
     #[Route('register', name: 'register',methods:['post'])]
