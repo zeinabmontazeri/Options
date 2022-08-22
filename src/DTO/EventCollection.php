@@ -13,5 +13,6 @@ class EventCollection
     public ?\DateTime $startsAt = null;
     public ?string $link = null;
     public ?string $address = null;
+    public ?\DateTimeImmutable $createdAt = null;
 
 }
