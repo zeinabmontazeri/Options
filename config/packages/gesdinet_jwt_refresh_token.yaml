@@ -1,0 +1,10 @@
+gesdinet_jwt_refresh_token:
+    ttl: 2592000
+    ttl_update: true
+    firewall: api
+    token_parameter_name: refreshToken
+    return_expiration: true
+    return_expiration_parameter_name: refresh_token_expiration
+    single_use: true
+    doctrine_mappings: false
+    logout_firewall: api
