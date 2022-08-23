@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Experience;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -52,7 +53,7 @@ class ExperienceRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('experience')
             ->where('experience.category = :categoryId')
-            ->setParameter("categoryId", $categoryId)
+            ->setParameter("categoryId", $categoryId, Types::INTEGER)
             ->getQuery()
             ->getResult();
     }
