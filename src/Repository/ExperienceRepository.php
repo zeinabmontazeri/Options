@@ -49,7 +49,7 @@ class ExperienceRepository extends ServiceEntityRepository
             } else {
                 if ($value) {
                     $baseQuery = $baseQuery->join('experience.events', 'events')
-                        ->where('events.capacity > 0')
+                        ->andwhere('events.capacity > 0')
                         ->andWhere('events.startsAt > :date')
                         ->setParameter('date', new \DateTime());
                 }
