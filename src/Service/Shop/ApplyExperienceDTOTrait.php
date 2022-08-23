@@ -4,7 +4,7 @@ namespace App\Service\Shop;
 
 use App\DTO\ExperienceCollection;
 
-trait ApplyExperienceDOTTrait
+trait ApplyExperienceDTOTrait
 {
 
     public function parse(array $experiences): array
@@ -14,9 +14,13 @@ trait ApplyExperienceDOTTrait
             $experienceCollection = new ExperienceCollection();
             $experienceCollection->id = $experience->getId();
             $experienceCollection->title = $experience->getTitle();
-            $experienceCollection->category = $experience->getCategory()->getName();
+            $experienceCollection->category = [
+                'categoryId' => $experience->getCategory()->getId(),
+                'categoryName' => $experience->getCategory()->getName()];
             $experienceCollection->description = $experience->getDescription();
-            $experienceCollection->host = $experience->getHost()->getFullName();
+            $experienceCollection->host = [
+                'hostId' => $experience->getHost()->getId(),
+                'hostName' => $experience->getHost()->getFullName()];
             $experienceCollection->media = $experience->getMedia();
             $experienceCollection->createdAt = $experience->getCreatedAt();
             $experiencesData[] = $experienceCollection;

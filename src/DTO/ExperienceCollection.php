@@ -6,9 +6,9 @@ class ExperienceCollection
 {
     public ?int $id;
     public ?string $title;
-    public ?string $category;
+    public ?array $category;
     public ?string $description;
-    public ?string $host;
+    public ?array $host;
     public ?string $media;
     public ?\DateTimeImmutable $createdAt;
 

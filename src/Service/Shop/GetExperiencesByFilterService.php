@@ -7,13 +7,13 @@ use App\Request\ExperienceFilterRequest;
 
 class GetExperiencesByFilterService
 {
-    use ApplyExperienceDOTTrait;
+    use ApplyExperienceDTOTrait;
 
     public function getExperience(
         ExperienceFilterRequest $experienceFilterCollection,
         ExperienceRepository    $experienceRepository,
     ): array
     {
-        return self::parse($experienceRepository->filteredExperience($experienceFilterCollection));
+        return self::parse($experienceRepository->filterExperience($experienceFilterCollection));
     }
 }

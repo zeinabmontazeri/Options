@@ -39,12 +39,12 @@ class ExperienceRepository extends ServiceEntityRepository
         }
     }
 
-    public function filteredExperience($array)
+    public function filterExperience($array)
     {
         $baseQuery = $this->createQueryBuilder('experience');
         foreach ($array as $filter => $value) {
             if (!is_null($value) and $filter != 'purchasable') {
-                $baseQuery = $baseQuery->where($baseQuery->expr()->in('experience.id', ":{$filter}"))
+                $baseQuery = $baseQuery->andWhere($baseQuery->expr()->in('experience.'. "{$filter}", ":{$filter}"))
                     ->setParameter("{$filter}", json_decode($value));
             } else {
                 if ($value) {
