@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -153,11 +154,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getHost(): ?Host
     {
         return $this->host;
-    }
-
-    public function getFullName(): string
-    {
-        return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
     public function setHost(Host $host): self
