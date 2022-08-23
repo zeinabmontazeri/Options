@@ -1,9 +1,17 @@
 <?php
-
 namespace App\DTO;
-class CategoryCollection
-{
-    public ?int $id = null;
 
-    public ?string $name = null;
+use App\Entity\Category;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
+class CategoryCollection extends JsonResponse
+{
+
+    public function toArray(Category $category): array
+    {
+        return [
+            'id' => $category->getId(),
+            'name' => $category->getName()
+        ];
+    }
 }

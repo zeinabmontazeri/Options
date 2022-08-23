@@ -1,19 +1,20 @@
 <?php
-
 namespace App\Controller\Admin;
 
-use App\DTO\CategoryCollection;
+use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use App\Request\CategoryRequest;
 use App\Service\CategoryService;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use PHPUnit\Util\Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('api/admin')]
 class CategoryController extends AbstractController
 {
-    #[Route('api/admin/category', name: 'app_admin_category_get', methods: 'GET')]
+    #[Route('/category', name: 'app_admin_category_get', methods: 'GET')]
     public function index(CategoryService $categoryService, CategoryRepository $repository): Response
     {
         $data = $categoryService->getAll($repository);
@@ -21,42 +22,53 @@ class CategoryController extends AbstractController
             'data' => $data,
             'message' => 'successfully retrieve all categories',
             'status' => true,
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
-    #[Route('api/admin/category', name: 'app_admin_category_create', methods: 'POST')]
+    #[Route('/category', name: 'app_admin_category_create', methods: 'POST')]
     public function create(CategoryService $categoryService, CategoryRepository $repository, CategoryRequest $request): Response
     {
-        $res = $categoryService->create($repository, $request);
+        try {
+            $res = $categoryService->create($repository, $request);
+        }catch(Exception $exception)
+        {
+            return $this->json([
+                'data' => [],
+                'message' => $exception->getMessage(),
+                'status' => false,
+            ], $exception->getCode());
+        }
         return $this->json([
             'data' => [],
             'message' => $res['message'],
             'status' => $res['status'],
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
-    #[Route('api/admin/category', name: 'app_admin_category_delete', methods: 'DELETE')]
-    public function delete(CategoryService $categoryService, CategoryRepository $repository, CategoryRequest $request): Response
+    #[Route('/category/{category_id}', name: 'app_admin_category_delete', methods: 'DELETE')]
+    #[ParamConverter('category' , class: Category::class , options: ['id' => 'category_id'])]
+    public function delete(Category $category , CategoryService $categoryService, CategoryRepository $repository): Response
     {
 
-        $res = $categoryService->delete($repository, $request->id);
+        $res = $categoryService->delete($repository, $category );
         return $this->json([
             'data' => [],
             'message' => $res['message'],
             'status' => $res['status']
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
-    #[Route('api/admin/category', name: 'app_admin_category_update', methods: 'PATCH')]
-    public function update(CategoryService $categoryService, CategoryRepository $repository, CategoryRequest $request): Response
+    #[Route('/category/{category_id}', name: 'app_admin_category_update', methods: 'PATCH')]
+    #[ParamConverter('category' , class: Category::class , options: ['id' => 'category_id'])]
+    public function update(CategoryService $categoryService, CategoryRepository $repository, Category $category, CategoryRequest $request): Response
     {
 
-        $res = $categoryService->update($repository, $request->id, $request->name);
+        $res = $categoryService->update($repository, $category, $request->name);
         return $this->json([
             'data' => [],
             'message' => $res['message'],
             'status' => $res['status']
-        ], 200);
+        ], Response::HTTP_OK);
     }
 
 

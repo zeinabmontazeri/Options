@@ -1,14 +1,12 @@
 <?php
-
 namespace App\Service;
 
 use App\DTO\CategoryCollection;
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
 use App\Request\CategoryRequest;
-use Monolog\DateTimeImmutable;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
-
+use PHPUnit\Util\Exception;
+use Symfony\Component\HttpFoundation\Response;
 
 class CategoryService
 {
@@ -17,11 +15,12 @@ class CategoryService
     {
         $categories = $repository->findAll();
         $res = [];
+        if (!$categories) {
+            $res['data'] = [];
+        }
         foreach ($categories as $category) {
             $categoryCollection = new CategoryCollection();
-            $categoryCollection->name = $category->getName();
-            $categoryCollection->id = $category->getId();
-            $res[] = $categoryCollection;
+            $res[] = $categoryCollection->toArray($category);
         }
         return $res;
     }
@@ -29,6 +28,9 @@ class CategoryService
     public function create(CategoryRepository $repository, CategoryRequest $request): array
     {
         $res = [];
+        if ($request->errors) {
+            throw new Exception($request->errors , 400);
+        }
         $category = $repository->findBy(['name' => $request->name]);
         if (!$category) {
             $category = new Category();
@@ -40,39 +42,30 @@ class CategoryService
         } else {
             $res['message'] = 'category is duplicated';
             $res['status'] = false;
+            $res['httpStatus'] = Response::HTTP_OK;
         }
         return $res;
 
     }
 
-    public function delete(CategoryRepository $repository, $id): array
+    public function delete(CategoryRepository $repository, Category $category): array
     {
         $res = [];
-        $category = $repository->find($id);
-        if (!$category) {
-            $res['message'] = 'category id is invalid';
-            $res['status'] = false;
-        } else {
-            $repository->remove($category, true);
-            $res['message'] = 'category successfully deleted';
-            $res['status'] = true;
-        }
+        $repository->remove($category, true);
+        $res['message'] = 'category successfully deleted';
+        $res['status'] = true;
+
         return $res;
     }
 
-    public function update(CategoryRepository $repository, $id, $name): array
+    public function update(CategoryRepository $repository, Category $category, $name): array
     {
         $res = [];
-        $category = $repository->find($id);
-        if (!$category) {
-            $res['message'] = 'No product found';
-            $res['status'] = false;
-        } else {
             $category->setName($name);
             $repository->add($category, true);
             $res['message'] = 'updated successfully';
             $res['status'] = true;
-        }
+
         return $res;
     }
 }
