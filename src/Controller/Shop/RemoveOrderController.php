@@ -2,20 +2,35 @@
 
 namespace App\Controller\Shop;
 
-use App\Entity\Order;
 use App\Repository\OrderRepository;
+use App\Service\Shop\RemoveOrderService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route("/shop")]
+#[Route('api/shop')]
 class RemoveOrderController extends AbstractController
 {
-    #[Route('/remove/order/{id}', name: 'app_remove_order', methods: ["DELETE"])]
-    public function index(Order $order, OrderRepository $orderRepository): JsonResponse
+    #[Route('/orders/{id}/remove', name: 'app_remove_order', methods: ["DELETE"])]
+    public function index(
+        Request            $request,
+        RemoveOrderService $removeOrderService,
+        OrderRepository    $orderRepository): JsonResponse
     {
-        $orderRepository->remove($order, true);
-        return $this->json(['message' => 'Order removed Successfully', 'status' => 'success'], Response::HTTP_OK);
+        $order = $orderRepository->find(json_decode($request->get('id')));
+        if ($order) {
+            $result = $removeOrderService->removeOrder($order, $orderRepository);
+            return $this->json([
+                'message' => $result['message'],
+                'status' => $result['status']],
+                Response::HTTP_OK);
+        } else {
+            return $this->json([
+                'message' => 'Order is not correct.',
+                'status' => 'failed'],
+                Response::HTTP_BAD_REQUEST);
+        }
     }
 }
