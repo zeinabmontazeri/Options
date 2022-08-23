@@ -3,14 +3,13 @@
 namespace App\Service;
 
 use App\Entity\User;
-use App\Exception\AuthException;
 
 class LoginCheckerService
 {
     public function check(string $loginRole, string|array $userRole)
     {
         if (!array_key_exists($loginRole, User::ROLE_HIERARCHY))
-            throw new AuthException('The provided user role is invalid.', 400);
+            return false;
 
         if (is_array($userRole)) {
             if (count($userRole) == 0) {
@@ -30,6 +29,8 @@ class LoginCheckerService
         }
 
         if (!in_array($loginRole, $userRole))
-            throw new AuthException('The provided user role is invalid.', 400);
+            return false;
+        
+        return true;
     }
 }
