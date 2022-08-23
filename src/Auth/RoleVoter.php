@@ -74,6 +74,6 @@ class RoleVoter implements VoterInterface
             }
         }, []);
 
-        return $checkedRoles;
+        return array_unique($checkedRoles);
     }
 }
