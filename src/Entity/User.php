@@ -19,7 +19,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public const ROLE_ADMIN = 'ROLE_ADMIN';
     public const ROLE_HOST = 'ROLE_HOST';
     public const ROLE_EXPERIENCER = 'ROLE_EXPERIENCER';
-
+    public const ROLE_GUEST = 'ROLE_GUEST';
+    
+    public const ROLE_ALL = [self::ROLE_GUEST, self::ROLE_EXPERIENCER, self::ROLE_HOST, self::ROLE_ADMIN];
     public const ROLE_HIERARCHY = [
         self::ROLE_EXPERIENCER => [self::ROLE_EXPERIENCER],
         self::ROLE_HOST => [self::ROLE_HOST, self::ROLE_EXPERIENCER],
