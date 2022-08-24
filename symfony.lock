@@ -38,15 +38,6 @@
             "migrations/.gitignore"
         ]
     },
-    "gesdinet/jwt-refresh-token-bundle": {
-        "version": "1.1",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "main",
-            "version": "1.0",
-            "ref": "13fb2b58ec6204211815eb6f4c69e4918e5af617"
-        }
-    },
     "lexik/jwt-authentication-bundle": {
         "version": "2.16",
         "recipe": {
@@ -56,7 +47,7 @@
             "ref": "5b2157bcd5778166a5696e42f552ad36529a07a6"
         },
         "files": [
-            "config/packages/lexik_jwt_authentication.yaml"
+            "./config/packages/lexik_jwt_authentication.yaml"
         ]
     },
     "phpunit/phpunit": {
