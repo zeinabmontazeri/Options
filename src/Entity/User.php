@@ -44,7 +44,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column()]
-    private ?int $gender = null;
+    private ?string $gender = null;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Host $host = null;
@@ -78,12 +78,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGender(): ?int
+    public function getGender(): ?string
     {
         return $this->gender;
     }
 
-    public function setGender(int $gender): self
+    public function setGender(string $gender): self
     {
         $this->gender = $gender;
 

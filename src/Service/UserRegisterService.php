@@ -2,9 +2,12 @@
 
 namespace App\Service;
 
+use App\Entity\Host;
 use App\Entity\User;
+use App\Repository\HostRepository;
 use App\Repository\UserRepository;
 use App\Request\UserRegisterRequest;
+use Doctrine\ORM\EntityManager;
 use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -16,6 +19,7 @@ class UserRegisterService
     public function register(
         UserRegisterRequest         $request,
         UserRepository              $userRepository,
+        EntityManager               $em,
         UserPasswordHasherInterface $hasher): User
     {
         //Check if user already exists
@@ -29,19 +33,33 @@ class UserRegisterService
         if($birthDate > (new \DateTime()))
             throw new Exception("Birthday is not in range");
 
+        $em->getConnection()->beginTransaction(); // suspend auto-commit
+        try {
+            $user = new User;
+            $user->setPhoneNumber($request->phoneNumber)
+            ->setFirstName($request->firstName)
+            ->setLastName($request->lastName)
+            ->setBirthDate($birthDate)
+            ->setGender($request->gender)
+            ->setRoles([$request->role])
+            ->setPassword($hasher->hashPassword($user, $request->password));
 
-        $user = new User();
-        $user->setPhoneNumber($request->phoneNumber);
-        $user->setFirstName($request->firstName);
-        $user->setLastName($request->lastName);
-        $user->setBirthDate($birthDate);
-        $user->setGender($request->gender);
-        $user->setRoles([$request->role]);
-        $user->setPassword($hasher->hashPassword($user, $request->password));
-        $userRepository->add($user, true);
-        return $user;
+            $em->persist($user);
+            $em->flush();
+
+            if($request->role==="ROLE_HOST"){
+                $host = new Host();
+                $host->setUser($user);
+                $em->persist($host);
+                $em->flush();
+            }
+            $em->getConnection()->commit();
+            return $user;
+
+        } catch (Exception $e) {
+            $em->getConnection()->rollBack();
+            throw $e;
+        }
     }
-
-
 }
 
