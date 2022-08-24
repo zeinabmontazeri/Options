@@ -18,7 +18,7 @@ final class AuthenticationSuccessListener
         $response = [
             'success'=> true,
             'data'=> [
-                'phoneNumber' => $user->getUserIdentifier(),
+                'id' => $user->getId(),
                 'token'=> $data['token'],
             ],
             'message' => 'User authenticated successfuly.'
