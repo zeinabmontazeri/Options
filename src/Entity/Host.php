@@ -75,6 +75,11 @@ class Host
         return $this->experiences;
     }
 
+    public function getFullName(): string
+    {
+        return $this->user->getFirstName() . ' ' . $this->user->getLastName();
+    }
+
     public function addExperience(Experience $experience): self
     {
         if (!$this->experiences->contains($experience)) {
