@@ -87,6 +87,11 @@ class Event
         return $this;
     }
 
+    public function getCapacity(): ?int
+    {
+        return $this->capacity;
+    }
+    
     public function getDuration(): ?int
     {
         return $this->duration;
