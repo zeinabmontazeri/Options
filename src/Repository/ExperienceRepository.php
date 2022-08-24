@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\Experience;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -40,22 +39,48 @@ class ExperienceRepository extends ServiceEntityRepository
         }
     }
 
-    public function getExperiencesByHostId($hostId)
+    public function filterExperience($array)
     {
-        return $this->createQueryBuilder('experience')
-            ->where('experience.host = :hostId')
-            ->setParameter('hostId', $hostId)
-            ->getQuery()
-            ->getResult();
+        $baseQuery = $this->createQueryBuilder('experience');
+        foreach ($array as $filter => $value) {
+            if (!is_null($value) and $filter != 'purchasable') {
+                $baseQuery = $baseQuery->andWhere($baseQuery->expr()->in('experience.'. "{$filter}", ":{$filter}"))
+                    ->setParameter("{$filter}", json_decode($value));
+            } else {
+                if ($value) {
+                    $baseQuery = $baseQuery->join('experience.events', 'events')
+                        ->andwhere('events.capacity > 0')
+                        ->andWhere('events.startsAt > :date')
+                        ->setParameter('date', new \DateTime());
+                }
+            }
+        }
+        return $baseQuery->getQuery()->getResult();
     }
 
-    public function getExperienceByCategoryId($categoryId)
-    {
-        return $this->createQueryBuilder('experience')
-            ->where('experience.category = :categoryId')
-            ->setParameter("categoryId", $categoryId, Types::INTEGER)
-            ->getQuery()
-            ->getResult();
-    }
+//    }
+//    /**
+//     * @return Experience[] Returns an array of Experience objects
+//     */
+//    public function findByExampleField($value): array
+//    {
+//        return $this->createQueryBuilder('e')
+//            ->andWhere('e.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('e.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
 
+//    public function findOneBySomeField($value): ?Experience
+//    {
+//        return $this->createQueryBuilder('e')
+//            ->andWhere('e.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
 }
