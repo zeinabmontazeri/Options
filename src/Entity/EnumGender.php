@@ -1,6 +1,7 @@
 <?php
+
 namespace App\Entity;
-enum EnumGender : string
+enum EnumGender: string
 {
     case FEMALE = 'FEMALE';
     case MALE = 'MALE';

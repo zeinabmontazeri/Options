@@ -19,7 +19,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use SoftDeleteableEntity;
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -53,9 +53,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?Host $host = null;
 
 
-
-    #[ORM\Column(name: 'gender' , type: 'string')]
-    private ?EnumGender $gender;
+    #[ORM\Column(name: 'gender', type: 'string')]
+    private ?string $gender;
 
     #[ORM\OneToMany(mappedBy: 'user_', targetEntity: Order::class)]
     private Collection $orders;
@@ -146,7 +145,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function getGender() : EnumGender
+    public function getGender(): string
     {
         return $this->gender;
     }
@@ -168,7 +167,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdAt = new \DateTimeImmutable();
         return $this;
     }
-    
+
     public function getHost(): ?Host
     {
         return $this->host;
@@ -186,7 +185,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function setGender(EnumGender $gender) : self
+    public function setGender(string $gender): self
     {
         $this->gender = $gender;
         return $this;

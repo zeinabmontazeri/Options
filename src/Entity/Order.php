@@ -25,8 +25,8 @@ class Order
     #[ORM\ManyToOne(inversedBy: 'orders')]
     private ?Event $event = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $status = null;
+    #[ORM\Column(name: 'status', type: TYPES::STRING)]
+    private string $status = 'draft';
 
     #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3)]
     private ?string $payablePrice = null;
@@ -58,12 +58,12 @@ class Order
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): self
+    public function setStatus(string $status): self
     {
         $this->status = $status;
 
