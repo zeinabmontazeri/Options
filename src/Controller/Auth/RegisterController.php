@@ -6,6 +6,7 @@ use App\Exception\ValidationException;
 use App\Repository\UserRepository;
 use App\Request\UserRegisterRequest;
 use App\Service\UserRegisterService;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,28 +22,29 @@ class RegisterController extends AbstractController
     public function index(ValidatorInterface $validator,
     UserRegisterService $userRegisterService,
     UserRepository $userRepository,
+    EntityManagerInterface $entityManager,
     UserPasswordHasherInterface $hasher
     ): Response
     {
         try {
             $validatedRequest = new  UserRegisterRequest($validator);
-            $res = $userRegisterService->register($validatedRequest, $userRepository,$hasher);
+            $res = $userRegisterService->register($validatedRequest, $userRepository,$entityManager,$hasher);
             //TODO: We can generate token for user here
             return $this->json([
                 'data' => [],
                 'message' => 'User created successfully',
                 'status' => 'success',
-            ], 200);
+            ]);
         } catch (ValidationException $e) {
             return $this->json([
                 'error'=>$e->getMessage(),
                 'data'=>$e->getMessages(),
-            ],400);
+            ],Response::HTTP_BAD_REQUEST);
         } catch (Exception $e) {
             return $this->json([
                 'error'=>$e->getMessage(),
                 'data'=>null,
-            ],400);
+            ],Response::HTTP_BAD_REQUEST);
         }
         return $this->json(["a"=>50]);
     }
