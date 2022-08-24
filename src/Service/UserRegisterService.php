@@ -22,17 +22,19 @@ class UserRegisterService
         $existing_user = $userRepository->findOneBy(['phoneNumber'=>$request->phoneNumber]);
         if($existing_user)
             throw new Exception('User Already Exists');
-            
-        $roles = [$request->role];
 
-        //Host have experiencer role too
-        if($request->role=="ROLE_HOST") $roles[] = "ROLE_EXPERIENCER";
+
+        //Check if birtdate is not in the feature
+        $birthDate = new \DateTime($request->birthDate);
+        if($birthDate > (new \DateTime()))
+            throw new Exception("Birthday is not in range");
+
 
         $user = new User();
         $user->setPhoneNumber($request->phoneNumber);
         $user->setFirstName($request->firstName);
         $user->setLastName($request->lastName);
-        $user->setBirthDate(new \DateTime($request->birthDate));
+        $user->setBirthDate($birthDate);
         $user->setGender($request->gender);
         $user->setRoles([$request->role]);
         $user->setPassword($hasher->hashPassword($user, $request->password));
