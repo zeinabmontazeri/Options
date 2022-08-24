@@ -26,8 +26,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $user = new User();
-        $user->setEmail('test@test')
-            ->setPassword($this->hasher->hashPassword($user, 'pass_1234'))
+        $user->setPassword($this->hasher->hashPassword($user, 'pass_1234'))
             ->setPhoneNumber('09225075485')
             ->setFirstName('Mehdi')
             ->setLastName('Seta')
@@ -36,8 +35,7 @@ class AppFixtures extends Fixture
         $manager->flush();
 
         $user1 = new User();
-        $user1->setEmail('example@example.com')
-            ->setPassword($this->hasher->hashPassword($user, 'pass_12345'))
+        $user1->setPassword($this->hasher->hashPassword($user, 'pass_12345'))
             ->setPhoneNumber('09919979109')
             ->setFirstName('Kakashi')
             ->setLastName('Hatake')
@@ -47,8 +45,7 @@ class AppFixtures extends Fixture
         $manager->flush();
 
         $user2 = new User();
-        $user2->setEmail('example@example.ir')
-            ->setPassword($this->hasher->hashPassword($user, 'pass_123456'))
+        $user2->setPassword($this->hasher->hashPassword($user, 'pass_123456'))
             ->setPhoneNumber('09136971826')
             ->setFirstName('Naruto')
             ->setLastName('Uzumaki')
