@@ -4,26 +4,25 @@ namespace App\Service;
 
 use App\Entity\Host;
 use App\Entity\User;
-use App\Repository\HostRepository;
 use App\Repository\UserRepository;
 use App\Request\UserRegisterRequest;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserRegisterService
 {
+    function __construct(
+        private UserRepository $userRepository,
+        private UserPasswordHasherInterface $hasher,
+        private EntityManagerInterface $entityManager
+    ) {
+    }
 
-
-    public function register(
-        UserRegisterRequest         $request,
-        UserRepository              $userRepository,
-        EntityManager               $em,
-        UserPasswordHasherInterface $hasher): User
+    public function register(UserRegisterRequest $request): User
     {
         //Check if user already exists
-        if($userRepository->checkExistsByPhoneNumber($request->phoneNumber))
+        if($this->userRepository->checkExistsByPhoneNumber($request->phoneNumber))
             throw new Exception('User Already Exists');
 
 
@@ -32,7 +31,7 @@ class UserRegisterService
         if($birthDate > (new \DateTime()))
             throw new Exception("Birthday is not in range");
 
-        $em->getConnection()->beginTransaction(); // suspend auto-commit
+        $this->entityManager->getConnection()->beginTransaction(); // suspend auto-commit
         try {
             $user = new User;
             $user->setPhoneNumber($request->phoneNumber)
@@ -41,22 +40,22 @@ class UserRegisterService
             ->setBirthDate($birthDate)
             ->setGender($request->gender)
             ->setRoles([$request->role])
-            ->setPassword($hasher->hashPassword($user, $request->password));
+            ->setPassword($this->hasher->hashPassword($user, $request->password));
 
-            $em->persist($user);
-            $em->flush();
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
 
             if($request->role==="ROLE_HOST"){
                 $host = new Host();
                 $host->setUser($user);
-                $em->persist($host);
-                $em->flush();
+                $this->entityManager->persist($host);
+                $this->entityManager->flush();
             }
-            $em->getConnection()->commit();
+            $this->entityManager->getConnection()->commit();
             return $user;
 
         } catch (Exception $e) {
-            $em->getConnection()->rollBack();
+            $this->entityManager->getConnection()->rollBack();
             throw $e;
         }
     }
