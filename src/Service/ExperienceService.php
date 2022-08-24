@@ -23,11 +23,7 @@ class ExperienceService
         }
         foreach ($experiences as $experience) {
             $experienceCollection = new ExperienceCollection();
-            $experienceCollection->setId($experience->getId());
-            $experienceCollection->setTitle($experience->getTitle());
-            $experienceCollection->setDescription($experience->getDescription());
-            $experienceCollection->setCreatedAt($experience->getCreatedAt());
-            $res['data'][] = $experienceCollection;
+            $res['data'][] = $experienceCollection->toArray($experience);
         }
         $res['status'] = true;
         $res['message'] = 'Successfully retrieve all experience';

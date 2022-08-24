@@ -14,9 +14,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('api/host/')]
 class ExperienceController extends AbstractController
 {
-    #[Route('api/host/{host_id}/experience', name: 'app_host_experience' , methods: 'GET')]
+    #[Route('{host_id}/experience', name: 'app_host_experience' , methods: 'GET')]
     #[ParamConverter('host' , class: Host::class , options: ['id' => 'host_id'])]
     public function index(ExperienceService $service , ExperienceRepository $repository , Host $host): Response
     {
@@ -28,7 +29,7 @@ class ExperienceController extends AbstractController
         ]);
     }
 
-    #[Route('api/host/{host_id}/experience', name: 'app_host_experience_create' , methods: 'POST')]
+    #[Route('{host_id}/experience', name: 'app_host_experience_create' , methods: 'POST')]
     #[ParamConverter('host' , class: Host::class , options: ['id' => 'host_id'])]
     public function create(ExperienceService $service , Host $host ,ExperienceRepository $repository , CategoryRepository $categoryRepository  , ExperienceRequest $request): Response
     {
