@@ -2,7 +2,6 @@
 
 namespace App\Request;
 
-
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -10,13 +9,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 abstract class BaseRequest
 
 {
-    public string $errors ="";
+
     /**
      * @throws Exception
      */
     public function __construct(protected ValidatorInterface $validator)
     {
-        $this->populate($this->getRequest()->toArray());
+        $this->populate($this->getRequest());
         if ($this->autoValidateRequest()) {
             $this->validate();
         }
@@ -29,23 +28,19 @@ abstract class BaseRequest
     {
         $errors = $this->validator->validate($this);
         if (count($errors) > 0) {
-            $this->makeError((string)$errors);
+            $errorsString = (string)$errors;
+            throw new Exception($errorsString);
         }
     }
 
-    public function makeError(string $msg): void
+    public function getRequest(): array
     {
-        $res = explode('.', $msg);
-        foreach ($res as $key => $value){
-            if ($key % 2 == 1){
-                $this->errors .= $value.PHP_EOL;
-            }
+        $request = Request::createFromGlobals();
+        if ($request->getMethod() === 'GET') {
+            return $request->query->all();
+        } else {
+            return json_decode($request->getContent(), true);
         }
-    }
-
-    public function getRequest(): Request
-    {
-        return Request::createFromGlobals();
     }
 
     abstract public function populate(array $fields): void;
