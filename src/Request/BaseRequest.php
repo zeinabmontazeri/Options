@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 abstract class BaseRequest
 
 {
-
+    public $errors = "";
     /**
      * @throws Exception
      */
@@ -28,8 +28,17 @@ abstract class BaseRequest
     {
         $errors = $this->validator->validate($this);
         if (count($errors) > 0) {
-            $errorsString = (string)$errors;
-            throw new Exception($errorsString);
+            $this->makeError((string)$errors);
+        }
+    }
+
+    public function makeError(string $msg): void
+    {
+        $res = explode('.', $msg);
+        foreach ($res as $key => $value){
+            if ($key % 2 == 1){
+                $this->errors .= $value.PHP_EOL;
+            }
         }
     }
 
