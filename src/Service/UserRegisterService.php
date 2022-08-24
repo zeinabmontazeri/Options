@@ -23,8 +23,7 @@ class UserRegisterService
         UserPasswordHasherInterface $hasher): User
     {
         //Check if user already exists
-        $existing_user = $userRepository->findOneBy(['phoneNumber'=>$request->phoneNumber]);
-        if($existing_user)
+        if($userRepository->checkExistsByPhoneNumber($request->phoneNumber))
             throw new Exception('User Already Exists');
 
 
