@@ -6,7 +6,7 @@ use App\Entity\Experience;
 use App\Repository\EventRepository;
 use App\Repository\ExperienceRepository;
 use App\Request\ExperienceFilterRequest;
-use App\Service\Shop\GetAllExperienceEventsService;
+use App\Service\GetAllExperienceEventsService;
 use App\Service\Shop\GetExperiencesByFilterService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
