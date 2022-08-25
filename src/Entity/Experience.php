@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ExperienceRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -27,6 +28,7 @@ class Experience
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\Unique]
     private ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
