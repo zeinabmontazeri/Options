@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -43,7 +44,7 @@ class EventRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('event')
             ->where('event.experience = :experienceId')
-            ->setParameter('experienceId', $experienceId)
+            ->setParameter('experienceId', $experienceId, Types::INTEGER)
             ->getQuery()
             ->getResult();
     }
