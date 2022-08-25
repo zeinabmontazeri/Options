@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('api/shop')]
 class CategoryController extends AbstractController
 {
-    #[Route('/categories', name: 'app_shop_categories')]
+    #[Route('/categories', name: 'app_shop_categories',methods: ['GET'])]
     public function index(CategoryService $categoryService, CategoryRepository $repository): Response
     {
         $data = $categoryService->getAll($repository);
