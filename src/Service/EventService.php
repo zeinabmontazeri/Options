@@ -6,7 +6,9 @@ use App\Entity\Event;
 use App\Entity\Experience;
 use App\Repository\EventRepository;
 use App\Repository\ExperienceRepository;
+use App\Repository\OrderRepository;
 use App\Request\EventRequest;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class EventService
 {
@@ -15,9 +17,6 @@ class EventService
      */
     public function create(EventRequest $request, EventRepository $repository, Experience $experience): string
     {
-        if ($request->errors){
-            throw new \Exception($request->errors);
-        }
         $event = new Event();
         $event->setExperience($experience);
         $event->setStartsAt($request->startsAt);
@@ -28,7 +27,12 @@ class EventService
         $event->setLink($request->link);
         $event->setPrice($request->price);
 
-       $repository->add($event, true);
+        $repository->add($event, true);
         return "event created successfully with id: {$event->getId()}";
+    }
+
+    public function getOrders(OrderRepository $repository, Event $event)
+    {
+        return $repository->findUsersInfoAnEvent($event);
     }
 }
