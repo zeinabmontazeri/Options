@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\Event;
 use App\Entity\Experience;
 use App\Repository\EventRepository;
-use App\Repository\ExperienceRepository;
 use App\Request\EventRequest;
 
 class EventService
@@ -15,9 +14,6 @@ class EventService
      */
     public function create(EventRequest $request, EventRepository $repository, Experience $experience): string
     {
-        if ($request->errors){
-            throw new \Exception($request->errors);
-        }
         $event = new Event();
         $event->setExperience($experience);
         $event->setStartsAt($request->startsAt);
