@@ -23,7 +23,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         if (!$exception instanceof NotFoundHttpException) {
             $message = "Bad Request";
         }else {
-            $message = "Inputs are not valid";
+            $message = "Invalid query parameters";
         }
 
 
