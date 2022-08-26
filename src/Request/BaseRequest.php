@@ -2,6 +2,7 @@
 
 namespace App\Request;
 
+use App\Exception\ValidationException;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -28,17 +29,7 @@ abstract class BaseRequest
     {
         $errors = $this->validator->validate($this);
         if (count($errors) > 0) {
-            $this->makeError((string)$errors);
-        }
-    }
-
-    public function makeError(string $msg): void
-    {
-        $res = explode('.', $msg);
-        foreach ($res as $key => $value){
-            if ($key % 2 == 1){
-                $this->errors .= $value.PHP_EOL;
-            }
+            throw new ValidationException($errors);
         }
     }
 

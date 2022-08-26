@@ -21,14 +21,12 @@ class Order
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'users')]
-    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     private ?Event $event = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $status = null;
+    #[ORM\Column(name: 'status', type: TYPES::STRING)]
+    private string $status = 'draft';
 
     #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3)]
     private ?string $payablePrice = null;
@@ -38,6 +36,10 @@ class Order
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'orders')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     public function getId(): ?int
     {
@@ -56,12 +58,12 @@ class Order
         return $this;
     }
 
-    public function getStatus(): ?int
+    public function getStatus(): string
     {
         return $this->status;
     }
 
-    public function setStatus(int $status): self
+    public function setStatus(string $status): self
     {
         $this->status = $status;
 
@@ -100,6 +102,18 @@ class Order
     public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
