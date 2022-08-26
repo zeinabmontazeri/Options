@@ -39,6 +39,18 @@ class CategoryRepository extends ServiceEntityRepository
         }
     }
 
+    public function update($id,$name)
+    {
+        return  $this->createQueryBuilder('c')
+                ->update(Category::class )
+                ->where('c.id' , ':id')
+                ->set('c.name' , ':name')
+                ->setParameter('id' , $id)
+                ->setParameter('name' , $name)
+                ->getQuery()
+                ->execute();
+    }
+
 //    /**
 //     * @return Category[] Returns an array of Category objects
 //     */
