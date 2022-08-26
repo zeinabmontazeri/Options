@@ -1,6 +1,7 @@
 <?php
 namespace App\EventListener;
 
+use App\Exception\ValidationException;
 use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,26 +19,29 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public function onKernelException(ExceptionEvent $event )
     {
 
+        $exceptionData = [
+            'success' => false,
+            'data' => [] ,
+            'message' => "",
+        ];
         $exception = $event->getThrowable();
 
-        if (!$exception instanceof NotFoundHttpException) {
-            $message = "Bad Request: ".$exception->getMessage();
+        if ($exception instanceof ValidationException) {
+            $exceptionData['data'] = $exception->getMessages();
+            $exceptionData['message'] = $exception->getMessage();
+        } else if ($exception instanceof NotFoundHttpException) {
+            $exceptionData['message'] = "Invalid query parameters";
         }else {
-            $message = "Invalid query parameters";
+            $exceptionData['message'] = "Bad Request: ".$exception->getMessage();
         }
 
 
         $response = new JsonResponse();
-        $response->setData([
-            'data' => [] ,
-            'message' => $message,
-            'status' => false
-        ]);
+        $response->setData($exceptionData);
 
 
         if ($exception instanceof HttpException) {
             $response->setStatusCode(400);
-            $response->headers->replace($exception->getHeaders());
         } else {
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
