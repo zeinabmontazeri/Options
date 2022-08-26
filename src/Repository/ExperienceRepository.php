@@ -39,6 +39,26 @@ class ExperienceRepository extends ServiceEntityRepository
         }
     }
 
+    public function filterExperience($array)
+    {
+        $baseQuery = $this->createQueryBuilder('experience');
+        foreach ($array as $filter => $value) {
+            if (!is_null($value) and $filter != 'purchasable') {
+                $baseQuery = $baseQuery->andWhere($baseQuery->expr()->in('experience.'. "{$filter}", ":{$filter}"))
+                    ->setParameter("{$filter}", json_decode($value));
+            } else {
+                if ($value) {
+                    $baseQuery = $baseQuery->join('experience.events', 'events')
+                        ->andwhere('events.capacity > 0')
+                        ->andWhere('events.startsAt > :date')
+                        ->setParameter('date', new \DateTime());
+                }
+            }
+        }
+        return $baseQuery->getQuery()->getResult();
+    }
+
+//    }
 //    /**
 //     * @return Experience[] Returns an array of Experience objects
 //     */

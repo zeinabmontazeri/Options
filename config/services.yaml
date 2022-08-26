@@ -28,3 +28,4 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ '@annotation_reader' ] ]
+    Doctrine\ORM\EntityManagerInterface: '@doctrine.orm.entity_manager'

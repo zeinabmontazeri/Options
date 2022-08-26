@@ -2,44 +2,62 @@
 
 namespace App\Service;
 
+use App\Entity\Host;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Request\UserRegisterRequest;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserRegisterService
 {
-
-
-    public function register(
-        UserRegisterRequest         $request,
-        UserRepository              $userRepository,
-        UserPasswordHasherInterface $hasher): User
-    {
-        //Check if user already exists
-        $existing_user = $userRepository->findOneBy(['phoneNumber'=>$request->phoneNumber]);
-        if($existing_user)
-            throw new Exception('User Already Exists');
-            
-        $roles = [$request->role];
-
-        //Host have experiencer role too
-        if($request->role=="ROLE_HOST") $roles[] = "ROLE_EXPERIENCER";
-
-        $user = new User();
-        $user->setPhoneNumber($request->phoneNumber);
-        $user->setFirstName($request->firstName);
-        $user->setLastName($request->lastName);
-        $user->setBirthDate(new \DateTime($request->birthDate));
-        $user->setGender($request->gender);
-        $user->setRoles([$request->role]);
-        $user->setPassword($hasher->hashPassword($user, $request->password));
-        $userRepository->add($user, true);
-        return $user;
+    function __construct(
+        private UserRepository $userRepository,
+        private UserPasswordHasherInterface $hasher,
+        private EntityManagerInterface $entityManager
+    ) {
     }
 
+    public function register(UserRegisterRequest $request): User
+    {
+        //Check if user already exists
+        if($this->userRepository->checkExistsByPhoneNumber($request->phoneNumber))
+            throw new Exception('User Already Exists');
 
+
+        //Check if birtdate is not in the feature
+        $birthDate = new \DateTime($request->birthDate);
+        if($birthDate > (new \DateTime()))
+            throw new Exception("Birthday is not in range");
+
+        $this->entityManager->getConnection()->beginTransaction(); // suspend auto-commit
+        try {
+            $user = new User;
+            $user->setPhoneNumber($request->phoneNumber)
+            ->setFirstName($request->firstName)
+            ->setLastName($request->lastName)
+            ->setBirthDate($birthDate)
+            ->setGender($request->gender)
+            ->setRoles([$request->role])
+            ->setPassword($this->hasher->hashPassword($user, $request->password));
+
+            $this->entityManager->persist($user);
+            $this->entityManager->flush();
+
+            if($request->role==="ROLE_HOST"){
+                $host = new Host();
+                $host->setUser($user);
+                $this->entityManager->persist($host);
+                $this->entityManager->flush();
+            }
+            $this->entityManager->getConnection()->commit();
+            return $user;
+
+        } catch (Exception $e) {
+            $this->entityManager->getConnection()->rollBack();
+            throw $e;
+        }
+    }
 }
 
