@@ -7,17 +7,17 @@ interface PaymentTaskInterface
     /*
      * The unique id of request
      */
-    public readonly string $orderId;
+    public readonly int $orderId;
 
     /*
      * Reference to the pointed sale
      */
-    public readonly ?string $saleOrderId;
+    public readonly ?int $saleOrderId;
 
     /*
      * The reference code returned from bank for sale
      */
-    public readonly ?string $saleReferenceId;
+    public readonly ?int $saleReferenceId;
 
     /*
      * Data payload for transactions
