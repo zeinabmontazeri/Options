@@ -3,8 +3,8 @@
 namespace App\Entity;
 enum EnumOrderStatus: string
 {
-    case SUCCESS = 'success';
-    case FAIL = 'fail';
+    case CHECKOUT = 'checkout';
+    case PENDING = 'pending';
     case DRAFT = 'draft';
 
 }
