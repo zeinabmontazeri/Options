@@ -1,6 +1,7 @@
 <?php
 namespace App\EventListener;
 
+use App\Exception\InvalidInputException;
 use JetBrains\PhpStorm\ArrayShape;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,15 +18,16 @@ class ExceptionSubscriber implements EventSubscriberInterface
 
     public function onKernelException(ExceptionEvent $event )
     {
-
         $exception = $event->getThrowable();
 
-        if (!$exception instanceof NotFoundHttpException) {
+        if($exception instanceof InvalidInputException)
+        {
+            $message=$exception->message;
+        }elseif (!$exception instanceof NotFoundHttpException) {
             $message = "Bad Request";
         }else {
             $message = "Invalid query parameters";
         }
-
 
         $response = new JsonResponse();
         $response->setData([
@@ -33,18 +35,17 @@ class ExceptionSubscriber implements EventSubscriberInterface
             'message' => $message,
             'status' => false
         ]);
-
-
-        if ($exception instanceof HttpException) {
+        if($exception instanceof InvalidInputException)
+        {
+            $response->setStatusCode(400);
+        }
+        elseif ($exception instanceof HttpException) {
             $response->setStatusCode(400);
             $response->headers->replace($exception->getHeaders());
         } else {
             $response->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-
         $event->setResponse($response);
-
     }
 
     #[ArrayShape([KernelEvents::EXCEPTION => "string"])]
