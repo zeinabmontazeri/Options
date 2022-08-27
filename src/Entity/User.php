@@ -168,7 +168,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdAt = new \DateTimeImmutable();
         return $this;
     }
-    
+
     public function getHost(): ?Host
     {
         return $this->host;
