@@ -30,7 +30,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         self::ROLE_ADMIN => [self::ROLE_ADMIN, self::ROLE_HOST, self::ROLE_EXPERIENCER]
     ];
 
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -42,10 +41,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $email = null;
-
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $phoneNumber = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -99,6 +95,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLastName(string $lastName): self
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    public function setGender(string $gender): self
+    {
+        $this->gender = $gender;
 
         return $this;
     }
@@ -160,7 +168,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->createdAt = new \DateTimeImmutable();
         return $this;
     }
-    
+
     public function getHost(): ?Host
     {
         return $this->host;
@@ -175,12 +183,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         $this->host = $host;
 
-        return $this;
-    }
-
-    public function setGender(string $gender): self
-    {
-        $this->gender = $gender;
         return $this;
     }
 

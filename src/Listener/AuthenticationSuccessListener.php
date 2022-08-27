@@ -7,7 +7,8 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
 #[AsEventListener(
     event: 'lexik_jwt_authentication.on_authentication_success',
-    method: 'setResponseFormat'
+    method: 'setResponseFormat',
+    priority: -10
 )]
 final class AuthenticationSuccessListener
 {
@@ -20,8 +21,9 @@ final class AuthenticationSuccessListener
             'data'=> [
                 'id' => $user->getId(),
                 'token'=> $data['token'],
+                'refresh_token'=>$data['refresh_token']
             ],
-            'message' => 'User authenticated successfuly.'
+            'message' => 'User authenticated successfuly.',
         ];
         $event->setData($response);
     }
