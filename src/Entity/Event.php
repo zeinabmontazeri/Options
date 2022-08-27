@@ -53,6 +53,10 @@ class Event
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Order::class)]
     private Collection $orders;
 
+    #[ORM\Column]
+    private ?int $registeredUsers = 0;
+
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -75,16 +79,17 @@ class Event
         return $this;
     }
 
-    public function getCapacity(): ?int
-    {
-        return $this->capacity;
-    }
 
     public function setCapacity(int $capacity): self
     {
         $this->capacity = $capacity;
 
         return $this;
+    }
+
+    public function getCapacity(): ?int
+    {
+        return $this->capacity;
     }
 
     public function getDuration(): ?int
@@ -200,4 +205,17 @@ class Event
 
         return $this;
     }
+
+    public function getRegisteredUsers(): ?int
+    {
+        return $this->registeredUsers;
+    }
+
+    public function setRegisteredUsers(int $registeredUsers): self
+    {
+        $this->registeredUsers = $registeredUsers;
+
+        return $this;
+    }
+
 }

@@ -9,12 +9,9 @@ class RemoveOrderService
 {
     public function removeOrder(
         Order           $order,
-        OrderRepository $orderRepository): array
+        OrderRepository $orderRepository): bool
     {
         $orderRepository->remove($order, true);
-        $result['message'] = 'Order removed Successfully.';
-        $result['status'] = 'success';
-        return $result;
+        return true;
     }
-
 }

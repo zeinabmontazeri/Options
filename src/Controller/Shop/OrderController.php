@@ -13,18 +13,20 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('api/shop')]
 class OrderController extends AbstractController
 {
-    #[Route('/orders/{id}/remove', name: 'app_remove_order', methods: ["DELETE"])]
+
+    #[Route('/orders/{id}/remove', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
     public function index(
         Request            $request,
         RemoveOrderService $removeOrderService,
         OrderRepository    $orderRepository): JsonResponse
     {
-        $order = $orderRepository->find(json_decode($request->get('id')));
 
-        if ($order and $order->getStatus() == 0) {
+        $order = $orderRepository->find((int)($request->get('id')));
+
+        if ($order and $order->getStatus() == 'draft') {
             $result = $removeOrderService->removeOrder($order, $orderRepository);
             return $this->json([
-                'message' => $result['message'],
+                'message' => 'Order Removed Successfully.',
                 'status' => $result['status']],
                 Response::HTTP_OK);
         } else {
