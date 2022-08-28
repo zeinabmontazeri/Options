@@ -9,9 +9,8 @@ class RemoveOrderService
 {
     public function removeOrder(
         Order           $order,
-        OrderRepository $orderRepository): bool
+        OrderRepository $orderRepository)
     {
         $orderRepository->remove($order, true);
-        return true;
     }
 }
