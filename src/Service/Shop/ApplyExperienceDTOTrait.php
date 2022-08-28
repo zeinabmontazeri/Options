@@ -2,7 +2,7 @@
 
 namespace App\Service\Shop;
 
-use App\DTO\ExperienceCollection;
+use App\DTO\ExperienceFilterCollection;
 
 trait ApplyExperienceDTOTrait
 {
@@ -11,7 +11,7 @@ trait ApplyExperienceDTOTrait
     {
         $experiencesData = [];
         foreach ($experiences as $experience) {
-            $experienceCollection = new ExperienceCollection();
+            $experienceCollection = new ExperienceFilterCollection();
             $experienceCollection->id = $experience->getId();
             $experienceCollection->title = $experience->getTitle();
             $experienceCollection->category = [
