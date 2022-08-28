@@ -5,6 +5,7 @@ use App\Entity\Comment;
 use App\Entity\EnumOrderStatus;
 use App\Entity\Event;
 use App\Entity\User;
+use App\Exception\InvalidInputException;
 use App\Repository\CommentRepository;
 use App\Repository\EventRepository;
 use App\Repository\OrderRepository;
@@ -36,59 +37,43 @@ class CommentEventService
             $this->result['data']=['commentId'=>$comment->getId()];
             $this->result['message']='The user commented successfully';
         }
-        else
-        {
-            $this->result['status'] =false;
-            $this->result['data']=[];
-        }
         return $this->result;
     }
-    private function checkUserExistence($userId):bool
+    private function checkUserExistence($userId)
     {
         $this->user = $this->userRepository->find($userId);
         if ($this->user == null) {
-            $this->result['message']='The userId not exists';
-            return false;
+            throw new InvalidInputException('The userId not exists',400);
         }
-        return true;
     }
-    private function checkEventExistenceAndPassed($eventId): bool
+    private function checkEventExistenceAndPassed($eventId)
     {
         $this->event = $this->eventRepository->find($eventId);
         if ($this->event == null) {
-            $this->result['message']='The eventId not exists';
-            return false;
+            throw new InvalidInputException('The eventId not exists',400);
         }
         $fishedDateTime=$this->event->getStartsAt()->add(new DateInterval('PT'.$this->event->getDuration().'M'));
         if (new \DateTimeImmutable()<$fishedDateTime) {
-            $this->result['data']=[];
-            $this->result['message']='The event time is not over yet';
-            return false;
+            throw new InvalidInputException('The event time is not over yet',400);
         }
-        return true;
     }
-    private function checkUserOrderedEvent($userId,$eventId): bool
+    private function checkUserOrderedEvent($userId,$eventId)
     {
         $resultArray=$this->orderRepository->findByUserEvent_id_Status($userId,$eventId);
         if(empty($resultArray))
         {
-            $this->result['message']='The user has not previously ordered an event';
-            return false;
+            throw new InvalidInputException('The user has not previously ordered an event',400);
         }
         if($resultArray[0]['status']!=EnumOrderStatus::CHECKOUT->value)
         {
-            $this->result['message']='The event has not yet been paid';
-            return false;
+            throw new InvalidInputException('The event has not yet been paid',400);
         }
-        return true;
     }
     private function commentOnEventValidation($userId,$eventId): bool
     {
-        if($this->checkUserExistence($userId)) {
-            if($this->checkEventExistenceAndPassed($eventId)) {
-               return $this->checkUserOrderedEvent($userId, $eventId);
-            }
-        }
-        return false;
+       $this->checkUserExistence($userId);
+       $this->checkEventExistenceAndPassed($eventId);
+       $this->checkUserOrderedEvent($userId, $eventId);
+        return true;
     }
 }
