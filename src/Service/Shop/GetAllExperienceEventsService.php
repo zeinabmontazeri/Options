@@ -36,7 +36,7 @@ class GetAllExperienceEventsService
             $result['data'] = [];
             $result['message'] = "No events of Experience with {$experienceId} id found.";
         }
-        $result['status'] = true;
+        $result['status'] = 'success';
         return $result;
 
     }

@@ -10,10 +10,10 @@ class GetExperiencesByFilterService
     use ApplyExperienceDTOTrait;
 
     public function getExperience(
-        ExperienceFilterRequest $experienceFilterCollection,
+        ExperienceFilterRequest $experienceFilterRequest,
         ExperienceRepository    $experienceRepository,
     ): array
     {
-        return self::parse($experienceRepository->filterExperience($experienceFilterCollection));
+        return self::parse($experienceRepository->filterExperience($experienceFilterRequest));
     }
 }

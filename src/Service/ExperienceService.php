@@ -7,7 +7,6 @@ use App\Entity\Experience;
 use App\Entity\Host;
 use App\Repository\CategoryRepository;
 use App\Repository\ExperienceRepository;
-use App\Repository\HostRepository;
 use App\Request\ExperienceRequest;
 use JetBrains\PhpStorm\ArrayShape;
 
