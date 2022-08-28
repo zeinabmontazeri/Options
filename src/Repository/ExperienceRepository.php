@@ -67,8 +67,8 @@ class ExperienceRepository extends ServiceEntityRepository
         INNER JOIN App\Entity\Event e
         WITH ex.id = e.experience
         GROUP BY ex.id
-        HAVING COUNT((CASE WHEN e.capacity - e.registeredUsers > 0 and e.startsAt > :date then 1 else 0 end)) > 0')
-            ->setParameter('date', new \DateTime());
+        HAVING COUNT((CASE WHEN e.capacity - e.registeredUsers > 0 and e.startsAt > :date then 1 else 0 end)) > 0
+        ORDER BY total_buyers DESC')->setParameter('date', new \DateTime())->setMaxResults(20);
         return $query->getResult();
 
     }
