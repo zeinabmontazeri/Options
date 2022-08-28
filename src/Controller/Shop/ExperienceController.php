@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('api/shop')]
+#[Route('api/v1/shop')]
 class ExperienceController extends AbstractController
 {
     #[Route('/experience', name: 'app_get_experiences', methods: ['GET'])]
