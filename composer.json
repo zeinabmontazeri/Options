@@ -1,7 +1,7 @@
 {
     "type": "project",
     "license": "proprietary",
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
         "php": ">=8.1",
@@ -12,8 +12,9 @@
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.13",
         "gedmo/doctrine-extensions": "^3.8",
-        "gesdinet/jwt-refresh-token-bundle": "^1.1",
+        "gesdinet/jwt-refresh-token-bundle": "master",
         "lexik/jwt-authentication-bundle": "^2.16",
+        "nelmio/api-doc-bundle": "^4.9",
         "phpdocumentor/reflection-docblock": "^5.3",
         "phpstan/phpdoc-parser": "^1.7",
         "sensio/framework-extra-bundle": "^6.2",
@@ -109,5 +110,19 @@
         "symfony/phpunit-bridge": "^6.1",
         "symfony/stopwatch": "6.1.*",
         "symfony/web-profiler-bundle": "6.1.*"
-    }
+    },
+    "repositories": [
+        {
+            "type":"package",
+            "package": {
+                "name": "gesdinet/jwt-refresh-token-bundle",
+                "version":"master",
+                "source": {
+                    "url": "https://github.com/mehdad/JWTRefreshTokenBundle.git",
+                    "type": "git",
+                    "reference":"master"
+                }
+            }
+        }
+    ]
 }
