@@ -7,7 +7,10 @@ trait ValidateRequestTrait
     {
         foreach ($fields as $field => $value) {
             if (property_exists($this, $field)) {
-                $this->{$field} = $value;
+                if (preg_match('/^\d{4}-\d\d-\d\d( \d\d:\d\d:\d\d)?$/', $value))
+                    $this->{$field} = new \DateTime($value);
+                else
+                    $this->{$field} = $value;
             }
         }
     }

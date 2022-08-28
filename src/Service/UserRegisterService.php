@@ -25,9 +25,8 @@ class UserRegisterService
         if($this->userRepository->checkExistsByPhoneNumber($request->phoneNumber))
             throw new Exception('User Already Exists');
 
-
         //Check if birtdate is not in the feature
-        $birthDate = new \DateTime($request->birthDate);
+        $birthDate = $request->birthDate;
         if($birthDate > (new \DateTime()))
             throw new Exception("Birthday is not in range");
 
