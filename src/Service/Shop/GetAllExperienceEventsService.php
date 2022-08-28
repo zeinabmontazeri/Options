@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Shop;
 
 use App\DTO\EventCollection;
 use App\Entity\Experience;
