@@ -44,7 +44,7 @@ class ExperienceRepository extends ServiceEntityRepository
         $baseQuery = $this->createQueryBuilder('experience');
         foreach ($array as $filter => $value) {
             if (!is_null($value) and $filter != 'purchasable') {
-                $baseQuery = $baseQuery->andWhere($baseQuery->expr()->in('experience.'. "{$filter}", ":{$filter}"))
+                $baseQuery = $baseQuery->andWhere($baseQuery->expr()->in('experience.' . "{$filter}", ":{$filter}"))
                     ->setParameter("{$filter}", json_decode($value));
             } else {
                 if ($value) {
@@ -56,6 +56,21 @@ class ExperienceRepository extends ServiceEntityRepository
             }
         }
         return $baseQuery->getQuery()->getResult();
+    }
+
+    public function getTrendingExperiences()
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery('SELECT ex.id ,SUM(e.capacity - e.registeredUsers) as total_buyers
+        FROM App\Entity\Experience ex
+        INNER JOIN App\Entity\Event e
+        WITH ex.id = e.experience
+        GROUP BY ex.id
+        HAVING COUNT((CASE WHEN e.capacity - e.registeredUsers > 0 and e.startsAt > :date then 1 else 0 end)) > 0')
+            ->setParameter('date', new \DateTime());
+        return $query->getResult();
+
     }
 
 //    }

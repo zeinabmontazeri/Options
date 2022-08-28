@@ -6,7 +6,7 @@ use App\Entity\Experience;
 use App\Repository\EventRepository;
 use App\Repository\ExperienceRepository;
 use App\Request\ExperienceFilterRequest;
-use App\Service\GetAllExperienceEventsService;
+use App\Service\Shop\GetAllExperienceEventsService;
 use App\Service\Shop\GetExperiencesByFilterService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,7 +34,7 @@ class ExperienceController extends AbstractController
         );
     }
 
-    #[Route('/experience/{experience_id}/events/', name: 'app_experience_event_list', methods: ['GET'])]
+    #[Route('/experiences/{experience_id}/events/', name: 'app_experience_event_list', methods: ['GET'])]
     #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
     public function getExperiences(
         Experience                    $experience,
@@ -48,4 +48,21 @@ class ExperienceController extends AbstractController
             'status' => $result['status'],
         ], Response::HTTP_OK);
     }
+
+    #[Route('/experiences/trending/', name: 'app_trending_experience', methods: ['GET'])]
+    public function getTrendingExperiences(
+        ExperienceRepository $experienceRepository,
+    ): JsonResponse
+    {
+        $result = $experienceRepository->getTrendingExperiences();
+        return $this->json(
+            [
+                'data' => $result,
+                'message' => 'Experiences Successfully Retrieved',
+                'status' => true,
+            ], Response::HTTP_OK
+        );
+    }
+
+
 }
