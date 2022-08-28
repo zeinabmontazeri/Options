@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('shop')]
+#[Route('api/v1/shop')]
 class ExperienceController extends AbstractController
 {
     #[Route('/experiences', name: 'app_get_experiences', methods: ['GET'])]
