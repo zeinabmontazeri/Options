@@ -5,8 +5,6 @@ class CategoryRequest extends BaseRequest
 {
     use ValidateRequestTrait;
 
-
-
     #[Assert\NotBlank]
     public ?string $name = null;
 

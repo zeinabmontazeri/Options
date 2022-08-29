@@ -25,10 +25,6 @@ class UserRegisterService
         if($this->userRepository->checkExistsByPhoneNumber($request->phoneNumber))
             throw new Exception('User Already Exists');
 
-        //Check if birtdate is not in the feature
-        $birthDate = $request->birthDate;
-        if($birthDate > (new \DateTime()))
-            throw new Exception("Birthday is not in range");
 
         $this->entityManager->getConnection()->beginTransaction(); // suspend auto-commit
         try {
