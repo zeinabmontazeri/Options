@@ -6,6 +6,7 @@ use App\Exception\AuthException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
@@ -46,7 +47,7 @@ final class AuthExceptionListener
                         'data' => [],
                         'message' => "'phoneNumber' and 'password' must be provided."
                     ],
-                    status: JsonResponse::HTTP_BAD_REQUEST
+                    status: Response::HTTP_BAD_REQUEST
                 );
             }
         }

@@ -6,15 +6,16 @@ use App\Entity\Event;
 use App\Entity\Experience;
 use App\Repository\EventRepository;
 use App\Request\EventRequest;
+use Exception;
 
 class EventService
 {
-    public function __construct(private EventRepository $eventRepository,private EventRequest $eventRequest)
+    public function __construct(private EventRepository $eventRepository, private EventRequest $eventRequest)
     {
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function create(Experience $experience): Event
     {
