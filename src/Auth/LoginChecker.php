@@ -7,6 +7,7 @@ use App\Exception\AuthException;
 use App\Service\LoginCheckerService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -14,7 +15,8 @@ class LoginChecker implements UserCheckerInterface
 {
     public function __construct(
         private RequestStack $requestStack,
-        private LoginCheckerService $service
+        private LoginCheckerService $service,
+        private UrlGeneratorInterface $router
     ) {
     }
 
@@ -24,10 +26,17 @@ class LoginChecker implements UserCheckerInterface
 
     public function checkPostAuth(UserInterface $user)
     {
-        $requestData = $this
+        $request = $this
             ->requestStack
-            ->getCurrentRequest()
-            ->toArray();
+            ->getCurrentRequest();
+
+
+        if ($request->getPathInfo() !== $this->router->generate('auth.login'))
+        {
+            return;
+        }
+
+        $requestData = $request->toArray();
 
         $requestRole = $requestData['role'] ?? User::ROLE_EXPERIENCER;
         $requestRole = strtoupper($requestRole);

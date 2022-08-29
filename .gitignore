@@ -25,3 +25,5 @@
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
 
+.DS_Store
+
