@@ -2,6 +2,10 @@
 
 namespace App\DTO;
 
+use App\Entity\Experience;
+use Symfony\Component\HttpFoundation\JsonResponse;
+
+class ExperienceCollection implements CollectionInterface
 class ExperienceCollection implements CollectionInterface
 {
     protected array $result = [];

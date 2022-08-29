@@ -2,8 +2,10 @@
 
 namespace App\Controller\Host;
 
+use App\Auth\AcceptableRoles;
 use App\Entity\Experience;
 use App\Entity\Host;
+use App\Entity\User;
 use App\Repository\ExperienceRepository;
 use App\Repository\OrderRepository;
 use App\Service\HostReportService;
@@ -12,13 +14,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
-#[Route('api/host/')]
+#[Route('api/v1/hosts/')]
 class ReportController extends AbstractController
 {
     #[Route('{host_id}/report', name: 'app_host_report', methods: 'GET')]
     #[ParamConverter('host', class: Host::class, options: ['id' => 'host_id'])]
-    public function index(HostReportService $hostReportService, Host $host, OrderRepository $orderRepository, ExperienceRepository $experienceRepository): JsonResponse
+    #[AcceptableRoles(User::ROLE_HOST , User::ROLE_ADMIN)]
+    public function index(HostReportService $hostReportService, Host $host, OrderRepository $orderRepository, ExperienceRepository $experienceRepository , Security $security): JsonResponse
     {
         $res = $hostReportService->totalReport($orderRepository, $host, $experienceRepository);
         return $this->json([
