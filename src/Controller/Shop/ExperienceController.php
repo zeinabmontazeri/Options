@@ -4,6 +4,7 @@ namespace App\Controller\Shop;
 
 use App\Auth\AcceptableRoles;
 use App\Entity\Experience;
+use App\Entity\User;
 use App\Repository\EventRepository;
 use App\Repository\ExperienceRepository;
 use App\Request\ExperienceFilterRequest;
@@ -18,8 +19,8 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('api/v1/shop')]
 class ExperienceController extends AbstractController
 {
-    #[Route('/experiences', name: 'app_get_experiences_by_filter', methods: ['GET'])]
-    #[AcceptableRoles('ROLE_GUEST')]
+    #[Route('/experiences', name: 'app_get_experiences', methods: ['GET'])]
+    #[AcceptableRoles(User::ROLE_GUEST)]
     public function filterExperiences(
         ExperienceRepository          $experienceRepository,
         GetExperiencesByFilterService $service,
@@ -40,7 +41,7 @@ class ExperienceController extends AbstractController
 
     #[Route('/experiences/{experience_id}/events/', name: 'app_experience_event_list', methods: ['GET'])]
     #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
-    #[AcceptableRoles('ROLE_GUEST')]
+    #[AcceptableRoles(User::ROLE_GUEST)]
     public function getExperiences(
         Experience                    $experience,
         EventRepository               $eventRepository,
@@ -48,9 +49,9 @@ class ExperienceController extends AbstractController
     {
         $result = $getAllExperienceEventsService->getExperienceEvents($experience, $eventRepository);
         return $this->json([
-            'data' => $result['data'],
-            'message' => $result['message'],
-            'status' => $result['status'],
+            'data' => $result,
+            'message' => "All events successfully retrieved.",
+            'status' => 'success',
         ], Response::HTTP_OK);
     }
 }

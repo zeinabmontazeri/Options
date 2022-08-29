@@ -3,16 +3,25 @@
 namespace App\DTO;
 
 
-class EventCollection
+class EventCollection implements CollectionInterface
 {
-    public ?int $id = null;
-    public ?float $price = null;
-    public ?int $capacity = null;
-    public ?int $duration = null;
-    public ?bool $isOnline = null;
-    public ?\DateTime $startsAt = null;
-    public ?string $link = null;
-    public ?string $address = null;
-    public ?\DateTimeImmutable $createdAt = null;
+    protected array $result = [];
+
+    public function toArray($entities): array
+    {
+        foreach ($entities as $entity) {
+            $data['id'] = $entity->getId();
+            $data['price'] = $entity->getPrice();
+            $data['capacity'] = $entity->getCapacity();
+            $data['duration'] = $entity->getDuration();
+            $data['isOnline'] = $entity->isIsOnline();
+            $data['startsAt'] = $entity->getStartsAt();
+            $data['link'] = $entity->getLink();
+            $data['address'] = $entity->getAddress();
+            $data['createdAt'] = $entity->getCreatedAt();
+            $this->result[] = $data;
+        }
+        return $this->result;
+    }
 
 }
