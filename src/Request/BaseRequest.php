@@ -2,6 +2,7 @@
 
 namespace App\Request;
 
+use App\Exception\ValidationException;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -9,7 +10,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 abstract class BaseRequest
 
 {
-
+    public $errors = "";
     /**
      * @throws Exception
      */
@@ -47,4 +48,5 @@ abstract class BaseRequest
 
     protected abstract function autoValidateRequest(): bool;
 
+>>>>>>>>> Temporary merge branch 2
 }
