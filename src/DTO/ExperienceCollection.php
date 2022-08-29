@@ -5,16 +5,20 @@ namespace App\DTO;
 use App\Entity\Experience;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ExperienceCollection extends JsonResponse
+class ExperienceCollection implements CollectionInterface
 {
-    public function toArray(Experience $experience): array
+    protected array $result = [];
+
+    public function toArray($entities): array
     {
-        return [
-            'id' => $experience->getId(),
-            'title' => $experience->getTitle(),
-            'description' => $experience->getDescription(),
-            'createdAt' => $experience->getCreatedAt(),
-        ];
+        foreach ($entities as $entity) {
+            $data['id'] = $entity->getId();
+            $data['title'] = $entity->getTitle();
+            $data['description'] = $entity->getDescription();
+            $data['createdAt'] = $entity->getCreatedAt();
+            $this->result[] = $data;
+        }
+        return $this->result;
     }
 
 }
