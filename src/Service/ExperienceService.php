@@ -2,35 +2,26 @@
 
 namespace App\Service;
 
-use App\DTO\ExperienceCollection;
+use App\DTO\DtoFactory;
 use App\Entity\Experience;
 use App\Entity\Host;
 use App\Repository\CategoryRepository;
 use App\Repository\ExperienceRepository;
-use App\Repository\HostRepository;
 use App\Request\ExperienceRequest;
-use JetBrains\PhpStorm\ArrayShape;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExperienceService
 {
-    #[ArrayShape(['data' => "array", 'status' => "bool", 'message' => "string"])]
+
     public function getAll(ExperienceRepository $repository, Host $host): array
     {
-        $res = [];
         $experiences = $repository->findBy(['host' => $host]);
-        if (!$experiences) {
-            $res['data'] = [];
-        }
-        foreach ($experiences as $experience) {
-            $experienceCollection = new ExperienceCollection();
-            $res['data'][] = $experienceCollection->toArray($experience);
-        }
-        $res['status'] = true;
-        $res['message'] = 'Successfully retrieve all experience';
-        return $res;
+        $experienceCollection = DtoFactory::getInstance('experience');
+        return $experienceCollection->toArray($experiences);
     }
 
-    #[ArrayShape(['data' => "array", 'status' => "bool", 'message' => "string"])]
+
     public function create(ExperienceRepository $repository, ExperienceRequest $request, CategoryRepository $categoryRepository, Host $host): array
     {
         $res = ['data' => []];
@@ -38,6 +29,8 @@ class ExperienceService
         if (!$experience) {
             $experience = new Experience();
             $category = $categoryRepository->findOneBy(['name' => $request->category_name]);
+            if (!$category)
+                throw new NotFoundHttpException("Category name does not exist.");
             $experience->setCategory($category);
             $experience->setHost($host);
             $experience->setTitle($request->title);
@@ -47,8 +40,7 @@ class ExperienceService
             $res['message'] = 'Experience successfully created';
             $res['status'] = true;
         } else {
-            $res['message'] = 'Experience is duplicated';
-            $res['status'] = false;
+            throw new BadRequestException("Experience title should be unique , you have already this title name. ", 400);
         }
         return $res;
     }

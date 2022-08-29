@@ -7,7 +7,7 @@ use PHPUnit\Util\Exception;
 class DtoFactory
 {
 
-    public static function getInstance(string $collectionType): CollectionInterface
+    public static function getInstance(string $collectionType)
     {
         if ($collectionType == 'category')
             return new CategoryCollection();
