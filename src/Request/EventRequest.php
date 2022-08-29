@@ -2,9 +2,6 @@
 
 namespace App\Request;
 
-use App\Entity\Experience;
-use Doctrine\DBAL\Types\Types;
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EventRequest extends BaseRequest
@@ -13,19 +10,24 @@ class EventRequest extends BaseRequest
 
     #[Assert\GreaterThanOrEqual(1)]
     #[Assert\NotNull]
+    #[Assert\NotBlank]
     public ?int $capacity = 0;
 
     #[Assert\NotNull]
+    #[Assert\NotBlank]
     public ?int $duration = null;
 
+    #[Assert\NotBlank]
     #[Assert\NotNull]
     public ?string $price = null;
 
     #[Assert\Type(type: 'boolean')]
     #[Assert\NotNull]
+    #[Assert\NotBlank]
     public ?bool $isOnline = null;
 
     #[Assert\GreaterThan(new \DateTime())]
+    #[Assert\NotBlank]
     #[Assert\NotNull]
     public ?\DateTimeInterface $startsAt = null;
 

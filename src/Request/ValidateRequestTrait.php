@@ -2,7 +2,6 @@
 
 namespace App\Request;
 use App\Factories\Transformer\DataTypeFactory;
-use Symfony\Component\Validator\Constraints\DateTime;
 
 trait ValidateRequestTrait
 {

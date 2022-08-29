@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\Event;
 use App\Entity\Experience;
 use App\Repository\EventRepository;
-use App\Repository\ExperienceRepository;
 use App\Request\EventRequest;
 
 class EventService
