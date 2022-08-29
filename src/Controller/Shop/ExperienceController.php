@@ -20,7 +20,6 @@ use Symfony\Component\Routing\Annotation\Route;
 class ExperienceController extends AbstractController
 {
     #[Route('/experiences', name: 'app_get_experiences', methods: ['GET'])]
-    #[Route('/experiences', name: 'app_get_experiences', methods: ['GET'])]
     #[AcceptableRoles(User::ROLE_GUEST)]
     public function filterExperiences(
         ExperienceRepository          $experienceRepository,
@@ -28,6 +27,8 @@ class ExperienceController extends AbstractController
         ExperienceFilterRequest       $experienceFilterRequest,
     ): JsonResponse
     {
+
+
         $result = $service->getExperience($experienceFilterRequest, $experienceRepository);
         return $this->json(
             [
