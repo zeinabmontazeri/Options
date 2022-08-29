@@ -5,3 +5,4 @@
 - #### [Naming convention](https://symfony.com/doc/current/contributing/code/standards.html#naming-conventions)
 - #### [Response Convention](ResponseConvention.md)
 - #### [URI Convention](URIConvention.md)
+- #### [Git Convention](GitConvention.md)

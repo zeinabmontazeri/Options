@@ -1,6 +1,6 @@
 # URI Convention
 
-### Rules:
+### _Rules_:
 
 - URI should be in [snake_case](https://en.wikipedia.org/wiki/Snake_case).
 - In this phase, we will use prefix `api/v1` for all API endpoints.
