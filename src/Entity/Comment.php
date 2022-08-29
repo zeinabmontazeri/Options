@@ -18,7 +18,7 @@ class Comment
     #[ORM\Column]
     private ?int $id = null;
     #[ORM\Column(type: Types::TEXT)]
-    private ?string $description = null;
+    private ?string $comment = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -34,15 +34,14 @@ class Comment
     {
         return $this->id;
     }
-    public function getDescription(): ?string
+    public function getComment(): ?string
     {
-        return $this->description;
+        return $this->comment;
     }
 
-    public function setDescription(string $description): self
+    public function setComment(string $comment): self
     {
-        $this->description = $description;
-
+        $this->comment = $comment;
         return $this;
     }
 

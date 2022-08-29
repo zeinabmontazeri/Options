@@ -6,17 +6,9 @@ class CommentOnEventRequest extends BaseRequest
 {
     use ValidateRequestTrait;
     #[Assert\NotNull]
-    #[Assert\Positive]
-    public readonly ?int $userId;
-
-    #[Assert\NotNull]
-    #[Assert\Positive]
-    public readonly ?int $eventId;
-
-    #[Assert\NotNull]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 255)]
-    public readonly ?string $description;
+    public readonly ?string $comment;
 
     protected function autoValidateRequest(): bool
     {

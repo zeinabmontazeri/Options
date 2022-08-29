@@ -93,7 +93,7 @@ class Event
     {
         return $this->capacity;
     }
-    
+
     public function getDuration(): ?int
     {
         return $this->duration;

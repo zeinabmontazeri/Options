@@ -19,11 +19,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     use SoftDeleteableEntity;
-   
+
     public const ROLE_ADMIN = 'ROLE_ADMIN';
     public const ROLE_HOST = 'ROLE_HOST';
     public const ROLE_EXPERIENCER = 'ROLE_EXPERIENCER';
-
+    public const ROLE_GUEST = 'ROLE_GUEST';
+    
+    public const ROLE_ALL = [self::ROLE_GUEST, self::ROLE_EXPERIENCER, self::ROLE_HOST, self::ROLE_ADMIN];
     public const ROLE_HIERARCHY = [
         self::ROLE_EXPERIENCER => [self::ROLE_EXPERIENCER],
         self::ROLE_HOST => [self::ROLE_HOST, self::ROLE_EXPERIENCER],
@@ -41,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $phoneNumber = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -102,6 +104,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    public function setGender(string $gender): self
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
     public function getPhoneNumber(): ?string
     {
         return $this->phoneNumber;
@@ -142,11 +156,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function getGender(): string
-    {
-        return $this->gender;
-    }
-
     public function setPassword(string $password): self
     {
         $this->password = $password;
@@ -179,12 +188,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         $this->host = $host;
 
-        return $this;
-    }
-
-    public function setGender(string $gender): self
-    {
-        $this->gender = $gender;
         return $this;
     }
 
@@ -240,7 +243,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->comments->contains($comment)) {
             $this->comments->add($comment);
-            $comment->setUserId($this);
+            $comment->setUser($this);
         }
 
         return $this;
@@ -250,8 +253,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->comments->removeElement($comment)) {
             // set the owning side to null (unless already changed)
-            if ($comment->getUserId() === $this) {
-                $comment->setUserId(null);
+            if ($comment->getUser() === $this) {
+                $comment->setUser(null);
             }
         }
 
