@@ -19,3 +19,4 @@
 - ### _Commit Message_
     - The commit message should be in the following format:
       - ex: `feat(back): #10 a brief description of what you've done`
+      - ex: `fix(back): #10 a brief description of what you've done`
