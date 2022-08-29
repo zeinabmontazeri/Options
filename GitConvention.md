@@ -21,4 +21,5 @@
         - ex: `feat(back): #10 a brief description of what you've done`
         - ex: `fix(back): #10 a brief description of what you've done`
 
-### 🚨 For peace of mind after merging your branch with `dev`, please delete your branch and run `git fetch --prune`. :))
+### 🚨 For peace of mind after merging your branch with `dev`, please delete your branch and run 
+`git fetch --prune`. :))
