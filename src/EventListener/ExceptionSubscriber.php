@@ -1,4 +1,5 @@
 <?php
+
 namespace App\EventListener;
 
 use App\Exception\ValidationException;
@@ -12,16 +13,15 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
 
-
 class ExceptionSubscriber implements EventSubscriberInterface
 {
 
-    public function onKernelException(ExceptionEvent $event )
+    public function onKernelException(ExceptionEvent $event)
     {
 
         $exceptionData = [
             'success' => false,
-            'data' => [] ,
+            'data' => [],
             'message' => "",
         ];
         $exception = $event->getThrowable();
@@ -31,8 +31,8 @@ class ExceptionSubscriber implements EventSubscriberInterface
             $exceptionData['message'] = $exception->getMessage();
         } else if ($exception instanceof NotFoundHttpException) {
             $exceptionData['message'] = "Invalid query parameters";
-        }else {
-            $exceptionData['message'] = "Bad Request: ".$exception->getMessage();
+        } else {
+            $exceptionData['message'] = "Bad Request: " . $exception->getMessage();
         }
 
 
@@ -54,8 +54,8 @@ class ExceptionSubscriber implements EventSubscriberInterface
     #[ArrayShape([KernelEvents::EXCEPTION => "string"])]
     public static function getSubscribedEvents()
     {
-       return [
-           KernelEvents::EXCEPTION => 'onKernelException'
-       ];
+        return [
+            KernelEvents::EXCEPTION => 'onKernelException'
+        ];
     }
 }
