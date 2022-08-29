@@ -3,4 +3,5 @@
 
 #### Conventions
 - #### [Naming convention](https://symfony.com/doc/current/contributing/code/standards.html#naming-conventions)
-- #### [Response Convention](Response.md)
+- #### [Response Convention](ResponseConvention.md)
+- #### [URI Convention](URIConvention.md)
