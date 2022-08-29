@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HostReportService
 {
-    private $security;
+    private AuthenticatedUser $security;
 
     public function __construct(AuthenticatedUser $security)
     {
