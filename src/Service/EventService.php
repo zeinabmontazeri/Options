@@ -9,22 +9,26 @@ use App\Request\EventRequest;
 
 class EventService
 {
+    public function __construct(private EventRepository $eventRepository,private EventRequest $eventRequest)
+    {
+    }
+
     /**
      * @throws \Exception
      */
-    public function create(EventRequest $request, EventRepository $repository, Experience $experience): string
+    public function create(Experience $experience): Event
     {
         $event = new Event();
         $event->setExperience($experience);
-        $event->setStartsAt($request->startsAt);
-        $event->setAddress($request->address);
-        $event->setCapacity($request->capacity);
-        $event->setDuration($request->duration);
-        $event->setIsOnline($request->isOnline);
-        $event->setLink($request->link);
-        $event->setPrice($request->price);
+        $event->setStartsAt($this->eventRequest->startsAt);
+        $event->setAddress($this->eventRequest->address);
+        $event->setCapacity($this->eventRequest->capacity);
+        $event->setDuration($this->eventRequest->duration);
+        $event->setIsOnline($this->eventRequest->isOnline);
+        $event->setLink($this->eventRequest->link);
+        $event->setPrice($this->eventRequest->price);
 
-       $repository->add($event, true);
-        return "event created successfully with id: {$event->getId()}";
+        $this->eventRepository->add($event, true);
+        return $event;
     }
 }

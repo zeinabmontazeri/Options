@@ -38,7 +38,7 @@ class UserRegisterRequest extends BaseRequest
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Type("\DateTimeInterface")]
+    #[Assert\LessThan(new \DateTime())]
     public readonly ?\DateTimeInterface $birthDate;
 
     #[Assert\NotBlank]
