@@ -2,6 +2,7 @@
 
 namespace App\Controller\Shop;
 
+use App\Auth\AcceptableRoles;
 use App\Entity\Experience;
 use App\Repository\EventRepository;
 use App\Repository\ExperienceRepository;
@@ -11,16 +12,15 @@ use App\Service\Shop\GetExperiencesByFilterService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('api/v1/shop')]
 class ExperienceController extends AbstractController
 {
-    #[Route('/experiences', name: 'app_get_experiences', methods: ['GET'])]
+    #[Route('/experiences', name: 'app_get_experiences_by_filter', methods: ['GET'])]
+    #[AcceptableRoles('ROLE_GUEST')]
     public function filterExperiences(
-        Request                       $request,
         ExperienceRepository          $experienceRepository,
         GetExperiencesByFilterService $service,
         ExperienceFilterRequest       $experienceFilterRequest,
@@ -40,6 +40,7 @@ class ExperienceController extends AbstractController
 
     #[Route('/experiences/{experience_id}/events/', name: 'app_experience_event_list', methods: ['GET'])]
     #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
+    #[AcceptableRoles('ROLE_GUEST')]
     public function getExperiences(
         Experience                    $experience,
         EventRepository               $eventRepository,

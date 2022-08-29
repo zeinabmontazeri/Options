@@ -6,6 +6,7 @@ use App\DTO\EventCollection;
 use App\Entity\Experience;
 use App\Repository\EventRepository;
 use JetBrains\PhpStorm\ArrayShape;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class GetAllExperienceEventsService
 {
@@ -33,8 +34,7 @@ class GetAllExperienceEventsService
             }
             $result['message'] = "All events of Experience with id => {$experienceId} successfully retrieved.";
         } else {
-            $result['data'] = [];
-            $result['message'] = "No events of Experience with {$experienceId} id found.";
+            throw new NotFoundHttpException("No events found for Experience with id => {$experienceId}.");
         }
         $result['status'] = 'success';
         return $result;
