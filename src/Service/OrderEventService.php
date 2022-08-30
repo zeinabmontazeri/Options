@@ -6,56 +6,40 @@ use App\Entity\EnumOrderStatus;
 use App\Entity\Event;
 use App\Entity\Order;
 use App\Entity\User;
+use App\Exception\ValidationException;
 use App\Repository\EventRepository;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class OrderEventService
 {
-    private ?User $user = null;
-    private ?Event $event = null;
-    public function __construct(private readonly UserRepository $userRepository,
-                                private readonly EventRepository $eventRepository,
-                                private readonly OrderRepository $orderRepository)
+    private $result=[];
+    public function __construct(private readonly OrderRepository $orderRepository)
 {
 }
-    public function orderTheEvent($userId,$eventId):int
+    public function orderTheEvent($user,$event):array
 {
-    if($this->orderValidation($userId,$eventId))
+    if($this->orderValidation($user,$event))
     {
         $order = new Order();
-        $order->setUser($this->user);
-        $order->setEvent($this->event);
-        $order->setPayablePrice($this->event->getPrice());
-        $order->setStatus(EnumOrderStatus::DRAFT->value);
-
+        $order->setUser($user);
+        $order->setEvent($event);
+        $order->setPayablePrice($event->getPrice());
+        $order->setStatus(EnumOrderStatus::DRAFT);
         $this->orderRepository->add($order, true);
-        return $order->getId();
+        $this->result['status'] ='success';
+        $this->result['data']=['orderId'=>$order->getId()];
+        $this->result['message']='The user commented successfully';
     }
-    return 0;
+    return $this->result;
 }
-    private function checkUserExistence($userId):void
+    private function orderValidation($user,$event): bool
 {
-    $this->user = $this->userRepository->find($userId);
-    if ($this->user == null) {
-        throw new \Exception('The userId not exists',400);
-    }
-}
-    private function checkEventExistence($eventId): void
-{
-    $this->event = $this->eventRepository->find($eventId);
-    if ($this->event == null) {
-        throw new \Exception('The eventId not exists',400);
-    }
-}
-    private function orderValidation($userId,$eventId): bool
-{
-    $this->checkUserExistence($userId);
-    $this->checkEventExistence($eventId);
-    $this->checkUserOrderedEvent($userId,$eventId);
-    if($this->event->getCapacity()>$this->orderRepository->getTotalRegisteredEvent($eventId))
+    $this->checkUserOrderedEvent($user->getId(),$event->getId());
+    if($event->getCapacity()>$this->orderRepository->getTotalRegisteredEvent($event->getId()))
     {
-        if($this->event->getStartsAt()>new \DateTimeImmutable())
+        if($event->getStartsAt()>new \DateTimeImmutable())
         {
             return true;
         }
@@ -68,14 +52,14 @@ class OrderEventService
     {
         $message='The event registration capacity is full';
     }
-    throw new \Exception($message,400);
+    throw new BadRequestException($message,405);
 }
     private function checkUserOrderedEvent($userId,$eventId): void
 {
     $orderId=$this->orderRepository->findByUserEvent_Id($userId,$eventId);
     if($orderId!=0)
     {
-        throw new \Exception('The user ordered event before',400);
+        throw new BadRequestException('The user ordered event before',405);
     }
 }
 }
