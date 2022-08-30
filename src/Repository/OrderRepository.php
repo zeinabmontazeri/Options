@@ -38,28 +38,6 @@ class OrderRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    public function findByUserEvent_Id($userId,$eventId): int
-    {
-        return intval($this->createQueryBuilder('o')
-            ->select('o.id')
-            ->where('o.user=:var1')
-            ->andWhere('o.event=:var2')
-            ->setParameter('var1', $userId)
-            ->setParameter('var2', $eventId)
-            ->getQuery()
-            ->getResult());
-    }
-    public function findByUserEvent_id_Status($userId,$eventId):array
-    {
-        return $this->createQueryBuilder('o')
-            ->select('o.id,o.status')
-            ->where('o.user=:var1')
-            ->andWhere('o.event=:var2')
-            ->setParameter('var1', $userId)
-            ->setParameter('var2', $eventId)
-            ->getQuery()
-            ->getResult();
-    }
 //    /**
 //     * @return Order[] Returns an array of Order objects
 //     */

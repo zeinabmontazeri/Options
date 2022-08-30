@@ -6,13 +6,14 @@ use App\Exception\ValidationException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\HttpKernel\Event\ExceptionEvent;
-
 class ExceptionSubscriber implements EventSubscriberInterface
 {
+
     public function onKernelException(ExceptionEvent $event)
     {
         $exceptionData = [
@@ -20,7 +21,6 @@ class ExceptionSubscriber implements EventSubscriberInterface
             'data' => [],
         ];
         $exception = $event->getThrowable();
-
         if ($exception instanceof ValidationException) {
             $exceptionData['data'] = $exception->getMessages();
             $exceptionData['message'] = $exception->getMessage();
@@ -29,6 +29,8 @@ class ExceptionSubscriber implements EventSubscriberInterface
                 $exceptionData['message'] = 'Resource not found.';
             else
                 $exceptionData['message'] = $exception->getMessage();
+        } else if ($exception instanceof AccessDeniedHttpException) {
+            $exceptionData['message'] = $exception->getMessage();
         } else {
             $exceptionData['message'] = "Bad Request: " . $exception->getMessage();
         }
@@ -41,8 +43,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
         }
         $event->setResponse($response);
     }
-
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             KernelEvents::EXCEPTION => 'onKernelException'
