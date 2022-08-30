@@ -2,6 +2,8 @@
 
 namespace App\Request;
 use App\Factories\Transformer\DataTypeFactory;
+use PHPUnit\Exception;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait ValidateRequestTrait
 {
@@ -11,7 +13,12 @@ trait ValidateRequestTrait
         foreach ($fields as $field => $value) {
             if (property_exists($this, $field)) {
                 $refProperty = new \ReflectionProperty($this, $field);
-                $object = $typeFactory->getObject($refProperty->getType()->getName());
+                try {
+                    $object = $typeFactory->getObject($refProperty->getType()->getName());
+                }catch (Exception $exception){
+                    if ($exception instanceof NotFoundHttpException)
+                        throw new NotFoundHttpException("$field type not found!");
+                }
                 $this->{$field} = $object->ConvertToObject($value);
             }
         }

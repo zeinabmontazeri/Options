@@ -47,6 +47,4 @@ abstract class BaseRequest
     abstract public function populate(array $fields): void;
 
     protected abstract function autoValidateRequest(): bool;
-
->>>>>>>>> Temporary merge branch 2
 }
