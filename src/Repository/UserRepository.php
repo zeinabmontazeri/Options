@@ -39,6 +39,17 @@ class UserRepository extends ServiceEntityRepository
         }
     }
 
+    public function checkExistsByPhoneNumber(string $phonenumber)
+    {
+
+        return $this->createQueryBuilder('u')
+                ->select('count(u.id) as count')
+                ->andWhere("u.phoneNumber= :val")
+                ->setParameter('val', $phonenumber)
+                ->getQuery()
+                ->getSingleResult()['count'] > 0;
+    }
+
 //    /**
 //     * @return User[] Returns an array of User objects
 //     */

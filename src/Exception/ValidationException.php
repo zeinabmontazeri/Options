@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Exception;
+
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
+
+class ValidationException extends HttpException
+{
+    private ConstraintViolationListInterface $violations;
+
+    public function __construct(ConstraintViolationListInterface $violations)
+    {
+        $this->violations = $violations;
+        parent::__construct(Resgitponse::HTTP_BAD_REQUEST, 'Validation failed.');
+    }
+
+    public function getMessages(): array
+    {
+        $messages = [];
+        foreach ($this->violations as $violation) {
+            $messages[$violation->getPropertyPath()][] = $violation->getMessage();
+        }
+        return $messages;
+    }
+
+    public function getJoinedMessages(): array
+    {
+        $messages = [];
+        foreach ($this->violations as $paramName => $violationList) {
+            foreach ($violationList as $violation) {
+                $messages[$paramName][] = $violation->getMessage();
+            }
+            $messages[$paramName] = implode(' ', $messages[$paramName]);
+        }
+        return $messages;
+    }
+}
