@@ -21,6 +21,7 @@
         - `401`: Unauthorized
         - `403`: Forbidden
         - `404`: Not found
+        - `405`: Method not allowed
         - `500`: Internal server error
     - For more readability, It's better to use `Response::HTTP_*` constants  
       instead of hard coding the status code.  
