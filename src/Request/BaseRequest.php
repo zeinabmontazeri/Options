@@ -30,7 +30,8 @@ abstract class BaseRequest
     {
         $errors = $this->validator->validate($this);
         if (count($errors) > 0) {
-            throw new ValidationException($errors);
+            $errorsString = (string)$errors;
+            throw new Exception($errorsString);
         }
     }
 
@@ -47,5 +48,4 @@ abstract class BaseRequest
     abstract public function populate(array $fields): void;
 
     protected abstract function autoValidateRequest(): bool;
-
 }
