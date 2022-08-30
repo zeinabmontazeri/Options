@@ -10,7 +10,8 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 abstract class BaseRequest
 
 {
-    public $errors = "";
+    public string $errors = "";
+
     /**
      * @throws Exception
      */

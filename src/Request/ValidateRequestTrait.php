@@ -1,12 +1,15 @@
 <?php
 
 namespace App\Request;
+
 use App\Factories\Transformer\DataTypeFactory;
-use PHPUnit\Exception;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait ValidateRequestTrait
 {
+    /**
+     * @throws Exception
+     */
     public function populate(array $fields): void
     {
         $typeFactory = new DataTypeFactory();
