@@ -20,21 +20,14 @@ class RegisterController extends AbstractController
      *
      * Creates new user if all fields are valid
 
-     *  @OA\RequestBody(
-     *     required=true,
-     *     @OA\JsonContent(
-     *         example={
-     *             "status": "status",
-     *             "status2": "status",
-     *             "comment": "comment"
-     *         },
-     *         @OA\Schema (
-     *              type="object",
-     *              @OA\Parameter(parameter="status", required=true, description="Event Status"),
-     *              @OA\Property(propertyNames="asdasd",property="status", required=true, description="Event Status", type="string"),
-     *              @OA\Property(property="comment", required=false, description="Change Status Comment", type="string"),
-     *         )
-     *     )
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Provide All Info Below",
+     *    @OA\JsonContent(
+     *       required={"email","password"},
+     *       @OA\Property(property="email", type="email", format="text", example="mercedes68@example.org"),
+     *       @OA\Property(property="password", type="string", format="text", example="123456"),
+     *    ),
      * )
      */
     #[Route('register', name: 'register',methods:['post'])]
