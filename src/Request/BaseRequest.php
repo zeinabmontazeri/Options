@@ -4,6 +4,7 @@ namespace App\Request;
 
 use App\Exception\ValidationException;
 use Exception;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -40,7 +41,13 @@ abstract class BaseRequest
         if ($request->getMethod() === 'GET') {
             return $request->query->all();
         } else {
-            return json_decode($request->getContent(), true);
+            $payload = json_decode($request->getContent(), true);
+            if ($payload === null) {
+                throw new BadRequestException('Invalid JSON payload.');
+            } else {
+                return $payload;
+            }
+
         }
     }
 

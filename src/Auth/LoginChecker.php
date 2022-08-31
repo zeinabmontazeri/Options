@@ -3,10 +3,9 @@
 namespace App\Auth;
 
 use App\Entity\User;
-use App\Exception\AuthException;
 use App\Service\LoginCheckerService;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -44,6 +43,6 @@ class LoginChecker implements UserCheckerInterface
         $userRole = $user->getRoles();
 
         if (!$this->service->check($requestRole, $userRole))
-            throw new AuthException('Invalid credentials.', JsonResponse::HTTP_UNAUTHORIZED);
+            throw new UnauthorizedHttpException('challenge', 'Invalid credentials.');
     }
 }
