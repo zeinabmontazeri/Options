@@ -62,15 +62,14 @@ class ExperienceRepository extends ServiceEntityRepository
     {
         $entityManager = $this->getEntityManager();
 
-        $query = $entityManager->createQuery('SELECT ex.id ,SUM(e.capacity - e.registeredUsers) as total_buyers
+        $query = $entityManager->createQuery('SELECT ex.id ,SUM(e.registeredUsers) as total_buyers
         FROM App\Entity\Experience ex
         INNER JOIN App\Entity\Event e
         WITH ex.id = e.experience
+        WHERE e.startsAt > CURRENT_TIMESTAMP() and e.capacity - e.registeredUsers > 0  
         GROUP BY ex.id
-        HAVING COUNT((CASE WHEN e.capacity - e.registeredUsers > 0 and e.startsAt > :date then 1 else 0 end)) > 0
-        ORDER BY total_buyers DESC')->setParameter('date', new \DateTime())->setMaxResults(20);
+        ORDER BY total_buyers DESC')->setMaxResults(20);
         return $query->getResult();
-
     }
 
 //    }
