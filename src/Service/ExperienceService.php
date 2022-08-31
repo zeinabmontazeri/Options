@@ -23,7 +23,7 @@ class ExperienceService
 
     public function getAllWithPagination(ExperienceRepository $repository, Host $host,$perPage,$page): array
     {
-        return $repository->findByPaginated([],null, $page , $perPage);
+        return $repository->findByPaginated(['host'=>$host->getId()],null, $page , $perPage);
     }
 
 

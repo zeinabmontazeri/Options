@@ -3,10 +3,9 @@
 namespace App\Repository;
 
 use App\Entity\Experience;
+use App\Trait\findByPaginationTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\AbstractQuery;
-use Doctrine\ORM\Query\QueryException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,6 +19,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ExperienceRepository extends ServiceEntityRepository
 {
+    use findByPaginationTrait;
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Experience::class);
@@ -77,42 +77,29 @@ class ExperienceRepository extends ServiceEntityRepository
         return $result;
     }
 
-    /**
-     * Finds entities by a set of criteria.
-     *
-     * @param array $criteria
-     * @param array|null $orderBy
-     * @param int $page
-     * @param int $perPage
-     * @return object[] The objects.
-     */
-    public function findByPaginated(array $criteria, ?array $orderBy = null, $page = 1, $perPage = 20)
-    {
-        $queryBuilder = $this->createQueryBuilder('entity');
-        foreach ($criteria as $key=>$c){
-            $queryBuilder->andWhere($queryBuilder->expr()->eq($key,$c));
-        }
-        if($orderBy)
-            foreach ($orderBy as $o){
-                $queryBuilder->addOrderBy($o);
-            }
-
-        $queryBuilder
-            ->setFirstResult(($page-1)*$perPage)
-            ->setMaxResults($perPage);
-        $query = $queryBuilder->getQuery()
-            ->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
-        $paginator = new Paginator($query);
-        $result['results'] = $paginator->getIterator();
-        $result['total'] = $paginator->count();
-        return $result;
-
-
-//        $persister = $this->_em->getUnitOfWork()->getEntityPersister($this->_entityName);
-//        $persister->loa
-//        $data =  $persister->loadAll($criteria, $orderBy, $perPage, ($page-1)*$perPage);
-//        dd($data);
-    }
+//    public function findByPaginated(array $criteria, ?array $orderBy = null, $page = 1, $perPage = 20)
+//    {
+//        $queryBuilder = $this->createQueryBuilder('entity');
+//        foreach ($criteria as $key=>$c){
+//            $queryBuilder->where(
+//                $queryBuilder->expr()->eq("entity.$key",$c)
+//            );
+//        }
+//        if($orderBy)
+//            foreach ($orderBy as $o){
+//                $queryBuilder->addOrderBy($o);
+//            }
+//
+//        $queryBuilder
+//            ->setFirstResult(($page-1)*$perPage)
+//            ->setMaxResults($perPage);
+//        $query = $queryBuilder->getQuery()
+//            ->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
+//        $paginator = new Paginator($query);
+//        $result['results'] = $paginator->getIterator();
+//        $result['total'] = $paginator->count();
+//        return $result;
+//    }
 //    }
 //    /**
 //     * @return Experience[] Returns an array of Experience objects
