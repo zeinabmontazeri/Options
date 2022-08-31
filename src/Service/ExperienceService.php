@@ -21,6 +21,11 @@ class ExperienceService
         return $experienceCollection->toArray($experiences);
     }
 
+    public function getAllWithPagination(ExperienceRepository $repository, Host $host,$perPage,$page): array
+    {
+        return $repository->findByPaginated([],null, $page , $perPage);
+    }
+
 
     public function create(ExperienceRepository $repository, ExperienceRequest $request, CategoryRepository $categoryRepository, Host $host): array
     {
