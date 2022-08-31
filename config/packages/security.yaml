@@ -14,21 +14,28 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
-        api:
-            pattern: ^/api/v1/
+
+        login:
+            pattern: ^/api/v1/auth/login
             stateless: true
-            entry_point: jwt
-            json_login:
-                check_path: auth.login
+            json_login: 
+                check_path: /api/v1/auth/login
                 username_path: phoneNumber
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             user_checker: App\Auth\LoginChecker
+        
+        api:
+            pattern: ^/api/v1
+            stateless: true
             jwt: ~
-            refresh_jwt:
-                check_path: auth.refresh
-            logout:
-                path: auth.logout
+
+            # activate different ways to authenticate
+            # https://symfony.com/doc/current/security.html#the-firewall
+
+            # https://symfony.com/doc/current/security/impersonating_user.html
+            # switch_user: true
+
     access_decision_manager:
         strategy: unanimous
         allow_if_all_abstain: false
@@ -36,7 +43,8 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/v1/auth/(login|register|refresh), roles: PUBLIC_ACCESS }
+        # - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:
     security:

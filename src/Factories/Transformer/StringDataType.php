@@ -2,7 +2,7 @@
 
 namespace App\Factories\Transformer;
 
-class StringDataType implements DataTypeInterface
+class StringDataType implements DataType
 {
     public function ConvertToObject(mixed $value)
     {
