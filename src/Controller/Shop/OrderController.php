@@ -1,14 +1,16 @@
 <?php
 
 namespace App\Controller\Shop;
-
 use App\Auth\AcceptableRoles;
 use App\Auth\AuthenticatedUser;
+use App\Entity\Event;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Repository\OrderRepository;
+use App\Service\OrderEventService;
 use App\Service\Shop\RemoveOrderService;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -40,5 +42,19 @@ class OrderController extends AbstractController
             throw new AccessDeniedHttpException(
                 'You are not allowed to remove this order.');
         }
+    }
+
+    #[Route('/users/events/{event_id}/order', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'] ,methods: ['POST'])]
+    #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
+    #[AcceptableRoles(User::ROLE_EXPERIENCER)]
+    public function OrderAnEvent(Event $event, OrderEventService $orderEventService, AuthenticatedUser $security): Response
+    {
+        $result = $orderEventService->orderTheEvent($security->getUser(), $event);
+        return $this->json([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'status' => $result['status'],
+            'code'=>Response::HTTP_OK
+        ]);
     }
 }
