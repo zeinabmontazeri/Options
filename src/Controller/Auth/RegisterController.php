@@ -19,14 +19,19 @@ class RegisterController extends AbstractController
      * Register new user
      *
      * Creates new user if all fields are valid
-
+     * @OA\Tag(name="User")
      * @OA\RequestBody(
      *    required=true,
-     *    description="Provide All Info Below",
+     *    description="Provide All Data Below",
      *    @OA\JsonContent(
-     *       required={"email","password"},
-     *       @OA\Property(property="email", type="email", format="text", example="mercedes68@example.org"),
-     *       @OA\Property(property="password", type="string", format="text", example="123456"),
+     *       required={"phoneNumber","birthDate","password","gender","role","firstName","lastName"},
+     *       @OA\Property(property="phoneNumber", type="phone", format="text", example="09123456789"),
+     *       @OA\Property(property="birthDate", type="datetime", format="text", example="1993-06-03 12:09:50"),
+     *       @OA\Property(property="password", type="string", format="text", example="sample@password123"),
+     *       @OA\Property(property="gender", type="ENUM", format="text", example="FEMALE"),
+     *       @OA\Property(property="role", type="ENUM", format="text", example="ROLE_HOST"),
+     *       @OA\Property(property="firstName", type="string", format="text", example="مهرداد"),
+     *       @OA\Property(property="lastName", type="string", format="text", example="محمدی"),
      *    ),
      * )
      */
