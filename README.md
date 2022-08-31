@@ -6,3 +6,4 @@
 - #### [Response Convention](ResponseConvention.md)
 - #### [URI Convention](URIConvention.md)
 - #### [Git Convention](GitConvention.md)
+- #### [Exception Convention](Exceptions.md)
