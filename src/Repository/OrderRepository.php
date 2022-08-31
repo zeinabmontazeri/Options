@@ -2,9 +2,15 @@
 
 namespace App\Repository;
 
+use App\Entity\EnumOrderStatus;
+use App\Entity\Event;
 use App\Entity\Order;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\Json;
 
 /**
  * @extends ServiceEntityRepository<Order>
@@ -58,28 +64,4 @@ class OrderRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult());
     }
-//    /**
-//     * @return Order[] Returns an array of Order objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Order
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

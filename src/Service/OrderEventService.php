@@ -52,14 +52,14 @@ class OrderEventService
     {
         $message='The event registration capacity is full';
     }
-    throw new BadRequestException($message,405);
+    throw new BadRequestException($message);
 }
     private function checkUserOrderedEvent($userId,$eventId): void
 {
     $orderId=$this->orderRepository->findByUserEvent_Id($userId,$eventId);
     if($orderId!=0)
     {
-        throw new BadRequestException('The user ordered event before',405);
+        throw new BadRequestException('The user ordered event before');
     }
 }
 }
