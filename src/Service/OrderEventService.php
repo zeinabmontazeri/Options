@@ -3,14 +3,9 @@
 namespace App\Service;
 
 use App\Entity\EnumOrderStatus;
-use App\Entity\Event;
 use App\Entity\Order;
-use App\Entity\User;
-use App\Exception\ValidationException;
-use App\Repository\EventRepository;
 use App\Repository\OrderRepository;
-use App\Repository\UserRepository;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class OrderEventService
 {
@@ -52,14 +47,14 @@ class OrderEventService
     {
         $message='The event registration capacity is full';
     }
-    throw new BadRequestException($message);
+    throw new BadRequestHttpException($message);
 }
     private function checkUserOrderedEvent($userId,$eventId): void
 {
     $orderId=$this->orderRepository->findByUserEvent_Id($userId,$eventId);
     if($orderId!=0)
     {
-        throw new BadRequestException('The user ordered event before');
+        throw new BadRequestHttpException('The user ordered event before');
     }
 }
 }
