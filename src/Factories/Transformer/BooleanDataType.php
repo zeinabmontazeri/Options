@@ -2,7 +2,7 @@
 
 namespace App\Factories\Transformer;
 
-class BooleanDataType implements DataType
+class BooleanDataType implements DataTypeInterface
 {
     public function ConvertToObject(mixed $value)
     {

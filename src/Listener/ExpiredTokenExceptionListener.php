@@ -5,6 +5,7 @@ namespace App\Listener;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTExpiredEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 #[AsEventListener(
     event: 'lexik_jwt_authentication.on_jwt_expired',
@@ -20,7 +21,7 @@ final class ExpiredTokenExceptionListener
                 'data' => [],
                 'message' => 'Token Expired.',
             ],
-            status: JsonResponse::HTTP_UNAUTHORIZED
+            status: Response::HTTP_UNAUTHORIZED
         );
 
         $event->setResponse($response);

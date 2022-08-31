@@ -3,10 +3,12 @@
 namespace App\Controller\Shop;
 use App\Auth\AcceptableRoles;
 use App\Auth\AuthenticatedUser;
+use App\Service\Shop\OrderService;
+use App\Entity\Event;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Repository\OrderRepository;
-use App\Service\Shop\OrderService;
+use App\Service\OrderEventService;
 use App\Service\Shop\RemoveOrderService;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -42,7 +44,19 @@ class OrderController extends AbstractController
                 'You are not allowed to remove this order.');
         }
     }
-
+    #[Route('/users/events/{event_id}/order', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'] ,methods: ['POST'])]
+    #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
+    #[AcceptableRoles(User::ROLE_EXPERIENCER)]
+    public function OrderAnEvent(Event $event, OrderEventService $orderEventService, AuthenticatedUser $security): Response
+    {
+        $result = $orderEventService->orderTheEvent($security->getUser(), $event);
+        return $this->json([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'status' => $result['status'],
+            'code'=>Response::HTTP_CREATED
+        ]);
+    }
     #[Route('/users/orders', name: 'app_shop_users_order', methods: 'GET')]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function getExperiencerOrder(OrderService $orderService,AuthenticatedUser $security): Response
@@ -50,8 +64,9 @@ class OrderController extends AbstractController
         $res = $orderService->getUserOrders($security->getUser()->getId());
         return $this->json([
             'data' => $res,
-            'status' => true,
-            'message' => 'get all user\'s orders successfully'
-        ], Response::HTTP_OK);
+            'status' => 'success',
+            'message' => 'get all user\'s orders successfully',
+            'code'=>Response::HTTP_OK
+        ]);
     }
 }

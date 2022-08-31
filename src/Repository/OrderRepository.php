@@ -2,9 +2,15 @@
 
 namespace App\Repository;
 
+use App\Entity\EnumOrderStatus;
+use App\Entity\Event;
 use App\Entity\Order;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\Json;
 
 /**
  * @extends ServiceEntityRepository<Order>
@@ -38,6 +44,26 @@ class OrderRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    public function findByUserEvent_Id($userId,$eventId): int
+    {
+        return intval($this->createQueryBuilder('o')
+            ->select('o.id')
+            ->where('o.user=:var1')
+            ->andWhere('o.event=:var2')
+            ->setParameter('var1', $userId)
+            ->setParameter('var2', $eventId)
+            ->getQuery()
+            ->getResult());
+    }
+    public function getTotalRegisteredEvent($eventId): int
+    {
+        return  intval($this->createQueryBuilder('o')
+            ->select('count(o.id)')
+            ->where('o.event=:var1')
+            ->setParameter('var1', $eventId)
+            ->getQuery()
+            ->getSingleScalarResult());
+    }
     public function getExperiencerOrder($userId)
     {
         $query= $this->createQueryBuilder('o')
@@ -50,28 +76,4 @@ class OrderRepository extends ServiceEntityRepository
             ->execute();
         return $query;
     }
-//    /**
-//     * @return Order[] Returns an array of Order objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Order
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

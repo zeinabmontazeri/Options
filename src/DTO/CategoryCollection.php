@@ -1,17 +1,18 @@
 <?php
+
 namespace App\DTO;
 
-use App\Entity\Category;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-class CategoryCollection extends JsonResponse
+class CategoryCollection implements CollectionInterface
 {
+    protected array $result = [];
 
-    public function toArray(Category $category): array
+    public function toArray(array $entities): array
     {
-        return [
-            'id' => $category->getId(),
-            'name' => $category->getName()
-        ];
+        foreach ($entities as $entity) {
+            $data['id'] = $entity->getId();
+            $data['name'] = $entity->getName();
+            $this->result[] = $data;
+        }
+        return $this->result;
     }
 }
