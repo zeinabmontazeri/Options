@@ -1,7 +1,7 @@
 <?php
 namespace App\Factories\Transformer;
 
-interface DataType
+interface DataTypeInterface
 {
     public function ConvertToObject(mixed $value);
 }
