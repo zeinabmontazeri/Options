@@ -12,18 +12,18 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 )]
 final class AuthenticationSuccessListener
 {
-    public function setResponseFormat(AuthenticationSuccessEvent $event)
+    public function setResponseFormat(AuthenticationSuccessEvent $event): void
     {
         $data = $event->getData();
         $user = $event->getUser();
         $response = [
-            'success'=> true,
-            'data'=> [
+            'success' => true,
+            'data' => [
                 'id' => $user->getId(),
-                'token'=> $data['token'],
-                'refresh_token'=>$data['refresh_token']
+                'token' => $data['token'],
+                'refresh_token' => $data['refresh_token']
             ],
-            'message' => 'User authenticated successfuly.',
+            'message' => 'User authenticated successfully.',
         ];
         $event->setData($response);
     }
