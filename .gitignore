@@ -28,3 +28,4 @@
 ###> cache file from macOs systems###
 .DS_Store
 
+composer.lock
