@@ -17,7 +17,6 @@ class DeActiveEventFixture extends Fixture implements DependentFixtureInterface
         $faker = Factory::create();
         $experiences = $manager->getRepository(Experience::class)->findAll();
         $experiencesWithActiveEventsCount = array_slice($experiences, sizeof($experiences) / 2);
-
         for ($i = 0; $i < 10; $i++) {
             $event = new Event();
             $event->setRegisteredUsers($faker->numberBetween(10))
