@@ -10,13 +10,14 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
+
 class ActiveEventFixture extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
         $experiences = $manager->getRepository(Experience::class)->findAll();
-        $experiencesWithActiveEventsCount = array_slice($experiences, 0,sizeof($experiences) / 2);
+        $experiencesWithActiveEventsCount = array_slice($experiences, 0, sizeof($experiences) / 2);
 
         for ($i = 0; $i < 10; $i++) {
             $event = new Event();
