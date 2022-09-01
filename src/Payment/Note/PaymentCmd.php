@@ -20,8 +20,7 @@ class PaymentCmd extends BankCmd
         protected readonly TransactionOriginEnum $origin,
         protected readonly string $amount,
         protected readonly string $note,
-    )
-    {
+    ) {
     }
 
     public function getRequestedRole(): string
@@ -56,13 +55,11 @@ class PaymentCmd extends BankCmd
 
     public function getCallbackToken(): string
     {
-        if(isset($this->callBackToken))
-        {
+        if (isset($this->callBackToken)) {
             return $this->callBackToken;
         }
 
-        if(!isset($this->createdAt) or !isset($this->transactionId))
-        {
+        if (!isset($this->createdAt) or !isset($this->transactionId)) {
             throw new \Exception('Cannot create callback token before persisting request');
         }
 
@@ -73,5 +70,16 @@ class PaymentCmd extends BankCmd
         $this->callBackToken = $token;
 
         return $this->callBackToken;
+    }
+
+    public function getPayload(): array
+    {
+        return [
+            'invoiceId' => $this->getInvoiceId(),
+            'userId' => $this->getUserId(),
+            'amount' => $this->getAmount(),
+            'note' => $this->getNote(),
+            'callbackToken' => $this->getCallbackToken(),
+        ];
     }
 }

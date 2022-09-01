@@ -30,4 +30,13 @@ class RefundCmd extends BankCmd
     {
         return $this->amount;
     }
+
+    public function getPayload(): array
+    {
+        return [
+            'amount' => $this->getAmount(),
+            'parentId' => $this->getPaymentTransactionId(),
+            'bankToken' => $this->getBankToken(),
+        ];
+    }
 }

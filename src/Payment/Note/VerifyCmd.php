@@ -24,4 +24,12 @@ class VerifyCmd extends BankCmd
     {
         return $this->bankToken;
     }
+
+    public function getPayload(): array
+    {
+        return [
+            'parentId' => $this->getPaymentTransactionId(),
+            'bankToken' => $this->getBankToken(),
+        ];
+    }
 }
