@@ -2,7 +2,7 @@
 
 namespace App\Payment\Note;
 
-class VerifyCmd extends BankCmd
+class SettleCmd extends BankCmd
 {
     use CmdForgeTrait;
 
