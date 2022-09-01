@@ -17,7 +17,7 @@ final class AuthenticationSuccessListener
         $data = $event->getData();
         $user = $event->getUser();
         $response = [
-            'success' => true,
+            'status' => 'success',
             'data' => [
                 'id' => $user->getId(),
                 'token' => $data['token'],
