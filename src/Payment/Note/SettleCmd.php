@@ -15,12 +15,12 @@ class SettleCmd extends BankCmd
     ) {
     }
 
-    public function getPaymentTransactionId()
+    public function getPaymentTransactionId(): int
     {
         return $this->paymentTransactionId;
     }
 
-    public function getBankToken()
+    public function getBankToken(): string
     {
         return $this->bankToken;
     }

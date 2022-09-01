@@ -18,7 +18,7 @@ class PaymentCmd extends BankCmd
         protected readonly int $userId,
         protected readonly string $requestedRole,
         protected readonly TransactionOriginEnum $origin,
-        protected readonly int $amount,
+        protected readonly string $amount,
         protected readonly string $note,
     )
     {
@@ -44,7 +44,7 @@ class PaymentCmd extends BankCmd
         return $this->userId;
     }
 
-    public function getAmount(): int
+    public function getAmount(): string
     {
         return $this->amount;
     }

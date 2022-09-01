@@ -2,7 +2,7 @@
 
 namespace App\Payment\Note;
 
-class VerifyCmd extends BankCmd
+class RefundCmd extends BankCmd
 {
     use CmdForgeTrait;
 
@@ -12,6 +12,7 @@ class VerifyCmd extends BankCmd
     public function __construct(
         private readonly int $paymentTransactionId,
         private readonly string $bankToken,
+        private readonly string $amount,
     ) {
     }
 
@@ -23,5 +24,10 @@ class VerifyCmd extends BankCmd
     public function getBankToken(): string
     {
         return $this->bankToken;
+    }
+
+    public function getAmount(): int
+    {
+        return $this->amount;
     }
 }
