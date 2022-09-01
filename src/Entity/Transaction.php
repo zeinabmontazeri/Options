@@ -8,6 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TransactionRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -39,8 +40,25 @@ class Transaction
     #[ORM\Column(name: 'user_id', type: Types::INTEGER)]
     private ?int $userId = null;
 
-    #[ORM\Column]
-    private array $payload = [];
+    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3)]
+    private ?string $amount = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $note = null;
+
+    #[ORM\Column(name: 'callback_token', length: 255)]
+    #[Assert\Unique]
+    private ?string $callbackToken = null;
+
+    #[ORM\Column(name: 'bank_status', type: Types::INTEGER)]
+    private ?int $bankStatus = null;
+
+    #[ORM\Column(name: 'bank_token', length: 255)]
+    #[Assert\Unique]
+    private ?string $bankToken = null;
+
+    #[ORM\Column(name: 'card_info', length: 255)]
+    private ?string $cardInfo = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -126,14 +144,74 @@ class Transaction
         return $this;
     }
 
-    public function getPayload(): array
+    public function getAmount(): ?string
     {
-        return $this->payload;
+        return $this->amount;
     }
 
-    public function setPayload(array $payload): self
+    public function setAmount(string $amount): self
     {
-        $this->payload = $payload;
+        $this->amount = $amount;
+
+        return $this;
+    }
+
+    public function getNote(): ?string
+    {
+        return $this->note;
+    }
+
+    public function setNote(string $note): self
+    {
+        $this->note = $note;
+
+        return $this;
+    }
+
+    public function getCallbackToken(): ?string
+    {
+        return $this->callbackToken;
+    }
+
+    public function setCallbackToken(string $callbackToken): self
+    {
+        $this->callbackToken = $callbackToken;
+
+        return $this;
+    }
+
+    public function getBankStatus(): ?int
+    {
+        return $this->bankStatus;
+    }
+
+    public function setBankStatus(int $bankStatus): self
+    {
+        $this->bankStatus = $bankStatus;
+
+        return $this;
+    }
+
+    public function getBankToken(): ?string
+    {
+        return $this->bankToken;
+    }
+
+    public function setBankToken(string $bankToken): self
+    {
+        $this->bankToken = $bankToken;
+
+        return $this;
+    }
+
+    public function getCardInfo(): ?string
+    {
+        return $this->cardInfo;
+    }
+
+    public function setCardInfo(string $cardInfo): self
+    {
+        $this->cardInfo = $cardInfo;
 
         return $this;
     }
