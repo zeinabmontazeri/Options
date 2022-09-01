@@ -29,6 +29,20 @@ class PaymentCmd extends BankCmd
         return $this->requestedRole;
     }
 
+    public function getOrigin(): TransactionOriginEnum
+    {
+        return $this->origin;
+    }
+
+    public function getInvoiceId(): int
+    {
+        return $this->invoiceId;
+    }
+
+    public function getUserId(): int
+    {
+        return $this->userId;
+    }
 
     public function getAmount(): int
     {

@@ -39,21 +39,6 @@ abstract class BankCmd extends BankNote
         return TransactionCmdEnum::from('CMD_' . strtoupper($cmdName));
     }
 
-    public function getOrigin(): TransactionOriginEnum
-    {
-        return $this->origin;
-    }
-
-    public function getInvoiceId(): int
-    {
-        return $this->invoiceId;
-    }
-
-    public function getUserId(): int
-    {
-        return $this->userId;
-    }
-
     public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
