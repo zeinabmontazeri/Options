@@ -10,5 +10,5 @@ enum TransactionCmdEnum: string
     case Inquery = 'CMD_INQUERY';
     case Reversal = 'CMD_REVERSAL';
     case Refund = 'CMD_REFUND';
-    case PayResponse = 'CMD_PAY_RESPONSE';
+    case PayResponse = 'CMD_PAYMENT_RESPONSE';
 }

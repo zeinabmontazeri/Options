@@ -22,42 +22,38 @@ class Transaction
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'parent_id', type: Types::INTEGER)]
+    #[ORM\Column(name: 'parent_id', type: Types::INTEGER, nullable: true)]
     private ?int $parentId = null;
-    
+
     #[ORM\Column(enumType: TransactionCmdEnum::class)]
     private ?TransactionCmdEnum $command = null;
 
     #[ORM\Column(enumType: TransactionStatusEnum::class)]
     private ?TransactionStatusEnum $status = null;
 
-    #[ORM\Column(enumType: TransactionOriginEnum::class)]
+    #[ORM\Column(enumType: TransactionOriginEnum::class, nullable: true)]
     private ?TransactionOriginEnum $origin = null;
 
-    #[ORM\Column(name: 'invoice_id', type: Types::INTEGER)]
+    #[ORM\Column(name: 'invoice_id', type: Types::INTEGER, nullable: true)]
     private ?int $invoiceId = null;
 
-    #[ORM\Column(name: 'user_id', type: Types::INTEGER)]
+    #[ORM\Column(name: 'user_id', type: Types::INTEGER, nullable: true)]
     private ?int $userId = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3, nullable: true)]
     private ?string $amount = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $note = null;
 
-    #[ORM\Column(name: 'callback_token', length: 255)]
-    #[Assert\Unique]
-    private ?string $callbackToken = null;
-
-    #[ORM\Column(name: 'bank_status', type: Types::INTEGER)]
+    #[ORM\Column(name: 'bank_status', type: Types::INTEGER, nullable: true)]
     private ?int $bankStatus = null;
 
-    #[ORM\Column(name: 'bank_token', length: 255)]
+    #[ORM\Column(name: 'bank_token', length: 255, nullable: true)]
     #[Assert\Unique]
     private ?string $bankToken = null;
 
-    #[ORM\Column(name: 'card_info', length: 255)]
+    #[ORM\Column(name: 'card_info', length: 255, nullable: true)]
     private ?string $cardInfo = null;
 
     #[ORM\Column]
@@ -170,14 +166,42 @@ class Transaction
 
     public function getCallbackToken(): ?string
     {
-        return $this->callbackToken;
+        if ($this->command !== TransactionCmdEnum::Payment) {
+            return null;
+        }
+
+        if (is_null($this->createdAt) or is_null($this->amount)) {
+            throw new \Exception('Cannot get callback token before persisting request');
+        }
+
+        return self::generateCallbackToken($this->getCreatedAt(), $this->getAmount());
     }
 
-    public function setCallbackToken(string $callbackToken): self
-    {
-        $this->callbackToken = $callbackToken;
+    public static function generateCallbackToken(
+        \DateTimeImmutable $createdAt,
+        string $amount,
+    ): string {
+        $public = strval($createdAt->getTimestamp()) . $amount;
+        $private = substr(md5('PaymentRequest$' . $public . '$'), 10);
+        $token = base64_encode($private . '.' . $public);
 
-        return $this;
+        return $token;
+    }
+
+    public static function validateCallbackToken(string $token): bool
+    {
+        $decoded = base64_decode($token);
+        if (!strpos($decoded, '.')) {
+            return false;
+        }
+
+        $parts = explode('.', $decoded);
+        $digest = $parts[0];
+        $public = $parts[2];
+
+        $private = substr(md5('PaymentRequest$' . $public . '$'), 10);
+
+        return $digest === $private;
     }
 
     public function getBankStatus(): ?int
