@@ -29,3 +29,8 @@ services:
         calls:
             - [ setAnnotationReader, [ '@annotation_reader' ] ]
     Doctrine\ORM\EntityManagerInterface: '@doctrine.orm.entity_manager'
+    security.user_password_hasher:
+        class: Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher
+        public: true
+        arguments:
+          [ '@security.password_hasher_factory' ]
