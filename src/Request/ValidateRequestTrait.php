@@ -3,6 +3,7 @@
 namespace App\Request;
 
 use App\Factories\Transformer\DataTypeFactory;
+use Exception;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 trait ValidateRequestTrait
