@@ -25,3 +25,6 @@
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
 
+###> cache file from macOs systems###
+.DS_Store
+

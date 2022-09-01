@@ -2,7 +2,9 @@
 
 namespace App\Controller\Shop;
 
+use App\Auth\AcceptableRoles;
 use App\Entity\Experience;
+use App\Entity\User;
 use App\Repository\EventRepository;
 use App\Repository\ExperienceRepository;
 use App\Request\ExperienceFilterRequest;
@@ -11,7 +13,6 @@ use App\Service\Shop\GetExperiencesByFilterService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -19,8 +20,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class ExperienceController extends AbstractController
 {
     #[Route('/experiences', name: 'app_get_experiences', methods: ['GET'])]
+    #[AcceptableRoles(User::ROLE_GUEST)]
     public function filterExperiences(
-        Request                       $request,
         ExperienceRepository          $experienceRepository,
         GetExperiencesByFilterService $service,
         ExperienceFilterRequest       $experienceFilterRequest,
@@ -40,6 +41,7 @@ class ExperienceController extends AbstractController
 
     #[Route('/experiences/{experience_id}/events/', name: 'app_experience_event_list', methods: ['GET'])]
     #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
+    #[AcceptableRoles(User::ROLE_GUEST)]
     public function getExperiences(
         Experience                    $experience,
         EventRepository               $eventRepository,
@@ -47,9 +49,26 @@ class ExperienceController extends AbstractController
     {
         $result = $getAllExperienceEventsService->getExperienceEvents($experience, $eventRepository);
         return $this->json([
-            'data' => $result['data'],
-            'message' => $result['message'],
-            'status' => $result['status'],
+            'data' => $result,
+            'message' => "All events successfully retrieved.",
+            'status' => 'success',
         ], Response::HTTP_OK);
     }
+
+    #[Route('/experiences/trending/', name: 'app_trending_experience', methods: ['GET'])]
+    public function getTrendingExperiences(
+        ExperienceRepository $experienceRepository,
+    ): JsonResponse
+    {
+        $result = $experienceRepository->getTrendingExperiences();
+        return $this->json(
+            [
+                'data' => $result,
+                'message' => 'Experiences Successfully Retrieved',
+                'status' => true,
+            ], Response::HTTP_OK
+        );
+    }
+
+
 }

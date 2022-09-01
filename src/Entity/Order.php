@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OrderRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -25,8 +27,8 @@ class Order
     #[ORM\ManyToOne(inversedBy: 'orders')]
     private ?Event $event = null;
 
-    #[ORM\Column(name: 'status', type: TYPES::STRING)]
-    private string $status = 'draft';
+    #[ORM\Column(name: 'status',enumType: EnumOrderStatus::class)]
+    private EnumOrderStatus $status = EnumOrderStatus::DRAFT;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3)]
     private ?string $payablePrice = null;
@@ -40,6 +42,14 @@ class Order
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\OneToMany(mappedBy: 'order', targetEntity: Payment::class)]
+    private Collection $payments;
+
+    public function __construct()
+    {
+        $this->payments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -58,12 +68,12 @@ class Order
         return $this;
     }
 
-    public function getStatus(): string
+    public function getStatus(): EnumOrderStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(EnumOrderStatus $status): self
     {
         $this->status = $status;
 
@@ -114,6 +124,36 @@ class Order
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Payment>
+     */
+    public function getPayments(): Collection
+    {
+        return $this->payments;
+    }
+
+    public function addPayment(Payment $payment): self
+    {
+        if (!$this->payments->contains($payment)) {
+            $this->payments->add($payment);
+            $payment->setOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function removePayment(Payment $payment): self
+    {
+        if ($this->payments->removeElement($payment)) {
+            // set the owning side to null (unless already changed)
+            if ($payment->getOrder() === $this) {
+                $payment->setOrder(null);
+            }
+        }
 
         return $this;
     }
