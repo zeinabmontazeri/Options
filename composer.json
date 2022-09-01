@@ -88,6 +88,12 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "testcase": [
+            "@putenv APP_ENV=test",
+            "php bin/console doctrine:database:create --env=test",
+            "vendor/bin/phpunit",
+            "php bin/console doctrine:database:drop --env=test --force --if-exists"
         ]
     },
     "conflict": {
@@ -101,6 +107,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "lchrusciel/api-test-case": "^5.2",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "6.1.*",
         "symfony/css-selector": "6.1.*",
