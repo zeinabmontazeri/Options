@@ -11,18 +11,18 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('api/v1/auth/', name: 'auth.')]
 class RegisterController extends AbstractController
 {
-    #[Route('register', name: 'register', methods: ['post'])]
+    #[Route('register', name: 'register',methods:['post'])]
     public function index(
         UserRegisterRequest $validatedRequest,
         UserRegisterService $userRegisterService
     ): JsonResponse
     {
-        $userRegisterService->register($validatedRequest);
-        //TODO: We can generate token for user here
-        return $this->json([
-            'success' => true,
-            'data' => null,
-            'message' => 'User has been created successfully',
-        ]);
+            $userRegisterService->register($validatedRequest);
+            //TODO: We can generate token for user here
+            return $this->json([
+                'success' => true,
+                'data' => null,
+                'message' => 'User has been created successfully',
+            ]);
     }
 }

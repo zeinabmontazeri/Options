@@ -13,38 +13,38 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserRegisterService
 {
     function __construct(
-        private UserRepository              $userRepository,
+        private UserRepository $userRepository,
         private UserPasswordHasherInterface $hasher,
-        private EntityManagerInterface      $entityManager
-    )
-    {
+        private EntityManagerInterface $entityManager
+    ) {
     }
 
-    /**
-     * @throws \Doctrine\DBAL\Exception
-     */
     public function register(UserRegisterRequest $request): User
     {
         //Check if user already exists
-        if ($this->userRepository->checkExistsByPhoneNumber($request->phoneNumber))
+        if($this->userRepository->checkExistsByPhoneNumber($request->phoneNumber))
             throw new Exception('User Already Exists');
 
+        //Check if birtdate is not in the feature
+        $birthDate = $request->birthDate;
+        if($birthDate > (new \DateTime()))
+            throw new Exception("Birthday is not in range");
 
         $this->entityManager->getConnection()->beginTransaction(); // suspend auto-commit
         try {
             $user = new User;
             $user->setPhoneNumber($request->phoneNumber)
-                ->setFirstName($request->firstName)
-                ->setLastName($request->lastName)
-                ->setBirthDate($birthDate)
-                ->setGender($request->gender)
-                ->setRoles([$request->role])
-                ->setPassword($this->hasher->hashPassword($user, $request->password));
+            ->setFirstName($request->firstName)
+            ->setLastName($request->lastName)
+            ->setBirthDate($birthDate)
+            ->setGender($request->gender)
+            ->setRoles([$request->role])
+            ->setPassword($this->hasher->hashPassword($user, $request->password));
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            if ($request->role === "ROLE_HOST") {
+            if($request->role==="ROLE_HOST"){
                 $host = new Host();
                 $host->setUser($user);
                 $this->entityManager->persist($host);

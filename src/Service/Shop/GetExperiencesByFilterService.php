@@ -2,20 +2,18 @@
 
 namespace App\Service\Shop;
 
-use App\DTO\DtoFactory;
 use App\Repository\ExperienceRepository;
 use App\Request\ExperienceFilterRequest;
 
 class GetExperiencesByFilterService
 {
+    use ApplyExperienceDTOTrait;
 
     public function getExperience(
         ExperienceFilterRequest $experienceFilterRequest,
         ExperienceRepository    $experienceRepository,
     ): array
     {
-        $experiencesData = $experienceRepository->filterExperience($experienceFilterRequest);
-        $experienceCollection = DtoFactory::getInstance('experienceFilter');
-        return $experienceCollection->toArray($experiencesData);
+        return self::parse($experienceRepository->filterExperience($experienceFilterRequest));
     }
 }

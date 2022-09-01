@@ -3,7 +3,7 @@
 namespace App\Auth;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[\Attribute(\Attribute::IS_REPEATABLE | \Attribute::TARGET_CLASS | \Attribute::TARGET_METHOD)]
 class AcceptableRoles extends IsGranted
@@ -16,7 +16,7 @@ class AcceptableRoles extends IsGranted
             data: $acceptableRoles,
             subject: null,
             message: 'AUTHORIZATION_FAILED',
-            statusCode: Response::HTTP_UNAUTHORIZED
+            statusCode: JsonResponse::HTTP_UNAUTHORIZED
         );
     }
 }

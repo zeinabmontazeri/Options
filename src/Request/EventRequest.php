@@ -29,7 +29,7 @@ class EventRequest extends BaseRequest
     #[Assert\GreaterThan(new \DateTime())]
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    public ?\DateTimeInterface $startsAt = null;
+    public ?\DateTime $startsAt = null;
 
     #[Assert\Expression("this.link or !this.isOnline", message: "if event is online link can not be blank.")]
     public ?string $link = null;

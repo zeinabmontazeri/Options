@@ -9,13 +9,11 @@ use App\Entity\Host;
 use App\Entity\User;
 use App\Repository\ExperienceRepository;
 use App\Repository\OrderRepository;
-use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HostReportService
 {
-    private AuthenticatedUser $security;
+    private $security;
 
     public function __construct(AuthenticatedUser $security)
     {
@@ -23,7 +21,7 @@ class HostReportService
     }
 
     /**
-     * @throws JWTDecodeFailureException
+     * @throws \Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException
      */
     public function totalReport(
         OrderRepository      $orderRepository,
@@ -32,7 +30,7 @@ class HostReportService
     {
         if ($this->security->getRole() != User::ROLE_ADMIN)
             if ($this->security->getUser() !== $host->getUser())
-                throw new AccessDeniedHttpException("You are not allowed to perform this action.");
+                throw new NotFoundHttpException("Resource not found.");
         $orders = $orderRepository->findAll();
         $totalIncome = 0;
         $totalOrderCount = 0;

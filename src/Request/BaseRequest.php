@@ -4,7 +4,6 @@ namespace App\Request;
 
 use App\Exception\ValidationException;
 use Exception;
-use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -12,7 +11,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 abstract class BaseRequest
 
 {
-    public string $errors = "";
 
     /**
      * @throws Exception
@@ -32,8 +30,7 @@ abstract class BaseRequest
     {
         $errors = $this->validator->validate($this);
         if (count($errors) > 0) {
-            $errorsString = (string)$errors;
-            throw new Exception($errorsString);
+            throw new ValidationException($errors);
         }
     }
 
@@ -43,17 +40,12 @@ abstract class BaseRequest
         if ($request->getMethod() === 'GET') {
             return $request->query->all();
         } else {
-            $payload = json_decode($request->getContent(), true);
-            if ($payload === null) {
-                throw new BadRequestException('Invalid JSON payload.');
-            } else {
-                return $payload;
-            }
-
+            return json_decode($request->getContent(), true);
         }
     }
 
     abstract public function populate(array $fields): void;
 
     protected abstract function autoValidateRequest(): bool;
+
 }
