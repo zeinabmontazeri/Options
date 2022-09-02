@@ -30,9 +30,7 @@ class AppFixtures extends Fixture
             ->setPhoneNumber('09225075485')
             ->setFirstName('Mehdi')
             ->setLastName('Seta')
-            ->setCreatedAt(new \DateTimeImmutable())
-            ->setGender(EnumGender::MALE->value)
-            ->setRoles([User::ROLE_ADMIN]);
+            ->setCreatedAt(new \DateTimeImmutable())->setGender(EnumGender::MALE->value);
         $manager->persist($user);
         $manager->flush();
 
@@ -42,8 +40,7 @@ class AppFixtures extends Fixture
             ->setFirstName('Kakashi')
             ->setLastName('Hatake')
             ->setCreatedAt(new \DateTimeImmutable())
-            ->setGender(EnumGender::MALE->value)
-            ->setRoles([User::ROLE_HOST]);
+            ->setGender(EnumGender::MALE->value);
         $manager->persist($user1);
         $manager->flush();
 
@@ -53,34 +50,15 @@ class AppFixtures extends Fixture
             ->setFirstName('Naruto')
             ->setLastName('Uzumaki')
             ->setCreatedAt(new \DateTimeImmutable())
-            ->setGender(EnumGender::MALE->value)
-            ->setRoles([User::ROLE_EXPERIENCER]);
+            ->setGender(EnumGender::MALE->value);
         $manager->persist($user2);
         $manager->flush();
 
-        $user3 = new User();
-        $user3->setPassword($this->hasher->hashPassword($user, 'pass_123456'))
-            ->setPhoneNumber('09101503620')
-            ->setFirstName('Susuke')
-            ->setLastName('Uchiha')
-            ->setCreatedAt(new \DateTimeImmutable())
-            ->setGender(EnumGender::MALE->value)
-            ->setRoles([User::ROLE_EXPERIENCER]);
-        $manager->persist($user3);
-        $manager->flush();
-
         $host = new Host();
-        $host->setUser($user2)
+        $host->setUser($user)
             ->setCreatedAt(new \DateTimeImmutable());
         $manager->persist($host);
         $manager->flush();
-
-        $host = new Host();
-        $host->setUser($user3)
-            ->setCreatedAt(new \DateTimeImmutable());
-        $manager->persist($host);
-        $manager->flush();
-
         $category = new Category();
         $category->setName('cat-1');
         $manager->persist($category);
@@ -126,16 +104,15 @@ class AppFixtures extends Fixture
         $order->setEvent($event);
         $order->setPayablePrice('2000');
         $order->setStatus(EnumOrderStatus::DRAFT->value);
-        $order->setUser($user2);
+        $order->setUser($user1);
         $manager->persist($order);
         $manager->flush();
-
         $order1 = new Order();
         $order1->setCreatedAt(new \DateTimeImmutable());
         $order1->setEvent($event);
         $order1->setPayablePrice('2000');
         $order1->setStatus(EnumOrderStatus::DRAFT->value);
-        $order1->setUser($user3);
+        $order1->setUser($user2);
         $manager->persist($order1);
         $manager->flush();
 

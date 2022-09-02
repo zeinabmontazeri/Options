@@ -21,11 +21,5 @@ framework:
 when@test:
   framework:
     test: true
-    http_client:
-      scoped_clients:
-        example_api:
-          base_uri: 'http:\\localhost:8000'
-          auth_basic: 'username:password:role'
-          auth_bearer: the-bearer-token
     session:
       storage_factory_id: session.storage.factory.mock_file
