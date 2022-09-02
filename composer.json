@@ -88,12 +88,6 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ],
-        "testcase": [
-            "@putenv APP_ENV=test",
-            "php bin/console doctrine:database:create --env=test",
-            "vendor/bin/phpunit",
-            "php bin/console doctrine:database:drop --env=test --force --if-exists"
         ]
     },
     "conflict": {
