@@ -34,6 +34,67 @@ class RegisterController extends AbstractController
      *       @OA\Property(property="lastName", type="string", format="text", example="محمدی"),
      *    ),
      * )
+     *     @OA\Response(
+     *         response="200",
+     *         description="ok",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                     @OA\Property(
+     *                         property="success",
+     *                         type="boolean",
+     *                         description="action result"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="data",
+     *                         type="object"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="message",
+     *                         type="message",
+     *                         description="The action message",
+     *                     ),
+     *                     example={
+     *                             "success": true,
+     *                             "data": null,
+     *                             "message": "User has been created successfully"
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     )
+     *
+     *     @OA\Response(
+     *         response="400",
+     *         description="failure",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                     @OA\Property(
+     *                         property="success",
+     *                         type="boolean",
+     *                         description="action result"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="data",
+     *                         type="object"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="message",
+     *                         type="message",
+     *                         description="The action message",
+     *                     ),
+     *                     example={
+     *                             "success": false,
+     *                             "data": null,
+     *                             "message": "Bad Request: User Already Exists"
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     )
      */
     #[Route('register', name: 'register',methods:['post'])]
 //    #[OA2\Response(
