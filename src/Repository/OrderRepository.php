@@ -2,15 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\EnumOrderStatus;
-use App\Entity\Event;
 use App\Entity\Order;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\Json;
 
 /**
  * @extends ServiceEntityRepository<Order>
@@ -43,7 +37,7 @@ class OrderRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    public function findByUserEvent_Id($userId,$eventId): int
+    public function findByUserEventId($userId,$eventId): int
     {
         return intval($this->createQueryBuilder('o')
             ->select('o.id')

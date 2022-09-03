@@ -2,7 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\EnumOrderStatus;
+use App\Entity\Enums\EnumEventStatus;
+use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Order;
 use App\Repository\OrderRepository;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -31,22 +32,20 @@ class OrderEventService
 }
     private function orderValidation($user,$event): bool
 {
-    $this->checkUserOrderedEvent($user->getId(),$event->getId());
-    if($event->getCapacity()>$this->orderRepository->getTotalRegisteredEvent($event->getId()))
-    {
-        if($event->getStartsAt()>new \DateTimeImmutable())
-        {
-            return true;
-        }
-        else
-        {
-            $message='The event registration time is over';
-        }
-    }
-    else
-    {
-        $message='The event registration capacity is full';
-    }
+   if($event->getStatus()==EnumEventStatus::PUBLISHED) {
+       $this->checkUserOrderedEvent($user->getId(), $event->getId());
+       if ($event->getCapacity() > $this->orderRepository->getTotalRegisteredEvent($event->getId())) {
+           if ($event->getStartsAt() > new \DateTimeImmutable()) {
+               return true;
+           } else {
+               $message = 'The event registration time is over';
+           }
+       } else {
+           $message = 'The event registration capacity is full';
+       }
+   }else {
+       $message = 'This event has not yet been published';
+   }
     throw new BadRequestHttpException($message);
 }
     private function checkUserOrderedEvent($userId,$eventId): void

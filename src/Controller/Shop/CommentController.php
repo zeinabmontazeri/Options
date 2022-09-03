@@ -26,7 +26,8 @@ class CommentController extends AbstractController
         return $this->json([
             'data' => $result['data'],
             'message' => $result['message'],
-            'status' => $result['status']
-        ], Response::HTTP_OK);
+            'status' => $result['status'],
+            'code'=>Response::HTTP_CREATED
+        ]);
     }
 }
