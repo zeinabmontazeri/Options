@@ -44,6 +44,7 @@ class OrderController extends AbstractController
                 'You are not allowed to remove this order.');
         }
     }
+
     #[Route('/users/events/{event_id}/order', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'] ,methods: ['POST'])]
     #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]

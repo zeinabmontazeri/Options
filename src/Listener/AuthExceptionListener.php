@@ -6,7 +6,6 @@ use App\Exception\AuthException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
@@ -20,11 +19,10 @@ final class AuthExceptionListener
     public function setAuthenticationExceptionResponse(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
-
         if ($exception instanceof AuthException) {
             $response = new JsonResponse(
                 data: [
-                    'status' => false,
+                    'status' => 'failed',
                     'data' => [],
                     'message' => $exception->getMessage(),
                 ],
@@ -41,17 +39,10 @@ final class AuthExceptionListener
         ) {
             $previous = $exception->getPrevious();
             if ($previous instanceof NoSuchPropertyException) {
-                $response = new JsonResponse(
-                    data: [
-                        'status' => false,
-                        'data' => [],
-                        'message' => "'phoneNumber' and 'password' must be provided."
-                    ],
-                    status: Response::HTTP_BAD_REQUEST
-                );
+                throw new BadRequestHttpException("'phoneNumber' and 'password' must be provided.");
+
             }
         }
-
         if (isset($response)) {
             $event->setResponse($response);
         }
