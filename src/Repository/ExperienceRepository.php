@@ -59,6 +59,20 @@ class ExperienceRepository extends ServiceEntityRepository
         return $baseQuery->getQuery()->getResult();
     }
 
+    public function getTrendingExperiences()
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery('SELECT ex.id ,SUM(e.registeredUsers) as total_buyers
+        FROM App\Entity\Experience ex
+        INNER JOIN App\Entity\Event e
+        WITH ex.id = e.experience
+        WHERE e.startsAt > CURRENT_TIMESTAMP() and e.capacity - e.registeredUsers > 0  
+        GROUP BY ex.id
+        ORDER BY total_buyers DESC')->setMaxResults(20);
+        return $query->getResult();
+    }
+
 //    }
 //    /**
 //     * @return Experience[] Returns an array of Experience objects

@@ -2,15 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\EnumOrderStatus;
-use App\Entity\Event;
 use App\Entity\Order;
-use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\Validator\Constraints\Date;
-use Symfony\Component\Validator\Constraints\Json;
 
 /**
  * @extends ServiceEntityRepository<Order>
@@ -35,7 +29,6 @@ class OrderRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
     public function remove(Order $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -44,7 +37,7 @@ class OrderRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    public function findByUserEvent_Id($userId,$eventId): int
+    public function findByUserEventId($userId,$eventId): int
     {
         return intval($this->createQueryBuilder('o')
             ->select('o.id')
@@ -63,5 +56,17 @@ class OrderRepository extends ServiceEntityRepository
             ->setParameter('var1', $eventId)
             ->getQuery()
             ->getSingleScalarResult());
+    }
+    public function getExperiencerOrder($userId)
+    {
+        $query= $this->createQueryBuilder('o')
+            ->select('o.id as orderId,order_event.id as eventId,order_experience.title as title,o.status as status')
+            ->andWhere('o.user=:var1')
+            ->setParameter('var1', $userId)
+            ->innerJoin('o.event', 'order_event')
+            ->innerJoin('order_event.experience','order_experience')
+            ->getQuery()
+            ->execute();
+        return $query;
     }
 }
