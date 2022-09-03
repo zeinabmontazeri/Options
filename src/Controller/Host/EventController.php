@@ -6,11 +6,13 @@ use App\Auth\AcceptableRoles;
 use App\Entity\Event;
 use App\Entity\Experience;
 use App\Entity\User;
+use App\Request\EventPublishRequest;
 use App\Request\EventRequest;
 use App\Service\EventService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -31,6 +33,15 @@ class EventController extends AbstractController
             'status' => 'success',
             'code' => Response::HTTP_CREATED
         ]);
+    }
+
+    #[Route('/events/{event_id}/publish', name: 'app_host_event_publish', methods: ['PUT'])]
+    #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
+    #[AcceptableRoles(User::ROLE_HOST, User::ROLE_ADMIN)]
+    public function publishEvent(EventPublishRequest $request,Event $event, EventService $service): JsonResponse
+    {
+        $service->changeStatus($event,$request);
+        return $this->json($service->getOrdersInfo($event));
     }
 
     #[Route('/events/{event_id}/report', name: 'app_host_event_report', methods: ['GET'])]

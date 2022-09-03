@@ -7,14 +7,16 @@ use App\Entity\Experience;
 use App\Repository\EventRepository;
 use App\Repository\ExperienceRepository;
 use App\Repository\OrderRepository;
+use App\Request\EventPublishRequest;
 use App\Request\EventRequest;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
 
 class EventService
 {
-    public function __construct(private EventRepository $eventRepository, private Security $security)
+    public function __construct(private EventRepository $eventRepository, private Security $security,private EntityManagerInterface $entityManager)
     {
     }
 
@@ -59,5 +61,13 @@ class EventService
             'status' => 'success',
             'code' => Response::HTTP_OK
         ];
+    }
+
+    public function changeStatus(Event $event,EventPublishRequest $request)
+    {
+        if ($this->security->getUser() !== $event->getExperience()->getHost()->getUser())
+            throw new AccessDeniedException();
+
+
     }
 }
