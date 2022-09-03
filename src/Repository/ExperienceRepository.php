@@ -72,6 +72,16 @@ class ExperienceRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
+    public function searchByWord($word)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery("SELECT ex
+         FROM App\Entity\Experience ex
+         WHERE ex.title LIKE :word OR ex.description LIKE :word")
+            ->setParameter('word', "%$word%");
+        return $query->getResult();
+    }
+
 //    }
 //    /**
 //     * @return Experience[] Returns an array of Experience objects
