@@ -48,6 +48,12 @@ class Experience
     #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class)]
     private Collection $events;
 
+    #[ORM\Column(name: 'status',enumType: EnumOrderStatus::class)]
+    private EnumEventStatus $status = EnumEventStatus::DRAFT;
+
+    #[ORM\Column(name: 'approvalStatus',enumType: EnumPermissionStatus::class)]
+    private EnumPermissionStatus $approvalStatus = EnumPermissionStatus::PENDING;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -156,6 +162,30 @@ class Experience
                 $event->setExperience(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): EnumEventStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(EnumEventStatus $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getApprovalStatus(): EnumPermissionStatus
+    {
+        return $this->approvalStatus;
+    }
+
+    public function setApprovalStatus(EnumPermissionStatus $approvalStatus): self
+    {
+        $this->approvalStatus = $approvalStatus;
 
         return $this;
     }

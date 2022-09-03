@@ -32,7 +32,7 @@ class Event
     #[ORM\Column]
     private ?int $duration = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 3)]
     private ?string $price = null;
 
     #[ORM\Column]
@@ -58,6 +58,9 @@ class Event
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Comment::class)]
     private Collection $comments;
+
+    #[ORM\Column(name: 'status',enumType: EnumOrderStatus::class)]
+    private EnumEventStatus $status = EnumEventStatus::DRAFT;
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -246,6 +249,18 @@ class Event
                 $comment->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): EnumEventStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(EnumEventStatus $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
