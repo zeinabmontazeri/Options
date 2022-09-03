@@ -35,7 +35,6 @@ class OrderRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
     public function remove(Order $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -63,5 +62,17 @@ class OrderRepository extends ServiceEntityRepository
             ->setParameter('var1', $eventId)
             ->getQuery()
             ->getSingleScalarResult());
+    }
+    public function getExperiencerOrder($userId)
+    {
+        $query= $this->createQueryBuilder('o')
+            ->select('o.id as orderId,order_event.id as eventId,order_experience.title as title,o.status as status')
+            ->andWhere('o.user=:var1')
+            ->setParameter('var1', $userId)
+            ->innerJoin('o.event', 'order_event')
+            ->innerJoin('order_event.experience','order_experience')
+            ->getQuery()
+            ->execute();
+        return $query;
     }
 }
