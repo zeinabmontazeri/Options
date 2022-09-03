@@ -31,11 +31,11 @@ class PaymentResponseHandler implements CmdHandlerInterface
             return false;
         }
 
-        $paymentResponseCmd = $this
+        $invoicePurchased = $this
             ->operationManager
-            ->getPaymentResponseFromPayment($paymentCmd);
+            ->isInvoicePurchaced($paymentCmd->getInvoiceId());
 
-        if (!is_null($paymentResponseCmd)) {
+        if ($invoicePurchased) {
             return false;
         }
 

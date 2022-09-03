@@ -74,6 +74,32 @@ class BankOperatonManager
         return $updatedCmd;
     }
 
+    public function isInvoicePurchaced(int $invoiceId): bool
+    {
+        $query = $this->entityManager->createQuery("
+                SELECT paymentResponse
+                FROM App\Entity\Transaction paymentResponse
+                WHERE paymentResponse.command = :paymentResponseCommand
+                AND paymentResponse.status = :paymentResponseStatus
+                AND paymentResponse.parentId IN (
+                    SELECT payment.id
+                    FROM App\Entity\Transaction payment
+                    WHERE payment.command = :paymentCommand
+                    AND payment.status = :paymentStatus
+                    AND payment.invoiceId = :invoceId
+                )
+            ")
+            ->setParameter('paymentResponseCommand', TransactionCmdEnum::PaymentResponse)
+            ->setParameter('paymentResponseStatus', TransactionStatusEnum::Success)
+            ->setParameter('paymentCommand', TransactionCmdEnum::Payment)
+            ->setParameter('paymentStatus', TransactionStatusEnum::Success)
+            ->setParameter('invoceId', $invoiceId);
+        
+        $transactions = $query->getResult();
+
+        return count($transactions) !== 0;
+    }
+
     public function getPaymentResponseFromPayment(PaymentCmd $cmd): ?PaymentResponseCmd
     {
         $query = $this->entityManager->createQuery("
@@ -103,14 +129,14 @@ class BankOperatonManager
             AND t.status = :success
             AND t.invoiceId = :invoiceId
         ")
-        ->setParameter('command', TransactionCmdEnum::Payment)
-        ->setParameter('success', TransactionStatusEnum::Success)
-        ->setParameter('invoiceId', $invoiceId);
+            ->setParameter('command', TransactionCmdEnum::Payment)
+            ->setParameter('success', TransactionStatusEnum::Success)
+            ->setParameter('invoiceId', $invoiceId);
 
         $transaction = $query->getOneOrNullResult();
 
         return is_null($transaction) ? null : $this->createCmdFromTransaction($transaction);
-    } 
+    }
 
     public function getCallbackUrl(string $callbackToken)
     {
