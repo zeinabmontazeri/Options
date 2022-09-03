@@ -28,9 +28,11 @@ class Host
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
-
     #[ORM\OneToMany(mappedBy: 'host', targetEntity: Experience::class)]
     private Collection $experiences;
+
+    #[ORM\Column(name: 'approvalStatus',enumType: EnumPermissionStatus::class)]
+    private EnumPermissionStatus $approvalStatus = EnumPermissionStatus::PENDING;
 
     public function __construct()
     {
@@ -98,6 +100,18 @@ class Host
                 $experience->setHost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getApprovalStatus(): EnumPermissionStatus
+    {
+        return $this->approvalStatus;
+    }
+
+    public function setApprovalStatus(EnumPermissionStatus $approvalStatus): self
+    {
+        $this->approvalStatus = $approvalStatus;
 
         return $this;
     }
