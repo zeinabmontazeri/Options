@@ -5,7 +5,6 @@ namespace App\Request;
 use App\Exception\ValidationException;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class BaseRequest
@@ -15,7 +14,7 @@ abstract class BaseRequest
     /**
      * @throws Exception
      */
-    public function __construct(protected ValidatorInterface $validator ,protected RequestStack $requestStack)
+    public function __construct(protected ValidatorInterface $validator)
     {
         $this->populate($this->getRequest());
         if ($this->autoValidateRequest()) {
@@ -36,7 +35,7 @@ abstract class BaseRequest
 
     public function getRequest(): array
     {
-        $request = $this->requestStack->getCurrentRequest();
+        $request = Request::createFromGlobals();
         if ($request->getMethod() === 'GET') {
             return $request->query->all();
         } else {
