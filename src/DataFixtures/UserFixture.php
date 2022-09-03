@@ -29,7 +29,7 @@ class UserFixture extends Fixture
                 ->setFirstName($faker->firstName)
                 ->setLastName($faker->lastName)
                 ->setCreatedAt($faker->dateTime)->setGender($faker->randomElements(EnumGender::cases())[0]->value)
-                ->setRoles($faker->randomElements(['ROLE_USER', 'ROLE_HOST', 'ROLE_ADMIN'], $faker->numberBetween(1, 3)));
+                ->setRoles($faker->randomElements(['ROLE_EXPERIENCER', 'ROLE_HOST', 'ROLE_ADMIN']));
             $manager->persist($user);
             $manager->flush();
         }

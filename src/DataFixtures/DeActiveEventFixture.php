@@ -19,9 +19,9 @@ class DeActiveEventFixture extends Fixture implements DependentFixtureInterface
         $experiencesWithActiveEventsCount = array_slice($experiences, sizeof($experiences) / 2);
         for ($i = 0; $i < 10; $i++) {
             $event = new Event();
-            $event->setRegisteredUsers($faker->numberBetween(10))
+            $event->setRegisteredUsers($faker->numberBetween(1, 9))
                 ->setExperience($faker->randomElement($experiencesWithActiveEventsCount))
-                ->setCapacity(10)
+                ->setCapacity($faker->numberBetween(10, 100))
                 ->setDuration(120)
                 ->setPrice($faker->numberBetween(100, 1000))
                 ->setStartsAt($faker->dateTimeBetween('-3 year', '-1 year'))
