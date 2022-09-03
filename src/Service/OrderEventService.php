@@ -50,7 +50,7 @@ class OrderEventService
 }
     private function checkUserOrderedEvent($userId,$eventId): void
 {
-    $orderId=$this->orderRepository->findByUserEvent_Id($userId,$eventId);
+    $orderId=$this->orderRepository->findByUserEventId($userId,$eventId);
     if($orderId!=0)
     {
         throw new BadRequestHttpException('The user ordered event before');

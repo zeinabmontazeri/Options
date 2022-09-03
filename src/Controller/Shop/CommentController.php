@@ -16,10 +16,10 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('api/v1/shop')]
 class CommentController extends AbstractController
 {
-    #[Route('/comments/{event_id}', name: 'app_shop_comment_event', requirements: ['event_id' => '\d+'], methods: 'POST')]
+    #[Route('/events/{event_id}/comments', name: 'app_shop_comment_event', requirements: ['event_id' => '\d+'], methods: 'POST')]
     #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
     #[AcceptableRoles(User::ROLE_ADMIN, User::ROLE_HOST, User::ROLE_EXPERIENCER, User::ROLE_GUEST)]
-    public function commentOnEvent(Event $event, CommentOnEventRequest $validatedRequest, CommentEventService $commentEventService, AuthenticatedUser $security): Response
+    public function commentOnEvent(Event $event,CommentOnEventRequest $validatedRequest, CommentEventService $commentEventService, AuthenticatedUser $security): Response
     {
         $comment = $validatedRequest->comment;
         $result = $commentEventService->commentTheEvent($security->getUser(), $event, $comment);
