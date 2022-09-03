@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Enums\EnumHostBusinessClassStatus;
+use App\Entity\Enums\EnumPermissionStatus;
 use App\Repository\HostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -34,6 +36,9 @@ class Host
 
     #[ORM\Column(name: 'approvalStatus',enumType: EnumPermissionStatus::class)]
     private EnumPermissionStatus $approvalStatus = EnumPermissionStatus::PENDING;
+
+    #[ORM\Column(name: 'level',enumType: EnumHostBusinessClassStatus::class)]
+    private EnumHostBusinessClassStatus $level = EnumHostBusinessClassStatus::NORMAL;
 
     public function __construct()
     {
@@ -113,6 +118,18 @@ class Host
     public function setApprovalStatus(EnumPermissionStatus $approvalStatus): self
     {
         $this->approvalStatus = $approvalStatus;
+
+        return $this;
+    }
+
+    public function getLevel(): EnumHostBusinessClassStatus
+    {
+        return $this->level;
+    }
+
+    public function setLevel(EnumHostBusinessClassStatus $level): self
+    {
+        $this->level = $level;
 
         return $this;
     }
