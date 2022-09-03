@@ -79,6 +79,31 @@ class RegistrationControllerTest extends BaseTestCase
         $this->assertResponse($response , 'UserRegister/wrongFormat',400);
     }
 
+     /**
+     * @throws \Exception
+     */
+    public function testUserCantRegisterWithFutureBirthDate()
+    {
+        $wrongDate = Date('Y-m-d y:m:d', strtotime('+3 days'));
+        $registerCredential = (object)[
+            "phoneNumber"=> "09191467719",
+            "birthDate"=> $wrongDate,
+            "password"=> "12345dsf",
+            "gender"=> "MALE",
+            "role"=> "ROLE_HOST",
+            "firstName"=> "مهرداد",
+            "lastName"=> "محمدی"
+        ];
+
+        $this->client->request('POST', '/api/v1/auth/register', []
+            , [], [
+                'CONTENT_TYPE' => 'application/json',
+            ],json_encode($registerCredential));
+
+        $response = $this->client->getResponse();
+        $this->assertResponse($response , 'UserRegister/FutureBirthdate',400);
+    }
+
     /**
      * @throws \Exception
      */
