@@ -2,7 +2,8 @@
 
 namespace App\Entity;
 
-enum EnumEventStatus
+enum EnumEventStatus: string
 {
-
+    case PUBLISHED = 'published';
+    case DRAFT = 'draft';
 }
