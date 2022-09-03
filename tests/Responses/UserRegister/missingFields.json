@@ -1,0 +1,34 @@
+{
+    "success": false,
+    "data": {
+        "phoneNumber": [
+            "This value should not be blank.",
+            "This value should not be null."
+        ],
+        "firstName": [
+            "This value should not be blank.",
+            "This value should not be null."
+        ],
+        "lastName": [
+            "This value should not be blank.",
+            "This value should not be null."
+        ],
+        "birthDate": [
+            "This value should not be blank.",
+            "This value should not be null."
+        ],
+        "password": [
+            "This value should not be blank.",
+            "This value should not be null."
+        ],
+        "gender": [
+            "This value should not be blank.",
+            "This value should not be null."
+        ],
+        "role": [
+            "This value should not be blank.",
+            "This value should not be null."
+        ]
+    },
+    "message": "Validation failed."
+}

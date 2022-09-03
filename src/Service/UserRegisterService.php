@@ -8,6 +8,8 @@ use App\Repository\UserRepository;
 use App\Request\UserRegisterRequest;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserRegisterService
@@ -23,12 +25,12 @@ class UserRegisterService
     {
         //Check if user already exists
         if($this->userRepository->checkExistsByPhoneNumber($request->phoneNumber))
-            throw new Exception('User Already Exists');
+            throw new HttpException(Response::HTTP_BAD_REQUEST,'User Already Exists');
 
         //Check if birtdate is not in the feature
         $birthDate = $request->birthDate;
         if($birthDate > (new \DateTime()))
-            throw new Exception("Birthday is not in range");
+            throw new HttpException(Response::HTTP_BAD_REQUEST,"Birthday is not in range");
 
         $this->entityManager->getConnection()->beginTransaction(); // suspend auto-commit
         try {

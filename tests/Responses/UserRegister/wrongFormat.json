@@ -1,0 +1,9 @@
+{
+    "success": false,
+    "data": {
+        "phoneNumber": [
+            "Phone number has wrong format"
+        ]
+    },
+    "message": "Validation failed."
+}

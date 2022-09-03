@@ -19,7 +19,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
     {
         $exceptionData = [
             'success' => false,
-            'data' => [],
+            'data' => null,
         ];
         $exception = $event->getThrowable();
 
