@@ -72,23 +72,60 @@ class TransactionRepository extends ServiceEntityRepository
         return $result;
     }
 
-    public function getTransactionHistory(
+    public function getInvoiceSuccessfulPaymentHistory(
         int $invoiceId,
         TransactionOriginEnum $origin,
-        TransactionCmdEnum $cmd
-    ) {
+    ): array {
         $query = $this
             ->getEntityManager()
             ->createQuery("
                 SELECT t
                 FROM App\Entity\Transaction t
-                WHERE t.invoiceId = :invoiceId
-                    AND t.command = :command
+                WHERE t.command = :command
                     AND t.origin = :origin
+                    AND t.invoiceId = :invoiceId
+                    AND t.status = :status
             ")
+            ->setParameter('command', TransactionCmdEnum::Payment->value)
+            ->setParameter('origin', $origin->value)
             ->setParameter('invoiceId', $invoiceId)
-            ->setParameter('command', $cmd->value)
-            ->setParameter('origin', $origin->value);
+            ->setParameter('status', TransactionStatusEnum::Success->value);
+
+        $result = $query->getResult();
+
+        return $result;
+    }
+
+    public function getPaymentFollowUpTransaction(
+        int $transactionId,
+        TransactionCmdEnum $transactionType,
+    ): ?Transaction {
+        $query = $this
+            ->getEntityManager()
+            ->createQuery("
+                SELECT t
+                FROM App\Entity\Transaction t
+                WHERE t.parentId = :transactionId
+                    AND t.command = :command
+            ")
+            ->setParameter('transactionId', $transactionId)
+            ->setParameter('command', $transactionType->value);
+
+        $result = $query->getOneOrNullResult();
+
+        return $result;
+    }
+
+    public function getPaymentTransactionSequence(int $paymentId): array
+    {
+        $query = $this
+            ->getEntityManager()
+            ->createQuery("
+                SELECT t
+                FROM App\Entity\Transaction t
+                WHERE t.parentId = :paymentId
+            ")
+            ->setParameter('paymentId', $paymentId);
 
         $result = $query->getResult();
 

@@ -25,6 +25,12 @@ class Transaction
     #[ORM\Column(name: 'parent_id', type: Types::INTEGER, nullable: true)]
     private ?int $parentId = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $link = null;
+
+    #[ORM\Column(name: 'bank_reference_id', type: Types::BIGINT, nullable: true)]
+    private ?int $bankReferenceId = null;
+
     #[ORM\Column(enumType: TransactionCmdEnum::class)]
     private ?TransactionCmdEnum $command = null;
 
@@ -62,6 +68,7 @@ class Transaction
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $updatedAt = null;
 
+    private string $callbackToken;
 
     public function getId(): ?int
     {
@@ -76,6 +83,30 @@ class Transaction
     public function setParentId(int $parentId): self
     {
         $this->parentId = $parentId;
+
+        return $this;
+    }
+
+    public function getLink(): string
+    {
+        return $this->link;
+    }
+
+    public function setLink(string $link): self
+    {
+        $this->link = $link;
+
+        return $this;
+    }
+
+    public function getBankReferenceId(): ?int
+    {
+        return $this->bankReferenceId;
+    }
+
+    public function setBankReferenceId(int $bankReferenceId): self
+    {
+        $this->bankReferenceId = $bankReferenceId;
 
         return $this;
     }
@@ -183,7 +214,7 @@ class Transaction
     ): string {
         $public = strval($createdAt->getTimestamp()) . $amount;
         $private = substr(md5('PaymentRequest$' . $public . '$'), 10);
-        $token = base64_encode($private . '.' . $public);
+        $token = base64_encode($private . '$' . $public);
 
         return $token;
     }
@@ -191,13 +222,13 @@ class Transaction
     public static function validateCallbackToken(string $token): bool
     {
         $decoded = base64_decode($token);
-        if (!strpos($decoded, '.')) {
+        if (!strpos($decoded, '$')) {
             return false;
         }
 
-        $parts = explode('.', $decoded);
+        $parts = explode('$', $decoded);
         $digest = $parts[0];
-        $public = $parts[2];
+        $public = $parts[1];
 
         $private = substr(md5('PaymentRequest$' . $public . '$'), 10);
 
