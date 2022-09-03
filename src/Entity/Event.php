@@ -59,7 +59,7 @@ class Event
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Comment::class)]
     private Collection $comments;
 
-    #[ORM\Column(name: 'status',enumType: EnumOrderStatus::class)]
+    #[ORM\Column(name: 'status',enumType: EnumEventStatus::class)]
     private EnumEventStatus $status = EnumEventStatus::DRAFT;
     public function __construct()
     {
