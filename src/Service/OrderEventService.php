@@ -52,19 +52,19 @@ class OrderEventService
     throw new BadRequestHttpException($message);
 }
     private function checkUserOrderedEvent($userId,$eventId): void
-{
-    $orderId=$this->orderRepository->findByUserEvent_Id($userId,$eventId);
-    if($orderId!=0)
     {
-        throw new BadRequestHttpException('The user ordered event before');
-    }
-}
-    private function checkOrderIsPublished($eventId): Boolean
-    {
-        $orderId=$this->eventRepository->find($eventId);
+        $orderId=$this->orderRepository->findByUserEvent_Id($userId,$eventId);
         if($orderId!=0)
         {
             throw new BadRequestHttpException('The user ordered event before');
+        }
+    }
+    private function checkOrderIsPublished($eventId): Boolean
+    {
+        $order=$this->eventRepository->find($eventId);
+        if($order=$order->getStatus() !== EnumEventStatus::PUBLISHED)
+        {
+            throw new BadRequestHttpException('Event is not published');
         }
         return true;
     }
