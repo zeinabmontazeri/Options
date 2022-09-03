@@ -50,10 +50,10 @@ class Experience
     #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class)]
     private Collection $events;
 
-    #[ORM\Column(name: 'status',enumType: EnumEventStatus::class)]
+    #[ORM\Column(name: 'status', enumType: EnumEventStatus::class)]
     private EnumEventStatus $status = EnumEventStatus::DRAFT;
 
-    #[ORM\Column(name: 'approvalStatus',enumType: EnumPermissionStatus::class)]
+    #[ORM\Column(name: 'approvalStatus', enumType: EnumPermissionStatus::class)]
     private EnumPermissionStatus $approvalStatus = EnumPermissionStatus::PENDING;
 
     public function __construct()

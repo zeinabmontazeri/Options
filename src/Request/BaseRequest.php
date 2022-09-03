@@ -12,7 +12,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 abstract class BaseRequest
 
 {
-    public string $errors = "";
 
     /**
      * @throws Exception
