@@ -5,6 +5,7 @@ namespace App\Payment;
 use App\Auth\AuthenticatedUser;
 use App\Entity\Transaction;
 use App\Entity\TransactionCmdEnum;
+use App\Entity\TransactionOriginEnum;
 use App\Entity\TransactionStatusEnum;
 use App\Payment\Bank\Mellat\Link as MellatLink;
 use App\Payment\Bank\Mellat\CallbackResponse as MellatCallback;
@@ -74,7 +75,7 @@ class BankOperatonManager
         return $updatedCmd;
     }
 
-    public function isInvoicePurchaced(int $invoiceId): bool
+    public function isInvoicePurchaced(int $invoiceId, TransactionOriginEnum $origin): bool
     {
         $query = $this->entityManager->createQuery("
                 SELECT paymentResponse
@@ -87,13 +88,15 @@ class BankOperatonManager
                     WHERE payment.command = :paymentCommand
                     AND payment.status = :paymentStatus
                     AND payment.invoiceId = :invoceId
+                    AND payment.origin = :origin
                 )
             ")
             ->setParameter('paymentResponseCommand', TransactionCmdEnum::PaymentResponse)
             ->setParameter('paymentResponseStatus', TransactionStatusEnum::Success)
             ->setParameter('paymentCommand', TransactionCmdEnum::Payment)
             ->setParameter('paymentStatus', TransactionStatusEnum::Success)
-            ->setParameter('invoceId', $invoiceId);
+            ->setParameter('invoceId', $invoiceId)
+            ->setParameter('origin', $origin);
         
         $transactions = $query->getResult();
 
