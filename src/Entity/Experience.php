@@ -48,6 +48,9 @@ class Experience
     #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class)]
     private Collection $events;
 
+    #[ORM\Column(name: 'status',enumType: EnumOrderStatus::class)]
+    private EnumEventStatus $status = EnumEventStatus::DRAFT;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -156,6 +159,18 @@ class Experience
                 $event->setExperience(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): EnumEventStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(EnumEventStatus $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
