@@ -83,7 +83,6 @@ class EventRepository extends ServiceEntityRepository
         }
         return $res;
     }
-
 //    public function findOneBySomeField($value): ?Event
 //    {
 //        return $this->createQueryBuilder('e')

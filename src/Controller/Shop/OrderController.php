@@ -3,6 +3,7 @@
 namespace App\Controller\Shop;
 use App\Auth\AcceptableRoles;
 use App\Auth\AuthenticatedUser;
+use App\Service\Shop\OrderService;
 use App\Entity\Event;
 use App\Entity\Order;
 use App\Entity\User;
@@ -54,6 +55,18 @@ class OrderController extends AbstractController
             'data' => $result['data'],
             'message' => $result['message'],
             'status' => $result['status'],
+            'code'=>Response::HTTP_CREATED
+        ]);
+    }
+    #[Route('/users/orders', name: 'app_shop_users_order', methods: 'GET')]
+    #[AcceptableRoles(User::ROLE_EXPERIENCER)]
+    public function getExperiencerOrder(OrderService $orderService,AuthenticatedUser $security): Response
+    {
+        $res = $orderService->getUserOrders($security->getUser()->getId());
+        return $this->json([
+            'data' => $res,
+            'message' => 'get all user\'s orders successfully',
+            'status' => 'success',
             'code'=>Response::HTTP_OK
         ]);
     }
