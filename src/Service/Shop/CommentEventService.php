@@ -2,16 +2,10 @@
 
 namespace App\Service\Shop;
 use App\Entity\Comment;
-use App\Entity\EnumOrderStatus;
-use App\Entity\Event;
-use App\Entity\User;
-use App\Exception\InvalidInputException;
 use App\Repository\CommentRepository;
-use App\Repository\EventRepository;
-use App\Repository\OrderRepository;
-use App\Repository\UserRepository;
-use DateInterval;
-use Exception;
+use App\Entity\EnumEventStatus;
+use App\Exception\InvalidInputException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class CommentEventService
 {
@@ -21,6 +15,8 @@ class CommentEventService
     }
     public function commentTheEvent($user, $event, $comment):array
     {
+            if($event->getStatus() !== EnumEventStatus::PUBLISHED)
+                throw new BadRequestHttpException('Event is not published');
             $commentobj = new Comment();
             $commentobj->SetUser($user);
             $commentobj->setEvent($event);
