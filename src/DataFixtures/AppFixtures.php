@@ -103,7 +103,7 @@ class AppFixtures extends Fixture
         $order->setCreatedAt(new \DateTimeImmutable());
         $order->setEvent($event);
         $order->setPayablePrice('2000');
-        $order->setStatus(EnumOrderStatus::DRAFT->value);
+        $order->setStatus(EnumOrderStatus::DRAFT);
         $order->setUser($user1);
         $manager->persist($order);
         $manager->flush();
@@ -111,7 +111,7 @@ class AppFixtures extends Fixture
         $order1->setCreatedAt(new \DateTimeImmutable());
         $order1->setEvent($event);
         $order1->setPayablePrice('2000');
-        $order1->setStatus(EnumOrderStatus::DRAFT->value);
+        $order1->setStatus(EnumOrderStatus::DRAFT);
         $order1->setUser($user2);
         $manager->persist($order1);
         $manager->flush();

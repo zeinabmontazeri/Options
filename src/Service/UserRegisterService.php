@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Host;
 use App\Entity\User;
+use App\Entity\EnumOrderStatus;
 use App\Repository\UserRepository;
 use App\Request\UserRegisterRequest;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,7 +37,7 @@ class UserRegisterService
             $user->setPhoneNumber($request->phoneNumber)
                 ->setFirstName($request->firstName)
                 ->setLastName($request->lastName)
-                ->setBirthDate($birthDate)
+                ->setBirthDate($request->birthDate)
                 ->setGender($request->gender)
                 ->setRoles([$request->role])
                 ->setPassword($this->hasher->hashPassword($user, $request->password));

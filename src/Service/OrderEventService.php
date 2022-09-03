@@ -2,9 +2,10 @@
 
 namespace App\Service;
 
-use App\Entity\EnumOrderStatus;
+use App\Entity\EnumEventStatus;
 use App\Entity\Order;
 use App\Repository\OrderRepository;
+use App\Repository\EventRepository;
 use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -59,7 +60,8 @@ class OrderEventService
             throw new BadRequestHttpException('The user ordered event before');
         }
     }
-    private function checkOrderIsPublished($eventId): Boolean
+
+    private function checkOrderIsPublished($eventId): bool
     {
         $order=$this->eventRepository->find($eventId);
         if($order=$order->getStatus() !== EnumEventStatus::PUBLISHED)
