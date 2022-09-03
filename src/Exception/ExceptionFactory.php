@@ -15,6 +15,7 @@ class ExceptionFactory
             'data' => [],
         ];
         $response = new JsonResponse();
+
         if (in_array($exception::class, HttpExceptionEnum::getConstants())) {
             $exceptionData['data'] = $exception->getMessage();
         } else {
