@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Enums\EnumEventStatus;
+use App\Entity\Enums\EnumPermissionStatus;
 use App\Repository\ExperienceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
