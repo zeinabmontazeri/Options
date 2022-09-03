@@ -3,8 +3,8 @@
 namespace App\Auth;
 
 use App\Entity\User;
-use App\Exception\AuthorizationException;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\NullToken;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\VoterInterface;
@@ -68,7 +68,7 @@ class RoleVoter implements VoterInterface
                 $acc[] = strtoupper($role);
                 return $acc;
             } else {
-                throw new AuthorizationException('INVALID_ROLE_ATTRIBUTE_ON_CONTROLLER', 500);
+                throw new BadRequestHttpException('Invalid Role Attribute.');
             }
         }, []);
 

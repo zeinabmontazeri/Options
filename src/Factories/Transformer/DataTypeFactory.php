@@ -2,6 +2,8 @@
 
 namespace App\Factories\Transformer;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 class DataTypeFactory
 {
     public function getObject(string $type)
@@ -14,6 +16,6 @@ class DataTypeFactory
             return new StringDataType();
         if ($type == 'bool')
             return new BooleanDataType();
-        throw new \Exception("type not found");
+        throw new NotFoundHttpException();
     }
 }

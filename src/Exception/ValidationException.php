@@ -13,7 +13,7 @@ class ValidationException extends HttpException
     public function __construct(ConstraintViolationListInterface $violations)
     {
         $this->violations = $violations;
-        parent::__construct(Resgitponse::HTTP_BAD_REQUEST, 'Validation failed.');
+        parent::__construct(Response::HTTP_BAD_REQUEST, 'Validation failed.');
     }
 
     public function getMessages(): array
