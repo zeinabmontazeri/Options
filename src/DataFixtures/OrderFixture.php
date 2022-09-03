@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\EnumOrderStatus;
+use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Event;
 use App\Entity\Order;
 use App\Entity\User;
@@ -18,7 +18,7 @@ class OrderFixture extends Fixture implements DependentFixtureInterface
         $faker = Factory::create();
         $events = $manager->getRepository(Event::class)->findAll();
         $users = $manager->getRepository(User::class)->findAll();
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 30; $i++) {
             $order = new Order();
             $event = $faker->randomElement($events);
             $order->setUser($faker->randomElement($users))

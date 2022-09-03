@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 
+use App\Entity\Enums\EnumEventStatus;
 use App\Entity\Event;
 use App\Entity\Experience;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -17,13 +18,14 @@ class DeActiveEventFixture extends Fixture implements DependentFixtureInterface
         $faker = Factory::create();
         $experiences = $manager->getRepository(Experience::class)->findAll();
         $experiencesWithActiveEventsCount = array_slice($experiences, sizeof($experiences) / 2);
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $event = new Event();
             $event->setRegisteredUsers($faker->numberBetween(1, 9))
                 ->setExperience($faker->randomElement($experiencesWithActiveEventsCount))
                 ->setCapacity($faker->numberBetween(10, 100))
                 ->setDuration(120)
                 ->setPrice($faker->numberBetween(100, 1000))
+                ->setStatus($faker->randomElement(EnumEventStatus::cases()))
                 ->setStartsAt($faker->dateTimeBetween('-3 year', '-1 year'))
                 ->setCreatedAt($faker->dateTime);
             $manager->persist($event);
