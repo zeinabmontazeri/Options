@@ -5,12 +5,13 @@ namespace App\Service;
 use App\Entity\EnumOrderStatus;
 use App\Entity\Order;
 use App\Repository\OrderRepository;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class OrderEventService
 {
     private $result=[];
-    public function __construct(private readonly OrderRepository $orderRepository)
+    public function __construct(private readonly OrderRepository $orderRepository,private readonly EventRepository $eventRepository)
 {
 }
     public function orderTheEvent($user,$event):array
@@ -31,6 +32,7 @@ class OrderEventService
 }
     private function orderValidation($user,$event): bool
 {
+    $this->checkOrderIsPublished($event->getId());
     $this->checkUserOrderedEvent($user->getId(),$event->getId());
     if($event->getCapacity()>$this->orderRepository->getTotalRegisteredEvent($event->getId()))
     {
@@ -57,4 +59,13 @@ class OrderEventService
         throw new BadRequestHttpException('The user ordered event before');
     }
 }
+    private function checkOrderIsPublished($eventId): Boolean
+    {
+        $orderId=$this->eventRepository->find($eventId);
+        if($orderId!=0)
+        {
+            throw new BadRequestHttpException('The user ordered event before');
+        }
+        return true;
+    }
 }

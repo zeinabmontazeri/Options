@@ -32,6 +32,7 @@ class OrderController extends AbstractController
         OrderRepository    $orderRepository,
         AuthenticatedUser  $security): JsonResponse
     {
+        //TODO: 'draft' must replace with ENUM Key
         if ($order->getStatus() == 'draft' and $order->getUser() === $security->getUser()) {
             $removeOrderService->removeOrder($order, $orderRepository);
             return $this->json([
