@@ -48,7 +48,7 @@ class Experience
     #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class)]
     private Collection $events;
 
-    #[ORM\Column(name: 'status',enumType: EnumOrderStatus::class)]
+    #[ORM\Column(name: 'status',enumType: EnumEventStatus::class)]
     private EnumEventStatus $status = EnumEventStatus::DRAFT;
 
     #[ORM\Column(name: 'approvalStatus',enumType: EnumPermissionStatus::class)]
