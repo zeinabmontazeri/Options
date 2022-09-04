@@ -6,7 +6,7 @@ use App\Entity\User;
 
 class LoginCheckerService
 {
-    public function check(string $loginRole, string|array $userRole): bool
+    public function check(string $loginRole, string|array $userRole)
     {
         if (!array_key_exists($loginRole, User::ROLE_HIERARCHY))
             return false;
@@ -30,7 +30,7 @@ class LoginCheckerService
 
         if (!in_array($loginRole, $userRole))
             return false;
-
+        
         return true;
     }
 }

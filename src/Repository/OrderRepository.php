@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\EnumOrderStatus;
 use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -40,42 +39,28 @@ class OrderRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByUserEventId($userId, $eventId): int
-    {
-        return intval($this->createQueryBuilder('o')
-            ->select('o.id')
-            ->where('o.user=:var1')
-            ->andWhere('o.event=:var2')
-            ->setParameter('var1', $userId)
-            ->setParameter('var2', $eventId)
-            ->getQuery()
-            ->getResult());
-    }
+//    /**
+//     * @return Order[] Returns an array of Order objects
+//     */
+//    public function findByExampleField($value): array
+//    {
+//        return $this->createQueryBuilder('o')
+//            ->andWhere('o.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->orderBy('o.id', 'ASC')
+//            ->setMaxResults(10)
+//            ->getQuery()
+//            ->getResult()
+//        ;
+//    }
 
-    public function getTotalRegisteredEvent($eventId): int
-    {
-        return intval($this->createQueryBuilder('o')
-            ->select('count(o.id)')
-            ->where('o.event=:var1')
-            ->setParameter('var1', $eventId)
-            ->getQuery()
-            ->getSingleScalarResult());
-    }
-
-    public function getHostSalesForSetBusinessClass($fromDate, $toDate)
-    {
-        $entityManager = $this->getEntityManager();
-        $query = $entityManager->createQuery
-        (
-            'SELECT h.id as hostId, COUNT(o.id) ordersCount, SUM(o.payablePrice) as totalSell
-            FROM App\Entity\Host h, App\Entity\Order o
-            INNER JOIN App\Entity\Event e WITH o.event = e.id
-            INNER JOIN App\Entity\Experience ex WITH e.experience = ex.id
-            WHERE h.id = ex.host AND (o.createdAt >= :fromDate AND o.createdAt <= :toDate) AND o.status = :status
-            GROUP BY h.id ORDER BY totalSell DESC')
-            ->setParameter('fromDate', $fromDate)
-            ->setParameter('toDate', $toDate)
-            ->setParameter('status', 'checkout');
-        return $query->getResult();
-    }
+//    public function findOneBySomeField($value): ?Order
+//    {
+//        return $this->createQueryBuilder('o')
+//            ->andWhere('o.exampleField = :val')
+//            ->setParameter('val', $value)
+//            ->getQuery()
+//            ->getOneOrNullResult()
+//        ;
+//    }
 }

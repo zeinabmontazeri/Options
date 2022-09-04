@@ -39,19 +39,6 @@ class HostRepository extends ServiceEntityRepository
         }
     }
 
-    public function updateHostBusinessClass($hostId, $businessClass)
-    {
-        $this->createQueryBuilder('host')
-            ->update()
-            ->set('host.level', ':businessClass')
-            ->where('host.id = :hostId')
-            ->setParameter('businessClass', $businessClass)
-            ->setParameter('hostId', $hostId)
-            ->getQuery()
-            ->execute();
-    }
-
-
 //    /**
 //     * @return Host[] Returns an array of Host objects
 //     */

@@ -4,8 +4,10 @@ namespace App\Listener;
 
 use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 #[AsEventListener(
     event: 'lexik_jwt_authentication.on_jwt_created',
@@ -17,7 +19,7 @@ final class JwtCreatedListener
     {
     }
 
-    public function setJwtRoleEqualToLoginRole(JWTCreatedEvent $event): void
+    public function setJwtRoleEqualToLoginRole(JWTCreatedEvent $event)
     {
         $request = $this->requestStack->getCurrentRequest();
         $requestPayload = $request->toArray();

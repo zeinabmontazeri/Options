@@ -38,7 +38,7 @@ class UserRegisterRequest extends BaseRequest
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\LessThan(new \DateTime())]
+    #[Assert\Type("\DateTimeInterface")]
     public readonly ?\DateTimeInterface $birthDate;
 
     #[Assert\NotBlank]
@@ -53,14 +53,14 @@ class UserRegisterRequest extends BaseRequest
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Choice(['MALE', 'FEMALE'])]
+    #[Assert\Choice(['MALE','FEMALE'])]
     public readonly ?string $gender;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Choice(["ROLE_EXPERIENCER", "ROLE_HOST"])]
+    #[Assert\Choice(["ROLE_EXPERIENCER","ROLE_HOST"])]
     public readonly ?string $role;
-
+    
     protected function autoValidateRequest(): bool
     {
         return true;

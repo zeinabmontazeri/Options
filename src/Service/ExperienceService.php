@@ -38,7 +38,7 @@ class ExperienceService
             $repository->add($experience, true);
             $res['data']['id'] = $experience->getId();
             $res['message'] = 'Experience successfully created';
-            $res['status'] = 'success';
+            $res['status'] = true;
         } else {
             throw new BadRequestException("Experience title should be unique , you have already this title name. ", 400);
         }

@@ -4,7 +4,7 @@ namespace App\Listener;
 
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationFailureEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 #[AsEventListener(
     event: 'lexik_jwt_authentication.on_authentication_failure',
@@ -12,8 +12,17 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 )]
 final class AuthenticationFailureListener
 {
-    public function setResponseFormat(AuthenticationFailureEvent $event): void
+    public function setResponseFormat(AuthenticationFailureEvent $event)
     {
-        throw new UnauthorizedHttpException('challenge', 'Invalid Credentials.');
+        $response = new JsonResponse(
+            data: [
+            'success' => false,
+            'data' => [],
+            'message' => 'Invalid credentials.',
+            ],
+            status: JsonResponse::HTTP_UNAUTHORIZED
+        );
+
+        $event->setResponse($response);
     }
 }
