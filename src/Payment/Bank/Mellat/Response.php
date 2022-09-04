@@ -15,7 +15,7 @@ class Response implements ResponseInterface
         $this->processRawResponse($rawResponse);
     }
 
-    private function processRawResponse(string $rawResponse)
+    private function processRawResponse(string $rawResponse): void
     {
         if (!strpos($rawResponse, ',')) {
             $this->bankStatus = intval($rawResponse);

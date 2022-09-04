@@ -93,7 +93,10 @@ class CheckoutService
             );
         }
 
-        return $paymentResponseCmd->getBankReferenceId();
+        return $this
+            ->transactionRepository
+            ->find($paymentResponseCmd->getTransactionId())
+            ->getBankReferenceId();
     }
 
     private function generateEventNameFromEnum(string $enumValue)

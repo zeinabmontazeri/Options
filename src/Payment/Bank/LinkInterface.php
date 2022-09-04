@@ -11,31 +11,25 @@ interface LinkInterface
         string $note,
         string $amount,
         string $callbackUrl,
-    );
+    ): ResponseInterface;
 
     public function verify(
         int $transactionId,
         int $paymentTransactionId,
         int $bankReferenceId,
-    );
+    ): ResponseInterface;
 
     public function settle(
         int $transactionId,
         int $paymentTransactionId,
         int $bankReferenceId,
-    );
-
-    public function inquery(
-        int $transactionId,
-        int $paymentTransactionId,
-        int $bankReferenceId,
-    );
+    ): ResponseInterface;
 
     public function reversal(
         int $transactionId,
         int $paymentTransactionId,
         int $bankReferenceId,
-    );
+    ): ResponseInterface;
 
     public static function generateRedirectLink(string $bankToken): string;
 }

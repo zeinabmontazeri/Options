@@ -4,7 +4,6 @@ namespace App\Payment;
 
 use App\Auth\AuthenticatedUser;
 use App\Entity\Transaction;
-use App\Entity\TransactionCmdEnum;
 use App\Entity\TransactionOriginEnum;
 use App\Entity\TransactionStatusEnum;
 use App\Payment\Bank\Mellat\Link as MellatLink;
@@ -71,30 +70,7 @@ class BankOperatonManager
 
     public function isInvoicePurchaced(int $invoiceId, TransactionOriginEnum $origin): bool
     {
-        $query = $this->entityManager->createQuery("
-                SELECT paymentResponse
-                FROM App\Entity\Transaction paymentResponse
-                WHERE paymentResponse.command = :paymentResponseCommand
-                AND paymentResponse.status = :paymentResponseStatus
-                AND paymentResponse.parentId IN (
-                    SELECT payment.id
-                    FROM App\Entity\Transaction payment
-                    WHERE payment.command = :paymentCommand
-                    AND payment.status = :paymentStatus
-                    AND payment.invoiceId = :invoceId
-                    AND payment.origin = :origin
-                )
-            ")
-            ->setParameter('paymentResponseCommand', TransactionCmdEnum::PaymentResponse)
-            ->setParameter('paymentResponseStatus', TransactionStatusEnum::Success)
-            ->setParameter('paymentCommand', TransactionCmdEnum::Payment)
-            ->setParameter('paymentStatus', TransactionStatusEnum::Success)
-            ->setParameter('invoceId', $invoiceId)
-            ->setParameter('origin', $origin);
-        
-        $transactions = $query->getResult();
-
-        return count($transactions) !== 0;
+        return $this->transactionRepository->isInvoicePurchaced($invoiceId, $origin);
     }
 
     public function getCallbackUrl(string $callbackToken)
@@ -118,12 +94,13 @@ class BankOperatonManager
 
     public function getPaymentFromPaymentResponse(PaymentResponseCmd $cmd): ?PaymentCmd
     {
-        $paymentTransaction = $this->transactionRepository->findOneBy([
-            'command' => TransactionCmdEnum::Payment,
-            'status' => TransactionStatusEnum::Success,
-            'id' => $cmd->getPaymentTransactionId(),
-            'bankToken' => $cmd->getBankToken(),
-        ]);
+        $paymentTransaction = $this
+            ->transactionRepository
+            ->getPayment(
+                status: TransactionStatusEnum::Success,
+                id: $cmd->getPaymentTransactionId(),
+                bankToken: $cmd->getBankToken(),
+            );
 
         return !is_null($paymentTransaction)
             ? $this->createCmdFromTransaction($paymentTransaction)

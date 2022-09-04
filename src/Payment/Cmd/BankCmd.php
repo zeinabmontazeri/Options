@@ -5,7 +5,7 @@ namespace App\Payment\Cmd;
 use App\Entity\TransactionCmdEnum;
 use App\Entity\TransactionStatusEnum;
 
-abstract class BankCmd
+abstract class BankCmd implements BankCmd
 {
     abstract public function forgeTransactionId(int $transactionId): self;
     abstract public function forgeCreatedAt(\DateTimeImmutable $createdAt): self;
@@ -50,7 +50,7 @@ abstract class BankCmd
         return isset($this->createdAt) ? $this->createdAt : null;
     }
 
-    public function getLink(): string
+    public function getLink(): ?string
     {
         return isset($this->link) ? $this->link : null;
     }
@@ -62,13 +62,7 @@ abstract class BankCmd
 
     public function getBankStatus(): ?int
     {
-        if(isset($this->bankStatus))
-        {
-            return $this->bankStatus;
-        }
-        else{
-            return null;
-        }
+        return isset($this->bankStatus) ? $this->bankStatus : null;
     }
 
     public static function getForgeList(): array

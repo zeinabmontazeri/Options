@@ -48,17 +48,17 @@ class PaymentController extends AbstractController
         $paymentResponseCmd = $operationManager::generatePaymentResponseCmd($request->getContent());
 
         $response = $this->service->applyPaymentResponse($paymentResponseCmd);
-        if(is_null($response)){
+        if (is_null($response)) {
             throw new HttpException('Payment Failed.');
         } else {
-            return [
-                'data'=> [
-                    'BankReferenceId'=> $response,
+            $this->json([
+                'data' => [
+                    'BankReferenceId' => $response,
                 ],
                 'message' => 'Payment finished successfully.',
                 'status' => 'success',
                 'code' => 200,
-            ];
+            ]);
         }
     }
 }

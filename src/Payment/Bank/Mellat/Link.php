@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Payment\Bank\Mellat;
 
@@ -41,7 +42,7 @@ class Link implements LinkInterface
         string $note,
         string $amount,
         string $callbackUrl,
-    ) {
+    ): Response {
         $response = $this->client->bpPayRequest(
             [
                 // terminal info
@@ -66,7 +67,7 @@ class Link implements LinkInterface
         int $transactionId,
         int $paymentTransactionId,
         int $bankReferenceId,
-    ) {
+    ): Response {
         $response = $this->client->bpVerifyRequest(
             [
                 // terminal info
@@ -87,7 +88,7 @@ class Link implements LinkInterface
         int $transactionId,
         int $paymentTransactionId,
         int $bankReferenceId,
-    ) {
+    ): Response {
         $response = $this->client->bpSettleRequest(
             [
                 // terminal info
@@ -104,33 +105,11 @@ class Link implements LinkInterface
         return new Response($response->return);
     }
 
-    public function inquery(
-        int $transactionId,
-        int $paymentTransactionId,
-        int $bankReferenceId,
-    ) {
-        $response = $this->client->bpInqueryRequest(
-            [
-                // terminal info
-                'terminalId' => $this->credential->getTerminalId(),
-                'userName' => $this->credential->getUserName(),
-                'userPassword' => $this->credential->getPassword(),
-                // request info
-                'orderId' => $transactionId,
-                'saleOrderId' => $paymentTransactionId,
-                'saleReferenceId' => $bankReferenceId,
-            ]
-        );
-
-        return new Response($response->return);
-    }
-
-
     public function reversal(
         int $transactionId,
         int $paymentTransactionId,
         int $bankReferenceId,
-    ) {
+    ): Response {
         $response = $this->client->bpReversalRequest(
             [
                 // terminal info

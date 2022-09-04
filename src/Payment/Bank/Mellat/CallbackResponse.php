@@ -15,7 +15,7 @@ class CallbackResponse implements CallbackResponseInterface
     ) {
     }
 
-    static function make(string $rawResponse)
+    static function make(string $rawResponse): static
     {
         $params = static::parseRawResponse($rawResponse);
 

@@ -72,88 +72,49 @@ class TransactionRepository extends ServiceEntityRepository
         return $result;
     }
 
-    public function getInvoiceSuccessfulPaymentHistory(
-        int $invoiceId,
-        TransactionOriginEnum $origin,
-    ): array {
-        $query = $this
-            ->getEntityManager()
-            ->createQuery("
-                SELECT t
-                FROM App\Entity\Transaction t
-                WHERE t.command = :command
-                    AND t.origin = :origin
-                    AND t.invoiceId = :invoiceId
-                    AND t.status = :status
-            ")
-            ->setParameter('command', TransactionCmdEnum::Payment->value)
-            ->setParameter('origin', $origin->value)
-            ->setParameter('invoiceId', $invoiceId)
-            ->setParameter('status', TransactionStatusEnum::Success->value);
-
-        $result = $query->getResult();
-
-        return $result;
-    }
-
-    public function getPaymentFollowUpTransaction(
-        int $transactionId,
-        TransactionCmdEnum $transactionType,
-    ): ?Transaction {
-        $query = $this
-            ->getEntityManager()
-            ->createQuery("
-                SELECT t
-                FROM App\Entity\Transaction t
-                WHERE t.parentId = :transactionId
-                    AND t.command = :command
-            ")
-            ->setParameter('transactionId', $transactionId)
-            ->setParameter('command', $transactionType->value);
-
-        $result = $query->getOneOrNullResult();
-
-        return $result;
-    }
-
-    public function getPaymentTransactionSequence(int $paymentId): array
+    public function isInvoicePurchaced(int $invoiceId, TransactionOriginEnum $origin): bool
     {
         $query = $this
             ->getEntityManager()
             ->createQuery("
-                SELECT t
-                FROM App\Entity\Transaction t
-                WHERE t.parentId = :paymentId
+                SELECT paymentResponse
+                FROM App\Entity\Transaction paymentResponse
+                WHERE paymentResponse.command = :paymentResponseCommand
+                AND paymentResponse.status = :paymentResponseStatus
+                AND paymentResponse.parentId IN (
+                    SELECT payment.id
+                    FROM App\Entity\Transaction payment
+                    WHERE payment.command = :paymentCommand
+                    AND payment.status = :paymentStatus
+                    AND payment.invoiceId = :invoceId
+                    AND payment.origin = :origin
+                )
             ")
-            ->setParameter('paymentId', $paymentId);
+            ->setParameter('paymentResponseCommand', TransactionCmdEnum::PaymentResponse)
+            ->setParameter('paymentResponseStatus', TransactionStatusEnum::Success)
+            ->setParameter('paymentCommand', TransactionCmdEnum::Payment)
+            ->setParameter('paymentStatus', TransactionStatusEnum::Success)
+            ->setParameter('invoceId', $invoiceId)
+            ->setParameter('origin', $origin);
 
-        $result = $query->getResult();
+        $transactions = $query->getResult();
 
-        return $result;
+        return count($transactions) !== 0;
     }
 
-    public function getVerificationsForPayment(
-        int $paymentTransactionId,
-        int $invoiceId,
-        TransactionOriginEnum $origin,
-    ) {
-        $query = $this
-            ->getEntityManager()
-            ->createQuery("
-            SELECT t
-            FROM App\Entity\Transaction t
-            WHERE t.invoiceId = :invoiceId
-                AND t.command = :command
-                AND t.origin = :origin
-                AND t.parentId = :paymentId
-        ")
-            ->setParameter('invoiceId', $invoiceId)
-            ->setParameter('command', TransactionCmdEnum::Verify->value)
-            ->setParameter('origin', $origin->value)
-            ->setParameter('paymentId', $paymentTransactionId);
+    public function getPayment(
+        TransactionStatusEnum $status,
+        int $id,
+        string $bankToken
+    ): ?Transaction
+    {
+        $paymentTransaction = $this->transactionRepository->findOneBy([
+            'command' => TransactionCmdEnum::Payment,
+            'status' => $status,
+            'id' => $id,
+            'bankToken' => $bankToken,
+        ]);
 
-        $result = $query->getResult();
-
-        return $result;
+        return $paymentTransaction;
     }
 }
