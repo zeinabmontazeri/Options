@@ -3,11 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\EnumOrderStatus;
+use App\Entity\Enums\EnumOrderStatus as EnumsEnumOrderStatus;
 use App\Entity\Event;
 use App\Entity\Order;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraints\Date;
 use Symfony\Component\Validator\Constraints\Json;
@@ -43,7 +45,7 @@ class OrderRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    public function findByUserEvent_Id($userId,$eventId): int
+    public function findByUserEvent_Id($userId, $eventId): int
     {
         return intval($this->createQueryBuilder('o')
             ->select('o.id')
@@ -65,14 +67,35 @@ class OrderRepository extends ServiceEntityRepository
     }
     public function getExperiencerOrder($userId)
     {
-        $query= $this->createQueryBuilder('o')
+        $query = $this->createQueryBuilder('o')
             ->select('o.id as orderId,order_event.id as eventId,order_experience.title as title,o.status as status')
             ->andWhere('o.user=:var1')
             ->setParameter('var1', $userId)
             ->innerJoin('o.event', 'order_event')
-            ->innerJoin('order_event.experience','order_experience')
+            ->innerJoin('order_event.experience', 'order_experience')
             ->getQuery()
             ->execute();
         return $query;
+    }
+
+    public function setOrderAsCheckedOut(int $invoiceId): bool
+    {
+        $order = $this->find($invoiceId);
+
+        if (is_null($order)) {
+            return false;
+        }
+
+        $order->setStatus(EnumsEnumOrderStatus::CHECKOUT);
+
+        $this
+            ->getEntityManager()
+            ->persist($order);
+
+        $this
+            ->getEntityManager()
+            ->flush();
+
+        return true;
     }
 }

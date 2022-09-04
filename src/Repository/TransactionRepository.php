@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Order;
 use App\Entity\Transaction;
 use App\Entity\TransactionCmdEnum;
@@ -50,16 +51,16 @@ class TransactionRepository extends ServiceEntityRepository
         $query = $this
             ->getEntityManager()
             ->createQuery("
-                SELECT o, u
+                SELECT o
                 FROM App\Entity\Order o
                 LEFT JOIN o.event e
-                LEFT JOIN o.user u
-                WHERE o.status = 'draft'
+                WHERE o.status = :status
                     AND o.id = :orderId
                     AND e.startsAt < :today
             ")
+            ->setParameter('status', EnumOrderStatus::DRAFT)
             ->setParameter('orderId', $orderId)
-            ->setParameter('today', new \DateTimeImmutable('now', new \DateTimeZone('Asia/Tehran')));
+            ->setParameter('today', new \DateTimeImmutable());
 
         try {
             $result = $query->getSingleResult();
@@ -108,7 +109,7 @@ class TransactionRepository extends ServiceEntityRepository
         string $bankToken
     ): ?Transaction
     {
-        $paymentTransaction = $this->transactionRepository->findOneBy([
+        $paymentTransaction = $this->findOneBy([
             'command' => TransactionCmdEnum::Payment,
             'status' => $status,
             'id' => $id,

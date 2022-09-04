@@ -5,7 +5,7 @@ namespace App\Payment\Cmd;
 use App\Entity\TransactionCmdEnum;
 use App\Entity\TransactionStatusEnum;
 
-abstract class BankCmd implements BankCmd
+abstract class BankCmd
 {
     abstract public function forgeTransactionId(int $transactionId): self;
     abstract public function forgeCreatedAt(\DateTimeImmutable $createdAt): self;
