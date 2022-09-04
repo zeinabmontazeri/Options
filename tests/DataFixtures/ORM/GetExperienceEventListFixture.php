@@ -16,7 +16,7 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class GetExperineceByFilterFixture extends Fixture
+class GetExperienceEventListFixture extends Fixture
 {
     private UserPasswordHasherInterface $hasher;
 
@@ -63,39 +63,30 @@ class GetExperineceByFilterFixture extends Fixture
         $categories = $manager->getRepository(Category::class)->findAll();
         $hosts = $manager->getRepository(Host::class)->findAll();
 
-        for ($i = 0; $i < 20; $i++) {
-            $experience = new Experience();
-            if ($i % 2 == 0) {
-                $experience->setHost($hosts[0]);
-            } else {
-                $experience->setHost($hosts[1]);
-            }
-            $experience->setTitle($faker->word)
-                ->setDescription($faker->word)
-                ->setCategory($categories[0])
-                ->setStatus($faker->randomElement(EnumEventStatus::cases()))
-                ->setApprovalStatus($faker->randomElement(EnumPermissionStatus::cases()))
-                ->setCreatedAt($faker->dateTime);
-            $manager->persist($experience);
-        }
+        $experience = new Experience();
+        $experience->setTitle($faker->word)
+            ->setDescription($faker->word)
+            ->setHost($faker->randomElement($hosts))
+            ->setCategory($categories[0])
+            ->setStatus($faker->randomElement(EnumEventStatus::cases()))
+            ->setApprovalStatus($faker->randomElement(EnumPermissionStatus::cases()))
+            ->setCreatedAt($faker->dateTime);
+        $manager->persist($experience);
         $manager->flush();
 
         $experiences = $manager->getRepository(Experience::class)->findAll();
-        foreach ($experiences as $experience) {
-            if ($experience->getHost()->getId() % 2 == 1) {
-                $event = new Event();
-                $event->setRegisteredUsers($faker->numberBetween(1, 9))
-                    ->setExperience($experience)
-                    ->setCapacity($faker->numberBetween(20, 100))
-                    ->setDuration(120)
-                    ->setPrice($faker->numberBetween(100, 1000))
-                    ->setStartsAt($faker->dateTimeBetween('+2 year', '+4 year'))
-                    ->setStatus($faker->randomElement(EnumEventStatus::cases()))
-                    ->setIsOnline(0)
-                    ->setCreatedAt($faker->dateTime);
-                $manager->persist($event);
-            }
-        }
+
+        $event = new Event();
+        $event->setRegisteredUsers($faker->numberBetween(1, 9))
+            ->setExperience($experiences[0])
+            ->setCapacity($faker->numberBetween(20, 100))
+            ->setDuration(120)
+            ->setPrice($faker->numberBetween(100, 1000))
+            ->setStartsAt($faker->dateTimeBetween('+2 year', '+4 year'))
+            ->setStatus($faker->randomElement(EnumEventStatus::cases()))
+            ->setIsOnline(0)
+            ->setCreatedAt($faker->dateTime);
+        $manager->persist($event);
         $manager->flush();
 
     }

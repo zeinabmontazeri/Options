@@ -25,11 +25,11 @@ class GetAllExperienceByFilterControllerTest extends BaseTestCase
         $this->assertEquals('success', $decodedResponse->status);
         $this->assertSameSize($decodedResponse->data, $experiences);
     }
-//
+
     public function testGetExperienceByFilter()
     {
         $experiences = $this->entityManager->getRepository(Experience::class)->findAll();
-        $this->client->request('GET', '/api/v1/shop/experiences?host=1&purchasable=true', []
+        $this->client->request('GET', '/api/v1/shop/experiences?host=1&purchasable=true&category=1', []
             , [], [
                 'CONTENT_TYPE' => 'application/json',
             ]);
