@@ -57,7 +57,7 @@ class UserFixtures extends Fixture
         $manager->flush();
 
         $host = new Host();
-        $host->setUser($user2)
+        $host->setUser($user1)
             ->setCreatedAt(new \DateTimeImmutable())
             ->setApprovalStatus(EnumPermissionStatus::ACCEPTED)
             ->setLevel(EnumHostBusinessClassStatus::NORMAL);

@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class ExperienceController extends AbstractController
 {
     #[Route('/experiences', name: 'app_get_experiences', methods: ['GET'])]
-    #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_HOST, User::ROLE_ADMIN)]
+    #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_ADMIN, User::ROLE_HOST)]
     public function filterExperiences(
         ExperienceRepository          $experienceRepository,
         GetExperiencesByFilterService $service,
@@ -42,7 +42,7 @@ class ExperienceController extends AbstractController
 
     #[Route('/experiences/{experience_id}/events/', name: 'app_experience_event_list', methods: ['GET'])]
     #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
-    #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_HOST, User::ROLE_ADMIN)]
+    #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_ADMIN, User::ROLE_HOST)]
     public function getExperiences(
         Experience                    $experience,
         EventRepository               $eventRepository,
@@ -73,7 +73,7 @@ class ExperienceController extends AbstractController
     }
 
     #[Route('/experiences/search/{word}', name: 'app_experience_search', methods: ['GET'])]
-    #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_HOST, User::ROLE_ADMIN)]
+    #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_ADMIN, User::ROLE_HOST)]
     public function searchExperience($word, ExperienceRepository $experienceRepository)
     {
         $searchResult = $experienceRepository->searchByWord($word);
