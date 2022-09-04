@@ -29,7 +29,6 @@ class OrderRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
     public function remove(Order $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -38,29 +37,49 @@ class OrderRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+    public function findByUserEventId($userId,$eventId): int
+    {
+        return intval($this->createQueryBuilder('o')
+            ->select('o.id')
+            ->where('o.user=:var1')
+            ->andWhere('o.event=:var2')
+            ->setParameter('var1', $userId)
+            ->setParameter('var2', $eventId)
+            ->getQuery()
+            ->getResult());
+    }
+    public function getTotalRegisteredEvent($eventId): int
+    {
+        return  intval($this->createQueryBuilder('o')
+            ->select('count(o.id)')
+            ->where('o.event=:var1')
+            ->setParameter('var1', $eventId)
+            ->getQuery()
+            ->getSingleScalarResult());
+    }
+    public function getExperiencerOrder($userId)
+    {
+        $query= $this->createQueryBuilder('o')
+            ->select('o.id as orderId,order_event.id as eventId,order_experience.title as title,o.status as status')
+            ->andWhere('o.user=:var1')
+            ->setParameter('var1', $userId)
+            ->innerJoin('o.event', 'order_event')
+            ->innerJoin('order_event.experience','order_experience')
+            ->getQuery()
+            ->execute();
+        return $query;
+    }
 
-//    /**
-//     * @return Order[] Returns an array of Order objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Order
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function getCompletedOrders(Event $event)
+    {
+        return $this->createQueryBuilder('o')
+            ->select('o.id as orderId,order_event.id as eventId,order_experience.title as title,o.status as status')
+            ->andWhere('order_event.id=:event_id')
+            ->setParameter('event_id', $event->getId())
+            ->andWhere("o.status='CHECKOUT'")
+            ->innerJoin('o.event', 'order_event')
+            ->innerJoin('order_event.experience','order_experience')
+            ->getQuery()
+            ->execute();
+    }
 }

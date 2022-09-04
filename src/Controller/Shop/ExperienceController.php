@@ -54,4 +54,21 @@ class ExperienceController extends AbstractController
             'status' => 'success',
         ], Response::HTTP_OK);
     }
+
+    #[Route('/experiences/trending/', name: 'app_trending_experience', methods: ['GET'])]
+    public function getTrendingExperiences(
+        ExperienceRepository $experienceRepository,
+    ): JsonResponse
+    {
+        $result = $experienceRepository->getTrendingExperiences();
+        return $this->json(
+            [
+                'data' => $result,
+                'message' => 'Experiences Successfully Retrieved',
+                'status' => true,
+            ], Response::HTTP_OK
+        );
+    }
+
+
 }
