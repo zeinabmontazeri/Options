@@ -2,7 +2,10 @@
 
 namespace App\Command;
 
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\HostRepository;
+use App\Repository\OrderRepository;
+use App\Service\Host\HostBusinessClassService;
+use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -10,54 +13,50 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
-#[AsCommand(
-    name: 'app:business-class',
-    description: 'Set business class for hosts',
-)]
+#[AsCommand(name: 'app:business-class')]
 class HostBusinessClassCommand extends Command
 {
 
+    protected HostBusinessClassService $hostBusinessClassService;
+    protected HostRepository $hostRepository;
+    protected OrderRepository $orderRepository;
 
-    protected EntityManagerInterface $em;
-    protected static $defaultDescription = 'Set business class for hosts.
-    This command will be executed every 1st day of the month.';
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(
+        HostBusinessClassService $hostBusinessClassService,
+        HostRepository           $hostRepository,
+        OrderRepository          $orderRepository
+    )
     {
-        $this->em = $em;
+        $this->hostBusinessClassService = $hostBusinessClassService;
+        $this->hostRepository = $hostRepository;
+        $this->orderRepository = $orderRepository;
         parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * @throws Exception
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        ]
-        $fromDate = $input->getArgument('fromDate');
-        dd(gettype($fromDate));
-        $toDate = $input->getArgument('toDate');
-        $entityManager = $this->em;
-        $query = $entityManager->createQuery
-        (
-            'SELECT h.id as hostId, COUNT(o.id) ordersCount, SUM(o.payablePrice) as totalSell
-            FROM App\Entity\Host h, App\Entity\Order o
-            INNER JOIN App\Entity\Event e WITH o.event = e.id
-            INNER JOIN App\Entity\Experience ex WITH e.experience = ex.id
-            WHERE h.id = ex.host AND (o.createdAt BETWEEN :fromDate AND :toDate) AND o.status = :status
-            GROUP BY h.id ORDER BY totalSell DESC')
-            ->setParameter('fromDate', $fromDate)
-            ->setParameter('toDate', $toDate)
-            ->setParameter('status', 'checkout');
-
-        var_dump($query->getResult());
+        $this->hostBusinessClassService->setBusinessClass(
+            $this->hostRepository,
+            $this->orderRepository,
+            $input->getArgument('fromDate'),
+            $input->getArgument('toDate')
+        );
         return Command::SUCCESS;
     }
 
-
     protected function configure(): void
     {
-        $this->setHelp('This command will be executed every 1st day of the month and will set business class for hosts.');
-        $this->addArgument('fromDate', InputArgument::REQUIRED, 'From date')
+        $this->setDescription('This command allows you to set business class for hosts.')
+            ->setHelp('First parameter is fromDate and second is toDate. Input date range in format YYYY-MM-DD.'
+                . "\n" .
+                'Date range cannot be more than 62 days.'
+                . "\n" .
+                'Example: symfony console app:business-class 2021-01-01 2021-03-01')
+            ->addArgument('fromDate', InputArgument::REQUIRED, 'From date')
             ->addArgument('toDate', InputArgument::REQUIRED, 'To date');
     }
-
 
 }
