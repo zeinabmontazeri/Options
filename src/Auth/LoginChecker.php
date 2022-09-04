@@ -3,10 +3,9 @@
 namespace App\Auth;
 
 use App\Entity\User;
-use App\Exception\AuthException;
 use App\Service\LoginCheckerService;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -14,10 +13,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class LoginChecker implements UserCheckerInterface
 {
     public function __construct(
-        private RequestStack $requestStack,
-        private LoginCheckerService $service,
+        private RequestStack          $requestStack,
+        private LoginCheckerService   $service,
         private UrlGeneratorInterface $router
-    ) {
+    )
+    {
     }
 
     public function checkPreAuth(UserInterface $user)
@@ -31,8 +31,7 @@ class LoginChecker implements UserCheckerInterface
             ->getCurrentRequest();
 
 
-        if ($request->getPathInfo() !== $this->router->generate('auth.login'))
-        {
+        if ($request->getPathInfo() !== $this->router->generate('auth.login')) {
             return;
         }
 
@@ -43,7 +42,7 @@ class LoginChecker implements UserCheckerInterface
 
         $userRole = $user->getRoles();
 
-        if(!$this->service->check($requestRole, $userRole))
-            throw new AuthException('Invalid credentials.', JsonResponse::HTTP_UNAUTHORIZED);
+        if (!$this->service->check($requestRole, $userRole))
+            throw new UnauthorizedHttpException('challenge', 'Invalid credentials.');
     }
 }
