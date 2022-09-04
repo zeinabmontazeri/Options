@@ -73,6 +73,7 @@ class ExperienceController extends AbstractController
     }
 
     #[Route('/experiences/search/{word}', name: 'app_experience_search', methods: ['GET'])]
+    #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_HOST, User::ROLE_ADMIN)]
     public function searchExperience($word, ExperienceRepository $experienceRepository)
     {
         $searchResult = $experienceRepository->searchByWord($word);
