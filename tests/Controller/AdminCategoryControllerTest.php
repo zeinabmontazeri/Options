@@ -40,17 +40,14 @@ class AdminCategoryControllerTest extends BaseTestCase
     public function testOthersCouldNotCanGetAllCategories()
     {
         $token = $this->getToken(User::ROLE_HOST);
-        try {
             $this->client->request('GET', '/api/v1/admins/categories', []
                 , [], [
                     'HTTP_AUTHORIZATION' => 'Bearer ' . $token,
                     'CONTENT_TYPE' => 'application/json',
                 ]);
-
             $response = $this->client->getResponse();
-        } catch (Exception $e) {
-            $this->assertSame($e->getMessage() , 'Access Denied');
-        }
+            $this->assertResponse($response , 'accessDenied' , 403);
+
     }
 
 }
