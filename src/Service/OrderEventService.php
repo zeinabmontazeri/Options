@@ -2,17 +2,16 @@
 
 namespace App\Service;
 
-use App\Entity\EnumEventStatus;
+use App\Entity\Enums\EnumEventStatus;
+use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Order;
 use App\Repository\OrderRepository;
-use App\Repository\EventRepository;
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class OrderEventService
 {
     private $result=[];
-    public function __construct(private readonly OrderRepository $orderRepository,private readonly EventRepository $eventRepository)
+    public function __construct(private readonly OrderRepository $orderRepository)
 {
 }
     public function orderTheEvent($user,$event):array
@@ -33,41 +32,28 @@ class OrderEventService
 }
     private function orderValidation($user,$event): bool
 {
-    $this->checkOrderIsPublished($event->getId());
-    $this->checkUserOrderedEvent($user->getId(),$event->getId());
-    if($event->getCapacity()>$this->orderRepository->getTotalRegisteredEvent($event->getId()))
-    {
-        if($event->getStartsAt()>new \DateTimeImmutable())
-        {
-            return true;
-        }
-        else
-        {
-            $message='The event registration time is over';
-        }
-    }
-    else
-    {
-        $message='The event registration capacity is full';
-    }
+   if($event->getStatus()==EnumEventStatus::PUBLISHED) {
+       $this->checkUserOrderedEvent($user->getId(), $event->getId());
+       if ($event->getCapacity() > $this->orderRepository->getTotalRegisteredEvent($event->getId())) {
+           if ($event->getStartsAt() > new \DateTimeImmutable()) {
+               return true;
+           } else {
+               $message = 'The event registration time is over';
+           }
+       } else {
+           $message = 'The event registration capacity is full';
+       }
+   }else {
+       $message = 'This event has not yet been published';
+   }
     throw new BadRequestHttpException($message);
 }
     private function checkUserOrderedEvent($userId,$eventId): void
+{
+    $orderId=$this->orderRepository->findByUserEventId($userId,$eventId);
+    if($orderId!=0)
     {
-        $orderId=$this->orderRepository->findByUserEvent_Id($userId,$eventId);
-        if($orderId!=0)
-        {
-            throw new BadRequestHttpException('The user ordered event before');
-        }
+        throw new BadRequestHttpException('The user ordered event before');
     }
-
-    private function checkOrderIsPublished($eventId): bool
-    {
-        $order=$this->eventRepository->find($eventId);
-        if($order=$order->getStatus() !== EnumEventStatus::PUBLISHED)
-        {
-            throw new BadRequestHttpException('Event is not published');
-        }
-        return true;
-    }
+}
 }
