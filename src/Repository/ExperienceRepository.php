@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Enums\EnumEventStatus;
 use App\Entity\Experience;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -70,6 +71,17 @@ class ExperienceRepository extends ServiceEntityRepository
         WHERE e.startsAt > CURRENT_TIMESTAMP() and e.capacity - e.registeredUsers > 0  
         GROUP BY ex.id
         ORDER BY total_buyers DESC')->setMaxResults(20);
+        return $query->getResult();
+    }
+
+    public function searchByWord($word)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery("SELECT ex
+         FROM App\Entity\Experience ex
+         WHERE ex.status = :published AND (ex.title LIKE :word OR ex.description LIKE :word)")
+            ->setParameter('word', "%$word%")
+            ->setParameter('published', EnumEventStatus::PUBLISHED);
         return $query->getResult();
     }
 

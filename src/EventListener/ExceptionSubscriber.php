@@ -13,14 +13,14 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            KernelEvents::EXCEPTION => 'onKernelException'
+            KernelEvents::EXCEPTION => ['onKernelException' , 10]
         ];
     }
 
     public function onKernelException(ExceptionEvent $event)
     {
         $exception = $event->getThrowable();
-        $response = ExceptionFactory::getException($exception);
-        $event->setResponse($response);
+//        $response = ExceptionFactory::getException($exception);
+//        $event->setResponse($response);
     }
 }
