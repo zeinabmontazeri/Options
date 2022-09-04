@@ -2,9 +2,9 @@
 
 namespace App\Payment\Bank\Mellat;
 
-use App\Payment\Bank\LinkResponseInterface;
+use App\Payment\Bank\ResponseInterface;
 
-class Response implements LinkResponseInterface
+class Response implements ResponseInterface
 {
     private readonly int $bankStatus;
     private readonly string $token;

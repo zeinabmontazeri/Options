@@ -3,7 +3,7 @@
 namespace App\Payment\Cmd;
 
 use App\Entity\TransactionStatusEnum;
-use App\Payment\Bank\LinkResponseInterface;
+use App\Payment\Bank\ResponseInterface;
 
 class Response
 {
@@ -15,10 +15,10 @@ class Response
     ) {
     }
 
-    static function make(LinkResponseInterface $linkResponse)
+    static function make(ResponseInterface $linkResponse)
     {
         return new static(
-            bankToken: $linkResponse->getToken(),
+            bankToken: $linkResponse->getBankToken(),
             bankStatus: $linkResponse->getBankStatus(),
             status: $linkResponse->getStatus()
                 ? TransactionStatusEnum::Success

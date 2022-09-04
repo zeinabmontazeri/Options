@@ -5,6 +5,7 @@ namespace App\Payment\Bank\Mellat;
 use App\Payment\Bank\LinkInterface;
 use App\Payment\BankCredential;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use App\Payment\Bank\Mellat\Response;
 
 class Link implements LinkInterface
 {
@@ -58,7 +59,7 @@ class Link implements LinkInterface
             ]
         );
 
-        return $this->generateResponse($response->return);
+        return new Response($response->return);
     }
 
     public function verify(
@@ -79,7 +80,7 @@ class Link implements LinkInterface
             ]
         );
 
-        return $this->generateResponse($response->return);
+        return new Response($response->return);
     }
 
     public function settle(
@@ -100,7 +101,7 @@ class Link implements LinkInterface
             ]
         );
 
-        return $this->generateResponse($response->return);
+        return new Response($response->return);
     }
 
     public function inquery(
@@ -121,7 +122,7 @@ class Link implements LinkInterface
             ]
         );
 
-        return $this->generateResponse($response->return);
+        return new Response($response->return);
     }
 
 
@@ -143,13 +144,7 @@ class Link implements LinkInterface
             ]
         );
 
-        return $this->generateResponse($response->return);
-    }
-
-
-    private function generateResponse(string $response): Response
-    {
-        return new Response($response);
+        return new Response($response->return);
     }
 
     public static function generateRedirectLink(string $bankToken): string

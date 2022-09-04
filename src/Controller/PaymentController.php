@@ -9,6 +9,8 @@ use App\Payment\BankOperatonManager;
 use App\Payment\Service\CheckoutService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PaymentController extends AbstractController
@@ -40,12 +42,23 @@ class PaymentController extends AbstractController
         BankOperatonManager $operationManager,
     ) {
         if (!Transaction::validateCallbackToken($callback_token)) {
-            throw new \Exception('Invalid callback Token');
+            throw new BadRequestHttpException('Invalid callback Token');
         }
 
         $paymentResponseCmd = $operationManager::generatePaymentResponseCmd($request->getContent());
 
         $response = $this->service->applyPaymentResponse($paymentResponseCmd);
-        return $this->json('Done');
+        if(is_null($response)){
+            throw new HttpException('Payment Failed.');
+        } else {
+            return [
+                'data'=> [
+                    'BankReferenceId'=> $response,
+                ],
+                'message' => 'Payment finished successfully.',
+                'status' => 'success',
+                'code' => 200,
+            ];
+        }
     }
 }

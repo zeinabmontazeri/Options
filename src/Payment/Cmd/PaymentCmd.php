@@ -87,11 +87,7 @@ class PaymentCmd extends BankCmd
 
     public function forgeCallbackToken(string $callbackToken): self
     {
-        try {
-            $this->callbackToken = $callbackToken;
-        } catch (\Exception $e) {
-            throw new \Exception('Callback token already forged.');
-        }
+        $this->callbackToken = $callbackToken;
 
         return $this;
     }
@@ -103,11 +99,7 @@ class PaymentCmd extends BankCmd
 
     public function forgeBankToken(string $bankToken): self
     {
-        try {
-            $this->bankToken = $bankToken;
-        } catch (\Exception $e) {
-            throw new \Exception('Bank token already forged.');
-        }
+        $this->bankToken = $bankToken;
 
         return $this;
     }

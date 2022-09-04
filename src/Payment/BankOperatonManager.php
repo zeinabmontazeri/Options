@@ -16,6 +16,7 @@ use App\Payment\Cmd\PaymentResponseCmd;
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionMethod;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class BankOperatonManager
@@ -46,16 +47,12 @@ class BankOperatonManager
         $transaction = $this->initTransactionFromCmd($cmd);
         $this->transactionRepository->add($transaction, true);
 
-        if (is_null($transaction)) {
-            throw new \Exception('Failed to persist transaction.');
-        }
-
         $this->forgeCommand($cmd, $transaction);
 
         // validate command
         if (!$handler->validate()) {
             $this->entityManager->rollback();
-            throw new \Exception('Invalid command.');
+            throw new BadRequestHttpException('Payment failed.');
         } elseif (!$handler->doPersist()) {
             $this->entityManager->rollback();
         } else {

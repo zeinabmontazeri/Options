@@ -8,7 +8,12 @@ use App\Entity\TransactionStatusEnum;
 use App\Payment\BankOperatonManager;
 use App\Payment\Cmd\PaymentCmd;
 use App\Payment\Cmd\PaymentResponseCmd;
+use App\Payment\Event\PurchaseFailEvent;
+use App\Payment\Event\PurchaseSuccessEvent;
 use App\Repository\TransactionRepository;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class CheckoutService
 {
@@ -16,6 +21,7 @@ class CheckoutService
         private TransactionRepository $transactionRepository,
         private AuthenticatedUser $authenticatedUser,
         private BankOperatonManager $operationManager,
+        private EventDispatcherInterface $dispatcher,
     ) {
     }
     public function eventOrderCheckout(int $orderId)
@@ -23,11 +29,14 @@ class CheckoutService
         // check if order id is valid, Order is in draft mode, and event started_at has not passed
         $order = $this->transactionRepository->isEventOrderPurchasable($orderId);
         if (is_null($order)) {
-            throw new \Exception(sprintf('The order id(%d) is not purchasable.', $orderId));
+            throw new BadRequestHttpException(sprintf('The order id(%d) is not purchasable.', $orderId));
         }
 
         if ($this->authenticatedUser->getUser() !== $order->getUser()) {
-            throw new \Exception(sprintf('The order id(%d) is not purchasable.', $orderId));
+            throw new UnauthorizedHttpException(
+                challenge: 'challenge',
+                message: sprintf('The order id(%d) is not purchasable.', $orderId)
+            );
         }
 
         // generate payment command
@@ -54,11 +63,42 @@ class CheckoutService
         }
     }
 
-    public function applyPaymentResponse(PaymentResponseCmd $cmd)
+    public function applyPaymentResponse(PaymentResponseCmd $paymentResponseCmd): ?int
     {
-        $response = $this->operationManager->run($cmd);
-        // if ($response->getStatus() === TransactionStatusEnum::Success) {
-            
-        // }
+        $paymentResponseCmd = $this->operationManager->run($paymentResponseCmd);
+        $paymentCmd = $this
+            ->operationManager
+            ->getPaymentFromPaymentResponse($paymentResponseCmd);
+
+        $origin = $this->generateEventNameFromEnum($paymentCmd->getOrigin()->value);
+
+        if ($paymentResponseCmd->getStatus() === TransactionStatusEnum::Success) {
+
+            $purchaseSuccessEvent = new PurchaseSuccessEvent(
+                origin: $paymentCmd->getOrigin(),
+                invoiceId: $paymentCmd->getInvoiceId(),
+            );
+            $this->dispatcher->dispatch(
+                event: $purchaseSuccessEvent,
+                eventName: sprintf('app.payment.%s.success', $origin)
+            );
+        } elseif ($paymentResponseCmd->getStatus() === TransactionStatusEnum::Failure) {
+            $purchaseFailEvent = new PurchaseFailEvent(
+                origin: $paymentCmd->getOrigin(),
+                invoiceId: $paymentCmd->getInvoiceId(),
+            );
+            $this->dispatcher->dispatch(
+                event: $purchaseFailEvent,
+                eventName: sprintf('app.payment.%s.fail', $origin)
+            );
+        }
+
+        return $paymentResponseCmd->getBankReferenceId();
+    }
+
+    private function generateEventNameFromEnum(string $enumValue)
+    {
+        $name = substr($enumValue, strlen('ORIGIN_'));
+        return strtolower($name);
     }
 }

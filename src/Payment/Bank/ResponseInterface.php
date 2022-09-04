@@ -2,7 +2,7 @@
 
 namespace App\Payment\Bank;
 
-interface LinkResponseInterface
+interface ResponseInterface
 {
     public function getStatus(): bool;
     public function getBankToken(): ?string;

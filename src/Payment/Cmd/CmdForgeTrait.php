@@ -42,22 +42,14 @@ trait CmdForgeTrait
 
     public function forgeStatus(TransactionStatusEnum $status): self
     {
-        try {
-            $this->status = $status;
-        } catch (\Exception $e) {
-            throw new \Exception('Status already forged.');
-        }
+        $this->status = $status;
 
         return $this;
     }
 
     public function forgeBankStatus(int $bankStatus): self
     {
-        try {
-            $this->bankStatus = $bankStatus;
-        } catch (\Exception $e) {
-            throw new \Exception('Bank status already forged.');
-        }
+        $this->bankStatus = $bankStatus;
 
         return $this;
     }
