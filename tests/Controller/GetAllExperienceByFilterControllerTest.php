@@ -4,7 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Experience;
 
-class ExperienceControllerTest extends BaseTestCase
+class GetAllExperienceByFilterControllerTest extends BaseTestCase
 {
     protected function setUp(): void
     {
