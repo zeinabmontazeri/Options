@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Enums\EnumEventStatus;
 use App\Repository\EventRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -32,7 +33,7 @@ class Event
     #[ORM\Column]
     private ?int $duration = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 3)]
     private ?string $price = null;
 
     #[ORM\Column]
@@ -56,10 +57,16 @@ class Event
     #[ORM\Column]
     private ?int $registeredUsers = 0;
 
+    #[ORM\OneToMany(mappedBy: 'event', targetEntity: Comment::class)]
+    private Collection $comments;
+
+    #[ORM\Column(name: 'status', enumType: EnumEventStatus::class)]
+    private EnumEventStatus $status = EnumEventStatus::DRAFT;
 
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -214,6 +221,48 @@ class Event
     public function setRegisteredUsers(int $registeredUsers): self
     {
         $this->registeredUsers = $registeredUsers;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Comment>
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments->add($comment);
+            $comment->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->removeElement($comment)) {
+            // set the owning side to null (unless already changed)
+            if ($comment->getEvent() === $this) {
+                $comment->setEvent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getStatus(): EnumEventStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(EnumEventStatus $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

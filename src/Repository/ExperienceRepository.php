@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Enums\EnumEventStatus;
 use App\Entity\Experience;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -44,18 +46,43 @@ class ExperienceRepository extends ServiceEntityRepository
         $baseQuery = $this->createQueryBuilder('experience');
         foreach ($array as $filter => $value) {
             if (!is_null($value) and $filter != 'purchasable') {
-                $baseQuery = $baseQuery->andWhere($baseQuery->expr()->in('experience.'. "{$filter}", ":{$filter}"))
+                $baseQuery = $baseQuery->andWhere($baseQuery->expr()->in('experience.' . "{$filter}", ":{$filter}"))
                     ->setParameter("{$filter}", json_decode($value));
             } else {
                 if ($value) {
                     $baseQuery = $baseQuery->join('experience.events', 'events')
-                        ->andwhere('events.capacity > 0')
+                        ->andwhere('events.capacity - events.registeredUsers > 0')
                         ->andWhere('events.startsAt > :date')
-                        ->setParameter('date', new \DateTime());
+                        ->setParameter('date', new DateTime());
                 }
             }
         }
         return $baseQuery->getQuery()->getResult();
+    }
+
+    public function getTrendingExperiences()
+    {
+        $entityManager = $this->getEntityManager();
+
+        $query = $entityManager->createQuery('SELECT ex.id ,SUM(e.registeredUsers) as total_buyers
+        FROM App\Entity\Experience ex
+        INNER JOIN App\Entity\Event e
+        WITH ex.id = e.experience
+        WHERE e.startsAt > CURRENT_TIMESTAMP() and e.capacity - e.registeredUsers > 0  
+        GROUP BY ex.id
+        ORDER BY total_buyers DESC')->setMaxResults(20);
+        return $query->getResult();
+    }
+
+    public function searchByWord($word)
+    {
+        $em = $this->getEntityManager();
+        $query = $em->createQuery("SELECT ex
+         FROM App\Entity\Experience ex
+         WHERE ex.status = :published AND (ex.title LIKE :word OR ex.description LIKE :word)")
+            ->setParameter('word', "%$word%")
+            ->setParameter('published', EnumEventStatus::PUBLISHED);
+        return $query->getResult();
     }
 
 //    }

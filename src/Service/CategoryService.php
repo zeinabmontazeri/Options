@@ -28,7 +28,7 @@ class CategoryService
             $category->setCreatedAt();
             $repository->add($category, true);
             $res['message'] = 'category successfully created';
-            $res['status'] = true;
+            $res['status'] = 'success';
         } else {
             throw new BadRequestException("Name should be unique , you have already this name. ", 400);
         }
@@ -41,7 +41,7 @@ class CategoryService
         $res = [];
         $repository->remove($category, true);
         $res['message'] = 'category successfully deleted';
-        $res['status'] = true;
+        $res['status'] = 'success';
 
         return $res;
     }
@@ -52,7 +52,7 @@ class CategoryService
         $category->setName($name);
         $repository->add($category, true);
         $res['message'] = 'updated successfully';
-        $res['status'] = true;
+        $res['status'] = 'success';
 
         return $res;
     }
