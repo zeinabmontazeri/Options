@@ -3,14 +3,17 @@
 namespace App\Controller\Host;
 
 use App\Auth\AcceptableRoles;
+use App\Entity\Experience;
 use App\Entity\Host;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
 use App\Repository\ExperienceRepository;
 use App\Request\ExperienceRequest;
+use App\Request\ExperienceStatusUpdateRequest;
 use App\Service\ExperienceService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -42,5 +45,16 @@ class ExperienceController extends AbstractController
         ]);
     }
 
-
+    #[Route('{host_id}/experiences/{experience_id}/update-status', name: 'app_host_event_publish', methods: ['PUT'])]
+    #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
+    #[AcceptableRoles(User::ROLE_HOST, User::ROLE_ADMIN)]
+    public function updateExperienceStatus(ExperienceStatusUpdateRequest $request, Experience $experience, ExperienceService $service): JsonResponse
+    {
+        $service->changeStatus($experience, $request);
+        return $this->json([
+            'data' => null,
+            'message' => "experience status updated successfully",
+            'status' => 'success',
+        ]);
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Event;
+use App\Entity\Experience;
 use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -70,7 +72,7 @@ class OrderRepository extends ServiceEntityRepository
         return $query;
     }
 
-    public function getCompletedOrders(Event $event)
+    public function getCompletedOrdersByEvents(Event $event)
     {
         return $this->createQueryBuilder('o')
             ->select('o.id as orderId,order_event.id as eventId,order_experience.title as title,o.status as status')
@@ -79,6 +81,19 @@ class OrderRepository extends ServiceEntityRepository
             ->andWhere("o.status='CHECKOUT'")
             ->innerJoin('o.event', 'order_event')
             ->innerJoin('order_event.experience','order_experience')
+            ->getQuery()
+            ->execute();
+    }
+
+    public function getCompletedOrdersByExperience(Experience $experience)
+    {
+        return $this->createQueryBuilder('o')
+            ->select('o.id as orderId,order_event.id as eventId,order_experience.title as title,o.status as status')
+            ->innerJoin('o.event', 'order_event')
+            ->innerJoin('order_event.experience','order_experience')
+            ->andWhere('order_experience.id=:experience_id')
+            ->setParameter('experience_id', $experience->getId())
+            ->andWhere("o.status='CHECKOUT'")
             ->getQuery()
             ->execute();
     }
