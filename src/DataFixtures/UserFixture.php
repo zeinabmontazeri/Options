@@ -22,7 +22,7 @@ class UserFixture extends Fixture
 
     {
         $faker = Factory::create();
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $user = new User();
             $user->setPassword($this->hasher->hashPassword($user, 'pass_1234'))
                 ->setPhoneNumber($faker->regexify('/^09\d{9}$/'))
