@@ -2,9 +2,10 @@
 
 namespace App\Repository;
 
+use App\Entity\EnumOrderStatus;
 use App\Entity\Event;
+use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -49,7 +50,39 @@ class EventRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function getTotalIncome(Event $event)
+    {
+        $qb = $this->getEntityManager()->getRepository('App\Entity\Order')->createQueryBuilder('o');
+        $qb->select('SUM(o.payablePrice) as totalIncome')
+            ->where('o.event = :event_id AND o.status = :checkout')
+            ->setParameter('event_id', $event->getId())
+            ->setParameter('checkout', EnumOrderStatus::CHECKOUT->value);
 
+        $res = $qb->getQuery()->getResult();
+        return $res[0]['totalIncome'] ?? 0;
+    }
+
+    public function findUsersInfoCheckoutedOrders(Event $event): array
+    {
+        $qb = $this->getEntityManager()->getRepository('App\Entity\Order')->createQueryBuilder('o');
+        $qb->select("u.id, CONCAT(CONCAT(u.firstName, ' '), u.lastName) as fullName, DATE_DIFF(CURRENT_DATE(), u.birthDate) /365 as age, u.gender")
+            ->join('o.user', 'u')
+            ->where('o.event = :event_id AND o.status = :checkout')
+            ->andWhere('u.id = o.user')
+            ->setParameter('event_id', $event->getId())
+            ->setParameter('checkout', EnumOrderStatus::CHECKOUT->value);
+
+        $res = [];
+        foreach ($qb->getQuery()->getArrayResult() as $userinfo) {
+            $res[] = [
+                'id' => $userinfo['id'],
+                'fullName' => $userinfo['fullName'],
+                'age' => (int)(floatval($userinfo['age'])),
+                'gender' => $userinfo['gender']
+            ];
+        }
+        return $res;
+    }
 //    public function findOneBySomeField($value): ?Event
 //    {
 //        return $this->createQueryBuilder('e')

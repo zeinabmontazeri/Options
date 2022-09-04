@@ -38,3 +38,9 @@ services:
             $bankTerminalId: '%app.payment.mellat.terminal_id%'
             $bankUserName: '%app.payment.mellat.user_name%'
             $bankPassword: '%app.payment.mellat.password%'
+
+    security.user_password_hasher:
+        class: Symfony\Component\PasswordHasher\Hasher\UserPasswordHasher
+        public: true
+        arguments:
+          [ '@security.password_hasher_factory' ]
