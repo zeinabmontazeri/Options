@@ -13,9 +13,6 @@ use App\Payment\Bank\Mellat\Response as MellatResponse;
 use App\Payment\Cmd\BankCmd;
 use App\Payment\Cmd\PaymentCmd;
 use App\Payment\Cmd\PaymentResponseCmd;
-use App\Payment\Cmd\ReversalCmd;
-use App\Payment\Cmd\SettleCmd;
-use App\Payment\Cmd\VerifyCmd;
 use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use ReflectionMethod;
@@ -103,44 +100,6 @@ class BankOperatonManager
         return count($transactions) !== 0;
     }
 
-    public function getPaymentResponseFromPayment(PaymentCmd $cmd): ?PaymentResponseCmd
-    {
-        $query = $this->entityManager->createQuery("
-            SELECT t
-            FROM  App\Entity\Transaction t
-            WHERE t.command = :command
-            AND t.bankToken = :bankToken
-            AND t.parentId = :paymentId
-            AND t.status = :success
-        ")
-            ->setParameter('command', TransactionCmdEnum::PaymentResponse)
-            ->setParameter('bankToken', $cmd->getBankToken())
-            ->setParameter('paymentId', $cmd->getTransactionId())
-            ->setParameter('success', TransactionStatusEnum::Success);
-
-        $transaction = $query->getOneOrNullResult();
-
-        return is_null($transaction) ? null : $this->createCmdFromTransaction($transaction);
-    }
-
-    public function getInvoicePaymentHistory(int $invoiceId): ?PaymentCmd
-    {
-        $query = $this->entityManager->createQuery("
-            SELECT t
-            FROM  App\Entity\Transaction t
-            WHERE t.command = :command
-            AND t.status = :success
-            AND t.invoiceId = :invoiceId
-        ")
-            ->setParameter('command', TransactionCmdEnum::Payment)
-            ->setParameter('success', TransactionStatusEnum::Success)
-            ->setParameter('invoiceId', $invoiceId);
-
-        $transaction = $query->getOneOrNullResult();
-
-        return is_null($transaction) ? null : $this->createCmdFromTransaction($transaction);
-    }
-
     public function getCallbackUrl(string $callbackToken)
     {
         $url = $this->router->generate(
@@ -174,7 +133,7 @@ class BankOperatonManager
             : null;
     }
 
-    public function createCmdFromTransaction(Transaction $transaction): BankCmd
+    private function createCmdFromTransaction(Transaction $transaction): BankCmd
     {
         $cmdClassName = $transaction->getCommand()->name . 'Cmd';
         $cmdClassPath = explode('\\', BankCmd::class);
@@ -224,7 +183,7 @@ class BankOperatonManager
         return $transaction;
     }
 
-    public function updateTransactionFromCmd(BankCmd $cmd)
+    private function updateTransactionFromCmd(BankCmd $cmd)
     {
         $transaction = $this
             ->transactionRepository
@@ -261,45 +220,6 @@ class BankOperatonManager
         }
     }
 
-    public function getPaymentResponseVerification(PaymentResponseCmd $cmd): ?VerifyCmd
-    {
-        return $this->getPaymentResponseFollowUp($cmd, TransactionCmdEnum::Verify);
-    }
-
-    public function getPaymentResponseReversal(PaymentResponseCmd $cmd): ?ReversalCmd
-    {
-        return $this->getPaymentResponseFollowUp($cmd, TransactionCmdEnum::Reversal);
-    }
-
-    public function getPaymentResponseSettle(PaymentResponseCmd $cmd): ?SettleCmd
-    {
-        return $this->getPaymentResponseFollowUp($cmd, TransactionCmdEnum::Settle);
-    }
-
-    public function getPaymentResponseFollowUp(
-        PaymentResponseCmd $cmd,
-        TransactionCmdEnum $type,
-    ): ?BankCmd {
-        $verifyTransaction = $this->transactionRepository->findOneBy([
-            'command' => $type,
-            'parentId' => $cmd->getPaymentTransactionId(),
-            'bankReferenceId' => $cmd->getBankReferenceId(),
-        ]);
-
-        return is_null($verifyTransaction)
-            ? null
-            : $this->createCmdFromTransaction($verifyTransaction);
-    }
-
-    public function getPaymentCmdByTransactionId(int $transactionId): ?PaymentCmd
-    {
-        $transaction = $this->transactionRepository->find($transactionId);
-
-        return is_null($transaction)
-            ? null
-            : $this->createCmdFromTransaction($transaction);
-    }
-
     public function generateRedirectLink(PaymentCmd $cmd): ?string
     {
         if ($cmd->getLink() == 'Mellat') {
@@ -316,23 +236,5 @@ class BankOperatonManager
                 ? TransactionStatusEnum::Success
                 : TransactionStatusEnum::Failure;
         }
-    }
-
-    public function loadTransactionFromCmd(PaymentResponseCmd $cmd): Transaction
-    {
-        $query = $this->entityManager->createQuery("
-            SELECT t
-            FROM App\Entity\Transacion t
-            WHERE t.id = :paymentTransactionId
-                AND t.bankToken = :bankToken
-                AND t.command = :bankCommand
-        ")
-            ->setParameter('paymentTransactionId', $cmd->getTransactionId())
-            ->setParameter('bankToken', $cmd->getBankToken())
-            ->setParameter('command', $cmd->getCommand());
-
-        $transaction = $query->getResult();
-
-        return $transaction;
     }
 }
