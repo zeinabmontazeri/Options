@@ -25,10 +25,5 @@
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
 
-###> cache file from macOs systems###
 .DS_Store
 
-composer.lock
-symfony.lock
-docker-compose.override.yml
-docker-compose.yaml

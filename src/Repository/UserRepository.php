@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use PhpParser\Node\Expr\Cast\String_;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -41,13 +42,13 @@ class UserRepository extends ServiceEntityRepository
 
     public function checkExistsByPhoneNumber(string $phonenumber)
     {
-
+        
         return $this->createQueryBuilder('u')
-                ->select('count(u.id) as count')
-                ->andWhere("u.phoneNumber= :val")
-                ->setParameter('val', $phonenumber)
-                ->getQuery()
-                ->getSingleResult()['count'] > 0;
+            ->select('count(u.id) as count')
+            ->andWhere("u.phoneNumber= :val")
+            ->setParameter('val',$phonenumber)
+            ->getQuery()
+            ->getSingleResult()['count'] > 0;
     }
 
 //    /**

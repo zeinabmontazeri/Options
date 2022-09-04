@@ -23,7 +23,7 @@ class CategoryController extends AbstractController
         return $this->json([
             'data' => $categoryService->getAll($repository),
             'message' => 'successfully retrieve all categories',
-            'status' => 'success',
+            'status' => true,
         ], Response::HTTP_OK);
     }
 
