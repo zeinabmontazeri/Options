@@ -35,13 +35,17 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/events/{event_id}/publish', name: 'app_host_event_publish', methods: ['PUT'])]
+    #[Route('/events/{event_id}/update-status', name: 'app_host_event_publish', methods: ['PUT'])]
     #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
     #[AcceptableRoles(User::ROLE_HOST, User::ROLE_ADMIN)]
-    public function publishEvent(EventPublishRequest $request,Event $event, EventService $service): JsonResponse
+    public function publishEvent(EventPublishRequest $request, Event $event, EventService $service): JsonResponse
     {
-        $service->changeStatus($event,$request);
-        return $this->json($service->getOrdersInfo($event));
+        $service->changeStatus($event, $request);
+        return $this->json([
+            'data' => null,
+            'message' => "event status updated successfully",
+            'status' => 'success',
+        ]);
     }
 
     #[Route('/events/{event_id}/report', name: 'app_host_event_report', methods: ['GET'])]

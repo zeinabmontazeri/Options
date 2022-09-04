@@ -75,4 +75,17 @@ class OrderRepository extends ServiceEntityRepository
             ->execute();
         return $query;
     }
+
+    public function getCompletedOrders(Event $event)
+    {
+        return $this->createQueryBuilder('o')
+            ->select('o.id as orderId,order_event.id as eventId,order_experience.title as title,o.status as status')
+            ->andWhere('order_event.id=:event_id')
+            ->setParameter('event_id', $event->getId())
+            ->andWhere("o.status='CHECKOUT'")
+            ->innerJoin('o.event', 'order_event')
+            ->innerJoin('order_event.experience','order_experience')
+            ->getQuery()
+            ->execute();
+    }
 }
