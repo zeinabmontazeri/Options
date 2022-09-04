@@ -23,7 +23,12 @@ class PaymentHandler implements CmdHandlerInterface
 
     public function validate(): bool
     {
-        return true;
+        $isPurchased = $this->operationManager->isInvoicePurchaced(
+            invoiceId: $this->cmd->getInvoiceId(),
+            origin: $this->cmd->getOrigin()
+        );
+
+        return !$isPurchased;
     }
 
     public function run(LinkInterface $link): ?BankCmd
