@@ -29,7 +29,6 @@ class ExperienceController extends AbstractController
     ): JsonResponse
     {
 
-
         $result = $service->getExperience($experienceFilterRequest, $experienceRepository);
         return $this->json(
             [

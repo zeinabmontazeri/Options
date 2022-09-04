@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Event;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
