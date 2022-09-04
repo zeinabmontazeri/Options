@@ -24,8 +24,8 @@ class ExperienceController extends AbstractController
     {
         return $this->json([
             'data' => $service->getAll($repository, $host),
-            'status' => true,
-            'message' => 'Successfully retrieve all experience'
+            'message' => 'Successfully retrieve all experience',
+            'status' => 'success',
         ]);
     }
 
@@ -37,8 +37,8 @@ class ExperienceController extends AbstractController
         $res = $service->create($repository, $request, $categoryRepository, $host);
         return $this->json([
             'data' => $res['data'],
+            'message' => $res['message'],
             'status' => $res['status'],
-            'message' => $res['message']
         ]);
     }
 

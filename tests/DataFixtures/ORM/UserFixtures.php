@@ -2,13 +2,11 @@
 
 namespace App\Tests\DataFixtures\ORM;
 
-use App\Entity\Category;
-use App\Entity\EnumGender;
-use App\Entity\EnumOrderStatus;
-use App\Entity\Event;
-use App\Entity\Experience;
+
+use App\Entity\Enums\EnumGender;
+use App\Entity\Enums\EnumHostBusinessClassStatus;
+use App\Entity\Enums\EnumPermissionStatus;
 use App\Entity\Host;
-use App\Entity\Order;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -59,8 +57,10 @@ class UserFixtures extends Fixture
         $manager->flush();
 
         $host = new Host();
-        $host->setUser($user2)
-            ->setCreatedAt(new \DateTimeImmutable());
+        $host->setUser($user1)
+            ->setCreatedAt(new \DateTimeImmutable())
+            ->setApprovalStatus(EnumPermissionStatus::ACCEPTED)
+            ->setLevel(EnumHostBusinessClassStatus::NORMAL);
         $manager->persist($host);
         $manager->flush();
     }

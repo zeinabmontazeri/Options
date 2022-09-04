@@ -15,8 +15,8 @@ class AcceptableRoles extends IsGranted
         parent::__construct(
             data: $acceptableRoles,
             subject: null,
-            message: 'AUTHORIZATION_FAILED',
-            statusCode: Response::HTTP_UNAUTHORIZED
+            message: 'AUTHORIZATION FAILED.',
+            statusCode: Response::HTTP_FORBIDDEN
         );
     }
 }

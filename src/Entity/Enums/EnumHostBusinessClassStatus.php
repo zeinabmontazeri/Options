@@ -2,7 +2,7 @@
 
 namespace App\Entity\Enums;
 
-enum EnumHostBusinessClassStatus:string
+enum EnumHostBusinessClassStatus: string
 {
     case GOLD = 'GOLD';
     case BRONZE = 'BRONZE';
