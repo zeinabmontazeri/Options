@@ -9,33 +9,21 @@ trait CmdForgeTrait
 {
     public function forgeTransactionId(int $transactionId): self
     {
-        try {
-            $this->transactionId = $transactionId;
-        } catch (\Exception $e) {
-            throw new \Exception('Transaction Id already forged.');
-        }
+        $this->transactionId = $transactionId;
 
         return $this;
     }
 
     public function forgeCreatedAt(DateTimeImmutable $createdAt): self
     {
-        try {
-            $this->createdAt = $createdAt;
-        } catch (\Exception $e) {
-            throw new \Exception('CreatedAt already forged.');
-        }
+        $this->createdAt = $createdAt;
 
         return $this;
     }
 
     public function forgeLink(string $link): self
     {
-        try {
-            $this->link = $link;
-        } catch (\Exception $e) {
-            throw new \Exception('CreatedAt already forged.');
-        }
+        $this->link = $link;
 
         return $this;
     }
