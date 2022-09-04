@@ -35,7 +35,7 @@ class ExperienceController extends AbstractController
             [
                 'data' => $result,
                 'message' => 'Experiences Successfully Retrieved',
-                'status' => true,
+                'status' => 'success',
             ], Response::HTTP_OK
         );
     }
@@ -67,7 +67,7 @@ class ExperienceController extends AbstractController
             [
                 'data' => $result,
                 'message' => 'Experiences Successfully Retrieved',
-                'status' => true,
+                'status' => 'success',
             ], Response::HTTP_OK
         );
     }
@@ -83,7 +83,7 @@ class ExperienceController extends AbstractController
             [
                 'data' => $experiences,
                 'message' => 'Experiences Successfully Retrieved',
-                'status' => true,
+                'status' => 'success',
             ], Response::HTTP_OK
         );
     }
