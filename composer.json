@@ -12,6 +12,7 @@
         "doctrine/doctrine-bundle": "^2.7",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.13",
+        "fakerphp/faker": "^1.20",
         "gedmo/doctrine-extensions": "^3.8",
         "gesdinet/jwt-refresh-token-bundle": "^1.1",
         "lexik/jwt-authentication-bundle": "^2.16",

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Enums\EnumEventStatus;
 use App\Entity\Experience;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -52,7 +53,7 @@ class ExperienceRepository extends ServiceEntityRepository
                     $baseQuery = $baseQuery->join('experience.events', 'events')
                         ->andwhere('events.capacity > 0')
                         ->andWhere('events.startsAt > :date')
-                        ->setParameter('date', new \DateTime());
+                        ->setParameter('date', new DateTime());
                 }
             }
         }
