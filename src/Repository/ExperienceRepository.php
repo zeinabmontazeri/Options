@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Enums\EnumEventStatus;
 use App\Entity\Experience;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -77,8 +78,9 @@ class ExperienceRepository extends ServiceEntityRepository
         $em = $this->getEntityManager();
         $query = $em->createQuery("SELECT ex
          FROM App\Entity\Experience ex
-         WHERE ex.title LIKE :word OR ex.description LIKE :word")
-            ->setParameter('word', "%$word%");
+         WHERE ex.status = :published AND (ex.title LIKE :word OR ex.description LIKE :word)")
+            ->setParameter('word', "%$word%")
+            ->setParameter('published', EnumEventStatus::PUBLISHED);
         return $query->getResult();
     }
 

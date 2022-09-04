@@ -3,8 +3,8 @@
 namespace App\DataFixtures;
 
 use App\Entity\Category;
-use App\Entity\EnumGender;
-use App\Entity\EnumOrderStatus;
+use App\Entity\Enums\EnumGender;
+use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Event;
 use App\Entity\Experience;
 use App\Entity\Host;
