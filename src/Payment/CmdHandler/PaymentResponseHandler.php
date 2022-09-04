@@ -84,15 +84,12 @@ class PaymentResponseHandler implements CmdHandlerInterface
     private function callVerify(PaymentResponseCmd $cmd): VerifyCmd
     {
         // verify request
-        $verifyCmd = $this->operationManager->getPaymentResponseVerification($cmd);
-        if (is_null($verifyCmd)) {
-            $verifyCmd = new VerifyCmd(
-                paymentTransactionId: $cmd->getPaymentTransactionId(),
-                bankReferenceId: $cmd->getBankReferenceId(),
-            );
+        $verifyCmd = new VerifyCmd(
+            paymentTransactionId: $cmd->getPaymentTransactionId(),
+            bankReferenceId: $cmd->getBankReferenceId(),
+        );
 
-            $verifyCmd = $this->operationManager->run($verifyCmd);
-        }
+        $verifyCmd = $this->operationManager->run($verifyCmd);
 
         return $verifyCmd;
     }
@@ -100,15 +97,12 @@ class PaymentResponseHandler implements CmdHandlerInterface
     private function callSettle(PaymentResponseCmd $cmd): SettleCmd
     {
         // settle request
-        $settleCmd = $this->operationManager->getPaymentResponseSettle($cmd);
-        if (is_null($settleCmd)) {
-            $settleCmd = new SettleCmd(
-                paymentTransactionId: $cmd->getPaymentTransactionId(),
-                bankReferenceId: $cmd->getBankReferenceId(),
-            );
+        $settleCmd = new SettleCmd(
+            paymentTransactionId: $cmd->getPaymentTransactionId(),
+            bankReferenceId: $cmd->getBankReferenceId(),
+        );
 
-            $settleCmd = $this->operationManager->run($settleCmd);
-        }
+        $settleCmd = $this->operationManager->run($settleCmd);
 
         return $settleCmd;
     }
@@ -116,15 +110,12 @@ class PaymentResponseHandler implements CmdHandlerInterface
     private function callReversal(PaymentResponseCmd $cmd): ReversalCmd
     {
         // reversal request
-        $reversalCmd = $this->operationManager->getPaymentResponseReversal($cmd);
-        if (is_null($reversalCmd)) {
-            $reversalCmd = new ReversalCmd(
-                paymentTransactionId: $cmd->getPaymentTransactionId(),
-                bankReferenceId: $cmd->getBankReferenceId(),
-            );
+        $reversalCmd = new ReversalCmd(
+            paymentTransactionId: $cmd->getPaymentTransactionId(),
+            bankReferenceId: $cmd->getBankReferenceId(),
+        );
 
-            $reversalCmd = $this->operationManager->run($reversalCmd);
-        }
+        $reversalCmd = $this->operationManager->run($reversalCmd);
 
         return $reversalCmd;
     }
