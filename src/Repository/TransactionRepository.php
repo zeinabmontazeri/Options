@@ -46,33 +46,6 @@ class TransactionRepository extends ServiceEntityRepository
         }
     }
 
-    public function isEventOrderPurchasable(int $orderId): ?Order
-    {
-        $query = $this
-            ->getEntityManager()
-            ->createQuery("
-                SELECT o
-                FROM App\Entity\Order o
-                LEFT JOIN o.event e
-                WHERE o.status = :status
-                    AND o.id = :orderId
-                    AND e.startsAt < :today
-            ")
-            ->setParameter('status', EnumOrderStatus::DRAFT)
-            ->setParameter('orderId', $orderId)
-            ->setParameter('today', new \DateTimeImmutable());
-
-        try {
-            $result = $query->getSingleResult();
-        } catch (NonUniqueResultException $e) {
-            throw new \Exception(sprintf('Multiple orders with same id(%d)', $orderId));
-        } catch (NoResultException $e) {
-            return null;
-        }
-
-        return $result;
-    }
-
     public function isInvoicePurchaced(int $invoiceId, TransactionOriginEnum $origin): bool
     {
         $query = $this

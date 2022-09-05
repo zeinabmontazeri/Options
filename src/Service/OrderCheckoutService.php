@@ -35,7 +35,7 @@ class OrderCheckoutService
     public function eventOrderCheckout(int $orderId)
     {
         // check if order id is valid, Order is in draft mode, and event started_at has not passed
-        $order = $this->transactionRepository->isEventOrderPurchasable($orderId);
+        $order = $this->orderRepository->isEventOrderPurchasable($orderId);
         if (is_null($order)) {
             throw new BadRequestHttpException(
                 sprintf(
