@@ -4,7 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Experience;
 
-class GetExperienceEventListTest extends BaseTestCase
+class GetExperienceEventListControllerTest extends BaseTestCase
 {
 
     protected function setUp(): void
