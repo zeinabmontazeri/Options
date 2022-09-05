@@ -64,9 +64,6 @@ class RemoveOrderFixtures extends Fixture
         $manager->persist($event);
         $manager->flush();
 
-//        $events = $manager->getRepository(Event::class)->findAll();
-//        $users = $manager->getRepository(User::class)->findAll();
-
         $order = new Order();
         $order->setUser($userExperiencer)
             ->setEvent($event)
