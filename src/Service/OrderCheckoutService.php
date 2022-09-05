@@ -32,7 +32,7 @@ class OrderCheckoutService
     ) {
     }
 
-    public function eventOrderCheckout(int $orderId)
+    public function checkout(int $orderId)
     {
         // check if order id is valid, Order is in draft mode, and event started_at has not passed
         $order = $this->orderRepository->isEventOrderPurchasable($orderId);
@@ -86,7 +86,8 @@ class OrderCheckoutService
             ->setOrderAsCheckedOut($event->getInvoiceId());
 
         if (!$orderPurchased) {
-            throw new Exception(
+            throw new HttpException(
+                JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
                 sprintf(
                     'The order(%d) does not exist to be purchased.',
                     $event->getInvoiceId(),

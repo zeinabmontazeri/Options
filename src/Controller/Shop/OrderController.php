@@ -79,7 +79,7 @@ class OrderController extends AbstractController
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function eventOrderCheckout(int $order_id, OrderCheckoutService $orderCheckoutService)
     {
-        $redirectLink = $orderCheckoutService->eventOrderCheckout($order_id);
+        $redirectLink = $orderCheckoutService->checkout($order_id);
         return $this->redirect($redirectLink);
     }
 }
