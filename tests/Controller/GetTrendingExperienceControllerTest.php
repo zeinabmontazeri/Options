@@ -4,7 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Experience;
 
-class GetTrendingExperienceTest extends BaseTestCase
+class GetTrendingExperienceControllerTest extends BaseTestCase
 {
     protected function setUp(): void
     {
