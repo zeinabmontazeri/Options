@@ -25,17 +25,6 @@ class PaymentController extends AbstractController
     }
 
     #[Route(
-        '/api/v1/orders/{order_id<\d+>}/checkout',
-        name: 'app.payment.checkout'
-    )]
-    #[AcceptableRoles(User::ROLE_EXPERIENCER)]
-    public function eventOrderCheckout(int $order_id)
-    {
-        $redirectLink = $this->orderCheckoutService->eventOrderCheckout($order_id);
-        return $this->redirect($redirectLink);
-    }
-
-    #[Route(
         '/api/v1/checkoutCallback/{callback_token}',
         name: 'app.payment.checkout_callback',
         methods: ['POST']

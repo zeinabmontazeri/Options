@@ -8,6 +8,7 @@ use App\Entity\Event;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Repository\OrderRepository;
+use App\Service\OrderCheckoutService;
 use App\Service\OrderEventService;
 use App\Service\Shop\RemoveOrderService;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
@@ -69,5 +70,16 @@ class OrderController extends AbstractController
             'status' => 'success',
             'code'=>Response::HTTP_OK
         ]);
+    }
+
+    #[Route(
+        '/orders/{order_id<\d+>}/checkout',
+        name: 'app.order.checkout'
+    )]
+    #[AcceptableRoles(User::ROLE_EXPERIENCER)]
+    public function eventOrderCheckout(int $order_id, OrderCheckoutService $orderCheckoutService)
+    {
+        $redirectLink = $orderCheckoutService->eventOrderCheckout($order_id);
+        return $this->redirect($redirectLink);
     }
 }
