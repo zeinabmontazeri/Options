@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use App\Auth\AuthenticatedUser;
-use App\Entity\EnumOrderStatus;
+use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Experience;
 use App\Entity\Host;
 use App\Entity\User;

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CommentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
@@ -13,6 +14,7 @@ use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
 class Comment
 {
     use SoftDeleteableEntity;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -30,10 +32,12 @@ class Comment
     #[ORM\ManyToOne(inversedBy: 'comments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Event $event = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
+
     public function getComment(): ?string
     {
         return $this->comment;
@@ -49,12 +53,14 @@ class Comment
     {
         return $this->createdAt;
     }
+
     #[ORM\PrePersist]
     public function setCreatedAt(): self
     {
         $this->createdAt = new \DateTimeImmutable();
         return $this;
     }
+
     public function getUser(): ?User
     {
         return $this->user;

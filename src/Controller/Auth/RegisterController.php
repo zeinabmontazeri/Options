@@ -20,9 +20,9 @@ class RegisterController extends AbstractController
         $userRegisterService->register($validatedRequest);
         //TODO: We can generate token for user here
         return $this->json([
-            'success' => true,
             'data' => null,
             'message' => 'User has been created successfully',
+            'status' => 'success',
         ]);
     }
 }

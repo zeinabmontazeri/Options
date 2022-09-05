@@ -35,6 +35,7 @@ class OrderRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
+
     public function remove(Order $entity, bool $flush = false): void
     {
         $this->getEntityManager()->remove($entity);
@@ -43,7 +44,8 @@ class OrderRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-    public function findByUserEvent_Id($userId, $eventId): int
+
+    public function findByUserEventId($userId, $eventId): int
     {
         return intval($this->createQueryBuilder('o')
             ->select('o.id')
@@ -54,26 +56,32 @@ class OrderRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult());
     }
+
     public function getTotalRegisteredEvent($eventId): int
     {
-        return  intval($this->createQueryBuilder('o')
+        return intval($this->createQueryBuilder('o')
             ->select('count(o.id)')
             ->where('o.event=:var1')
             ->setParameter('var1', $eventId)
             ->getQuery()
             ->getSingleScalarResult());
     }
-    public function getExperiencerOrder($userId)
+
+    public function getHostSalesForSetBusinessClass($fromDate, $toDate)
     {
-        $query = $this->createQueryBuilder('o')
-            ->select('o.id as orderId,order_event.id as eventId,order_experience.title as title,o.status as status')
-            ->andWhere('o.user=:var1')
-            ->setParameter('var1', $userId)
-            ->innerJoin('o.event', 'order_event')
-            ->innerJoin('order_event.experience', 'order_experience')
-            ->getQuery()
-            ->execute();
-        return $query;
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery
+        (
+            'SELECT h.id as hostId, COUNT(o.id) ordersCount, SUM(o.payablePrice) as totalSell
+            FROM App\Entity\Host h, App\Entity\Order o
+            INNER JOIN App\Entity\Event e WITH o.event = e.id
+            INNER JOIN App\Entity\Experience ex WITH e.experience = ex.id
+            WHERE h.id = ex.host AND (o.createdAt >= :fromDate AND o.createdAt <= :toDate) AND o.status = :status
+            GROUP BY h.id ORDER BY totalSell DESC')
+            ->setParameter('fromDate', $fromDate)
+            ->setParameter('toDate', $toDate)
+            ->setParameter('status', 'checkout');
+        return $query->getResult();
     }
 
     public function setOrderAsCheckedOut(int $invoiceId): bool

@@ -2,10 +2,10 @@
 
 namespace App\Repository;
 
-use App\Entity\EnumOrderStatus;
+use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Event;
-use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**

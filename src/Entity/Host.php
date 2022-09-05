@@ -34,10 +34,10 @@ class Host
     #[ORM\OneToMany(mappedBy: 'host', targetEntity: Experience::class)]
     private Collection $experiences;
 
-    #[ORM\Column(name: 'approvalStatus',enumType: EnumPermissionStatus::class)]
+    #[ORM\Column(name: 'approvalStatus', enumType: EnumPermissionStatus::class)]
     private EnumPermissionStatus $approvalStatus = EnumPermissionStatus::PENDING;
 
-    #[ORM\Column(name: 'level',enumType: EnumHostBusinessClassStatus::class)]
+    #[ORM\Column(name: 'level', enumType: EnumHostBusinessClassStatus::class)]
     private EnumHostBusinessClassStatus $level = EnumHostBusinessClassStatus::NORMAL;
 
     public function __construct()
