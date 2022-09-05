@@ -3,45 +3,45 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
+use App\Entity\Enums\EnumPermissionStatus;
+use App\Entity\Host;
 use App\Entity\User;
 
-class HostExperienceControllerTest extends BaseTestCase
+
+class HostExperienceReportControllerTest extends BaseTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
         $this->setFixtureFromSourceName(['AppFixtures']);
-
     }
-
-    public function testHostCanGetAllOwnExperience()
+    public function testHostCanGetTotalReport()
     {
         $token = $this->getToken(User::ROLE_HOST);
-        $this->client->request('GET', "/api/v1/hosts/experiences", []
+        $this->client->request('GET', "/api/v1/hosts/report", []
             , [], [
                 'HTTP_AUTHORIZATION' => 'Bearer ' . $token,
                 'CONTENT_TYPE' => 'application/json',
             ]);
         $response = $this->client->getResponse();
-        $this->assertResponse($response, 'GetExperiences');
+        $this->assertResponse($response, 'GetHostExperienceTotalReport');
     }
 
-    public function testHostCanCreateExperience()
+    public function testHostCanGetPreciseReport()
     {
         $token = $this->getToken(User::ROLE_HOST);
-        $content = [
-            'title' => 'this title.',
-            'description' => ' this is description.',
-            'category_name' => 'cat-1'
-        ];
-        $this->client->request('Post', "/api/v1/hosts/experiences", []
+        $user = $this->getUser();
+        $experienceId = $user->getHost()
+            ->getExperiences()
+            ->first()
+            ->getId();
+        $this->client->request('GET', "/api/v1/hosts/experiences/$experienceId/report", []
             , [], [
                 'HTTP_AUTHORIZATION' => 'Bearer ' . $token,
                 'CONTENT_TYPE' => 'application/json',
-            ], json_encode($content));
+            ]);
         $response = $this->client->getResponse();
-        $this->assertResponse($response, 'CreateExperience');
-
+        $this->assertResponse($response, 'GetHostExperiencePreciseReport');
     }
 
     protected function tearDown(): void

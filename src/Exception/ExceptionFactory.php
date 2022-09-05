@@ -17,7 +17,10 @@ class ExceptionFactory
         $response = new JsonResponse();
 
         if (in_array($exception::class, HttpExceptionEnum::getConstants())) {
-            $exceptionData['data'] = $exception->getMessage();
+            if (!str_contains($exception->getMessage(), 'object not found by the @ParamConverter'))
+                $exceptionData['data'] = $exception->getMessage();
+            else
+                $exceptionData['data'] = 'Resource not found';
         } else {
             $exceptionData['data'] = "Internal Server Error.";
         }

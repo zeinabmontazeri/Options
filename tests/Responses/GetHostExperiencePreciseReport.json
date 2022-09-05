@@ -1,0 +1,10 @@
+{
+  "data": {
+    "experience_id": 1,
+    "totalIncome": 0,
+    "totalEvent": 2,
+    "totalOrder": 0
+  },
+  "message": "Successfully retrieve total report.",
+  "status": true
+}

@@ -71,12 +71,12 @@ class AppFixtures extends Fixture
         $manager->persist($user3);
         $manager->flush();
 
-        $host = new Host();
-        $host->setUser($user1)
+        $host1 = new Host();
+        $host1->setUser($user1)
             ->setCreatedAt(new \DateTimeImmutable())
             ->setApprovalStatus(EnumPermissionStatus::ACCEPTED)
             ->setLevel(EnumHostBusinessClassStatus::NORMAL);
-        $manager->persist($host);
+        $manager->persist($host1);
         $manager->flush();
 
         $host = new Host();
@@ -94,7 +94,7 @@ class AppFixtures extends Fixture
 
 
         $experience = new Experience();
-        $experience->setHost($host)
+        $experience->setHost($host1)
             ->setCategory($category)
             ->setTitle('this title by host 1')
             ->setDescription('this description by host 1')
@@ -137,11 +137,12 @@ class AppFixtures extends Fixture
         $manager->flush();
 
         $order1 = new Order();
-        $order1->setCreatedAt(new \DateTimeImmutable());
-        $order1->setEvent($event);
-        $order1->setPayablePrice('2000');
-        $order1->setStatus(EnumOrderStatus::DRAFT);
-        $order1->setUser($user3);
+        $order1->setCreatedAt(new \DateTimeImmutable())
+            ->setEvent($event)
+            ->setPayablePrice('2000')
+            ->setStatus(EnumOrderStatus::DRAFT)
+            ->setUser($user3)
+            ->setStatus(EnumOrderStatus::CHECKOUT);
         $manager->persist($order1);
         $manager->flush();
 
