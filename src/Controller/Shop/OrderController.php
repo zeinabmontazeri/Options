@@ -18,6 +18,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA2;
 
 #[Route('api/v1/shop')]
 class OrderController extends AbstractController
@@ -72,9 +74,46 @@ class OrderController extends AbstractController
         ]);
     }
 
+
+    // /**
+    //  * Checkout a draft order
+    //  *
+    //  * Redirect Experiencer to bank if order is purchasable
+    //  * @OA\Tag(name="Order")
+    //  * @OA\PathParameter (
+    //  *      name="order_id",
+    //  *      required=true
+    //  * )
+    //  * @OA\Response(
+    //  *     response="400",
+    //  *     description="order is not purchasable",
+    //  *     content={
+    //  *         @OA\MediaType(
+    //  *             mediaType="application/json",
+    //  *             @OA\Schema(
+    //  *                 @OA\Property(
+    //  *                     property="status",
+    //  *                     type="string",
+    //  *                     description="action result"
+    //  *                 ),
+    //  *                 @OA\Property(
+    //  *                     property="data",
+    //  *                     type="string"
+    //  *                     description="A message to describe failure reason."
+    //  *                 ),
+    //  *                 example={
+    //  *                         "status": "failure",
+    //  *                         "data": "The order id(#orderId) is not purchasable."
+    //  *                 }
+    //  *             )
+    //  *         )
+    //  *     }
+    //  * )
+    //  */
     #[Route(
         '/orders/{order_id<\d+>}/checkout',
-        name: 'app.order.checkout'
+        name: 'app.order.checkout',
+        
     )]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function eventOrderCheckout(int $order_id, OrderCheckoutService $orderCheckoutService)
