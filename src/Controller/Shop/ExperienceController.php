@@ -3,6 +3,7 @@
 namespace App\Controller\Shop;
 
 use App\Auth\AcceptableRoles;
+use App\DTO\DtoFactory;
 use App\Entity\Experience;
 use App\Entity\User;
 use App\Repository\EventRepository;
@@ -28,13 +29,12 @@ class ExperienceController extends AbstractController
     ): JsonResponse
     {
 
-
         $result = $service->getExperience($experienceFilterRequest, $experienceRepository);
         return $this->json(
             [
                 'data' => $result,
                 'message' => 'Experiences Successfully Retrieved',
-                'status' => true,
+                'status' => 'success',
             ], Response::HTTP_OK
         );
     }
@@ -56,6 +56,7 @@ class ExperienceController extends AbstractController
     }
 
     #[Route('/experiences/trending/', name: 'app_trending_experience', methods: ['GET'])]
+    #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_HOST, User::ROLE_ADMIN)]
     public function getTrendingExperiences(
         ExperienceRepository $experienceRepository,
     ): JsonResponse
@@ -65,10 +66,24 @@ class ExperienceController extends AbstractController
             [
                 'data' => $result,
                 'message' => 'Experiences Successfully Retrieved',
-                'status' => true,
+                'status' => 'success',
             ], Response::HTTP_OK
         );
     }
 
-
+    #[Route('/experiences/search/{word}', name: 'app_experience_search', methods: ['GET'])]
+    #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_ADMIN, User::ROLE_HOST)]
+    public function searchExperience($word, ExperienceRepository $experienceRepository)
+    {
+        $searchResult = $experienceRepository->searchByWord($word);
+        $experienceCollection = DtoFactory::getInstance('experienceFilter');
+        $experiences = $experienceCollection->toArray($searchResult);
+        return $this->json(
+            [
+                'data' => $experiences,
+                'message' => 'Experiences Successfully Retrieved',
+                'status' => 'success',
+            ], Response::HTTP_OK
+        );
+    }
 }

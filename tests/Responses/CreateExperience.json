@@ -2,6 +2,6 @@
   "data": {
     "id": 2
   },
-  "status": true,
-  "message": "Experience successfully created"
+  "message": "Experience successfully created",
+  "status": "success"
 }

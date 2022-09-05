@@ -26,7 +26,7 @@ class Order
     #[ORM\ManyToOne(inversedBy: 'orders')]
     private ?Event $event = null;
 
-    #[ORM\Column(name: 'status',enumType: EnumOrderStatus::class)]
+    #[ORM\Column(name: 'status', enumType: EnumOrderStatus::class)]
     private EnumOrderStatus $status = EnumOrderStatus::DRAFT;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3)]

@@ -5,8 +5,6 @@ namespace App\Service;
 use App\Entity\Event;
 use App\Entity\Experience;
 use App\Repository\EventRepository;
-use App\Repository\ExperienceRepository;
-use App\Repository\OrderRepository;
 use App\Request\EventRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -38,7 +36,7 @@ class EventService
         return $event;
     }
 
-    public function getOrdersInfo(Event $event)
+    public function getOrdersInfo(Event $event): array
     {
         if ($this->security->getUser() !== $event->getExperience()->getHost()->getUser())
             throw new AccessDeniedException();
