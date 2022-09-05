@@ -107,7 +107,7 @@ class OrderRepository extends ServiceEntityRepository
                 LEFT JOIN o.event e
                 WHERE o.status = :status
                     AND o.id = :orderId
-                    AND e.startsAt < :today
+                    AND e.startsAt > :today
                     AND e.status = :eventStatus
             ")
             ->setParameter('status', EnumOrderStatus::DRAFT)
