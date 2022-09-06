@@ -36,7 +36,7 @@ class UserRegisterService
             $user->setPhoneNumber($request->phoneNumber)
                 ->setFirstName($request->firstName)
                 ->setLastName($request->lastName)
-                ->setBirthDate($birthDate)
+                ->setBirthDate($request->birthDate)
                 ->setGender($request->gender)
                 ->setRoles([$request->role])
                 ->setPassword($this->hasher->hashPassword($user, $request->password));
