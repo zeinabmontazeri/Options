@@ -17,6 +17,8 @@ class DtoFactory
             return new ExperienceFilterCollection();
         if ($collectionType == 'event')
             return new EventCollection();
+        if ($collectionType == 'host')
+            return new HostCollection();
         else
             throw new Exception("Invalid collection type.", 500);
     }
