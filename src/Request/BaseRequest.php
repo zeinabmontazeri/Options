@@ -31,8 +31,7 @@ abstract class BaseRequest
     {
         $errors = $this->validator->validate($this);
         if (count($errors) > 0) {
-            $errorsString = (string)$errors;
-            throw new Exception($errorsString);
+            throw new ValidationException($errors);
         }
     }
 

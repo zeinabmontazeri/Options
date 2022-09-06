@@ -2,6 +2,7 @@
 
 namespace App\Exception;
 
+use ErrorException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -19,6 +20,7 @@ enum HttpExceptionEnum: string
     case MethodNotAllowedHttpException = MethodNotAllowedHttpException::class;
     case ValidationException = ValidationException::class;
     case HttpException = HttpException::class;
+    case ErrorException = ErrorException::class;
 
 
     public static function getConstants(): array
@@ -31,7 +33,9 @@ enum HttpExceptionEnum: string
             self::NotFoundHttpException->getValue(),
             self::MethodNotAllowedHttpException->getValue(),
             self::ValidationException->getValue(),
-            self::HttpException->getValue()];
+            self::HttpException->getValue(),
+            self::ErrorException->getValue()
+        ];
 
     }
 
