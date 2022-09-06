@@ -2,10 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Commission;
 use App\Entity\Enums\EnumEventStatus;
 use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,7 +24,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
  */
 class OrderRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry                   $registry,
+                                private CommissionLevelRepository $commissionLevelRepository)
     {
         parent::__construct($registry, Order::class);
     }
@@ -92,17 +95,29 @@ class OrderRepository extends ServiceEntityRepository
             return false;
         }
 
-        $order->setStatus(EnumOrderStatus::CHECKOUT);
+        $this->getEntityManager()->getConnection()->beginTransaction(); // suspend auto-commit
+        try {
+            $order->setStatus(EnumOrderStatus::CHECKOUT);
 
-        $this
-            ->getEntityManager()
-            ->persist($order);
+            $this->getEntityManager()->persist($order);
 
-        $this
-            ->getEntityManager()
-            ->flush();
+            $hostLevel = $order->getEvent()->getExperience()->getHost()->getLevel();
+            $level = $this->commissionLevelRepository->findOneBy(['name' => $hostLevel]);
 
-        return true;
+            $commission = new Commission();
+            $commission->setEventOrder($order);
+            $commission->setLevel($level);
+
+            $this->getEntityManager()->persist($commission);
+
+            $this->getEntityManager()->flush();
+            $this->getEntityManager()->getConnection()->commit();
+
+            return true;
+        } catch (Exception $e) {
+            $this->getEntityManager()->getConnection()->rollBack();
+            throw $e;
+        }
     }
 
     public function isEventOrderPurchasable(int $orderId): ?Order
