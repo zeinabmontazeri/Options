@@ -42,6 +42,9 @@ class Order
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[ORM\OneToOne(mappedBy: 'EventOrder', cascade: ['persist', 'remove'])]
+    private ?Commission $commission = null;
+
 
     public function __construct()
     {
@@ -120,6 +123,23 @@ class Order
     public function setUser(?User $user): self
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getCommission(): ?Commission
+    {
+        return $this->commission;
+    }
+
+    public function setCommission(Commission $commission): self
+    {
+        // set the owning side of the relation if necessary
+        if ($commission->getEventOrder() !== $this) {
+            $commission->setEventOrder($this);
+        }
+
+        $this->commission = $commission;
 
         return $this;
     }
