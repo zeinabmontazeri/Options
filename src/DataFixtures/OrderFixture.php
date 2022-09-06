@@ -18,17 +18,21 @@ class OrderFixture extends Fixture implements DependentFixtureInterface
         $faker = Factory::create();
         $events = $manager->getRepository(Event::class)->findAll();
         $users = $manager->getRepository(User::class)->findAll();
+        $orderRepository = $manager->getRepository(Order::class);
         for ($i = 0; $i < 30; $i++) {
             $order = new Order();
             $event = $faker->randomElement($events);
             $order->setUser($faker->randomElement($users))
                 ->setEvent($event)
                 ->setStatus($faker->randomElements(EnumOrderStatus::cases())[0])
-                ->setPayablePrice($event->getPrice())
-                ->setCreatedAt($faker->dateTime);
+                ->setPayablePrice($event->getPrice());
             $manager->persist($order);
+            $manager->flush();
+
+            if($i%5 == 0){
+                $orderRepository->setOrderAsCheckedOut($order->getId());
+            }
         }
-        $manager->flush();
     }
 
     public function getDependencies(): array
