@@ -28,6 +28,7 @@ class UserFixture extends Fixture
                 ->setPhoneNumber($faker->regexify('/^09\d{9}$/'))
                 ->setFirstName($faker->firstName)
                 ->setLastName($faker->lastName)
+                ->setBirthDate($faker->dateTimeBetween('-60 years', '-18 years'))
                 ->setCreatedAt($faker->dateTime)->setGender($faker->randomElements(EnumGender::cases())[0]->value)
                 ->setRoles($faker->randomElements(['ROLE_EXPERIENCER', 'ROLE_HOST', 'ROLE_ADMIN']));
             $manager->persist($user);

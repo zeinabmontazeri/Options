@@ -51,6 +51,32 @@ class HostRepository extends ServiceEntityRepository
             ->execute();
     }
 
+    public function updateHostApprovalStatus($hostId, $approvalStatus)
+    {
+        $this->createQueryBuilder('host')
+            ->update()
+            ->set('host.approvalStatus', ':approvalStatus')
+            ->where('host.id = :hostId')
+            ->setParameter('approvalStatus', $approvalStatus)
+            ->setParameter('hostId', $hostId)
+            ->getQuery()
+            ->execute();
+    }
+
+    public function getHostByAuthorizationStatus($array): array
+    {
+        $result = [];
+        $baseQuery = $this->createQueryBuilder('host');
+        foreach ($array as $filter => $value) {
+            if (!is_null($value) and $value) {
+                $baseQuery = $baseQuery->andWhere('host.approvalStatus = :approvalStatus')
+                    ->setParameter('approvalStatus', strtoupper($filter));
+                $result = array_merge($result, $baseQuery->getQuery()->getResult());
+            }
+        }
+        return $result;
+    }
+
 
 //    /**
 //     * @return Host[] Returns an array of Host objects
@@ -76,4 +102,5 @@ class HostRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
 }
