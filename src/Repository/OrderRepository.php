@@ -107,6 +107,7 @@ class OrderRepository extends ServiceEntityRepository
             $commission = new Commission();
             $commission->setEventOrder($order);
             $commission->setLevel($level);
+            $commission->setAmount($level->getPercentage()*$order->getPayablePrice());
 
             $this->getEntityManager()->persist($commission);
 

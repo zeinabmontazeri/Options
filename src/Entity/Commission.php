@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CommissionRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
@@ -29,6 +30,9 @@ class Commission
 
     #[ORM\Column]
     private ?\DateTimeImmutable $CreatedAt = null;
+
+    #[ORM\Column(type: Types::BIGINT)]
+    private ?string $amount = null;
 
 
     public function getId(): ?int
@@ -81,6 +85,18 @@ class Commission
     public function setDeletedAt(\DateTimeImmutable $DeletedAt): self
     {
         $this->DeletedAt = $DeletedAt;
+
+        return $this;
+    }
+
+    public function getAmount(): ?string
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(string $amount): self
+    {
+        $this->amount = $amount;
 
         return $this;
     }
