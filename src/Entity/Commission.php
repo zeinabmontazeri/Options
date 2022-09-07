@@ -77,17 +77,6 @@ class Commission
         return $this;
     }
 
-    public function getDeletedAt(): ?\DateTimeImmutable
-    {
-        return $this->DeletedAt;
-    }
-
-    public function setDeletedAt(\DateTimeImmutable $DeletedAt): self
-    {
-        $this->DeletedAt = $DeletedAt;
-
-        return $this;
-    }
 
     public function getAmount(): ?string
     {

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Commission;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -37,6 +38,19 @@ class CommissionRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getByHost(int $host_id)
+    {
+        return $this->createQueryBuilder('c')
+            ->select('SUM(c.amount) as total')
+            ->innerJoin('c.EventOrder','events')
+            ->innerJoin('App\Entity\Experience','experience')
+            ->where('experience.host = :host_id')
+            ->setParameter('host_id',$host_id)
+            ->getQuery()
+            ->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)
+            ->getResult();
     }
 
 //    /**
