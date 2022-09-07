@@ -8,12 +8,22 @@ framework:
         # Other options include:
 
         # Redis
-        #app: cache.adapter.redis
-        #default_redis_provider: redis://localhost
+        app: cache.adapter.redis_taggable
+        default_redis_provider: redis://localhost:6379
+        pools:
+            doctrine.result_cache_pool:
+                adapter: cache.adapter.redis_taggable
 
+            doctrine.system_cache_pool:
+                adapter: cache.adapter.redis_taggable
         # APCu (not recommended with heavy random-write workloads as memory fragmentation can cause perf issues)
         #app: cache.adapter.apcu
 
         # Namespaced pools use the above "app" backend by default
         #pools:
             #my.dedicated.cache: null
+services:
+    cache.adapter.redis_taggable:
+        class: Symfony\Component\Cache\Adapter\RedisTagAwareAdapter
+        parent: cache.adapter.redis
+        tags: { name: cache.pool, clearer: cache.app_clearer, provider: 'redis://localhost:6379' }

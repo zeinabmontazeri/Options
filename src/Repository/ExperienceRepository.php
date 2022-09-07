@@ -6,6 +6,7 @@ use App\Entity\Enums\EnumEventStatus;
 use App\Entity\Experience;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Cache;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -71,6 +72,10 @@ class ExperienceRepository extends ServiceEntityRepository
         WHERE e.startsAt > CURRENT_TIMESTAMP() and e.capacity - e.registeredUsers > 0  
         GROUP BY ex.id
         ORDER BY total_buyers DESC')->setMaxResults(20);
+        $query->setCacheMode(Cache::MODE_NORMAL)
+            ->setCacheable(true)
+            ->setResultCacheId('trending_id')
+            ->setLifetime(300);
         return $query->getResult();
     }
 
