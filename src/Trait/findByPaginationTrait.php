@@ -37,6 +37,7 @@ trait findByPaginationTrait {
         $paginator = new Paginator($query);
         $result['results'] = $paginator->getIterator();
         $result['current_page'] = $page;
+        $result['per_page'] = $perPage;
         $result['total'] = $paginator->count();
         return $result;
     }
