@@ -11,11 +11,13 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ExperienceRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
+#[ORM\Cache(usage: 'READ_WRITE')]
 class Experience
 {
     use SoftDeleteableEntity;
@@ -24,19 +26,23 @@ class Experience
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['experience'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['experience'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Unique]
+    #[Groups(['experience'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $media = null;
 
     #[ORM\Column]
+    #[Groups(['experience'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'experiences')]

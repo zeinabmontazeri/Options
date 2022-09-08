@@ -20,14 +20,13 @@ class EventRequest extends BaseRequest
     #[Assert\NotBlank]
     #[Assert\NotNull]
     #[Assert\Regex(
-        pattern: '[1-9]{1}[0-9]{3,}',
+        pattern: '/[1-9]{1}[0-9]{3,}/',
         message: 'Price must be an integer greater than 1000.',
     )]
     public ?string $price = null;
 
     #[Assert\Type(type: 'boolean')]
     #[Assert\NotNull]
-    #[Assert\NotBlank]
     public ?bool $isOnline = null;
 
     #[Assert\GreaterThan(new \DateTime())]

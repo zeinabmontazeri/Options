@@ -20,6 +20,7 @@ class ExceptionSubscriber implements EventSubscriberInterface
     public function onKernelException(ExceptionEvent $event)
     {
         $exception = $event->getThrowable();
+        dd($exception);
         $response = ExceptionFactory::getException($exception);
         $event->setResponse($response);
     }

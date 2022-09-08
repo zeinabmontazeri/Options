@@ -9,6 +9,7 @@ use App\Trait\findByPaginationTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\ORM\Cache;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -79,40 +80,26 @@ class ExperienceRepository extends ServiceEntityRepository
         return $result;
     }
 
-//    public function findByPaginated(array $criteria, ?array $orderBy = null, $page = 1, $perPage = 20)
-//    {
-//        $queryBuilder = $this->createQueryBuilder('entity');
-//        foreach ($criteria as $key=>$c){
-//            $queryBuilder->where(
-//                $queryBuilder->expr()->eq("entity.$key",$c)
-//            );
-//        }
-//        if($orderBy)
-//            foreach ($orderBy as $o){
-//                $queryBuilder->addOrderBy($o);
-//            }
-//
-//        $queryBuilder
-//            ->setFirstResult(($page-1)*$perPage)
-//            ->setMaxResults($perPage);
-//        $query = $queryBuilder->getQuery()
-//            ->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
-//        $paginator = new Paginator($query);
-//        $result['results'] = $paginator->getIterator();
-//        $result['total'] = $paginator->count();
-//        return $result;
-//    }
     public function getTrendingExperiences()
     {
         $entityManager = $this->getEntityManager();
 
-        $query = $entityManager->createQuery('SELECT ex.id ,SUM(e.registeredUsers) as total_buyers
-        FROM App\Entity\Experience ex
-        INNER JOIN App\Entity\Event e
-        WITH ex.id = e.experience
-        WHERE e.startsAt > CURRENT_TIMESTAMP() and e.capacity - e.registeredUsers > 0  
-        GROUP BY ex.id
-        ORDER BY total_buyers DESC')->setMaxResults(20);
+        $query = $entityManager->createQuery(
+            'SELECT ex
+            FROM App\Entity\Experience ex
+            INNER JOIN App\Entity\Event e WITH ex.id = e.experience
+            WHERE e.startsAt > CURRENT_TIMESTAMP() 
+                AND e.capacity - e.registeredUsers > 0  
+            GROUP BY ex.id
+            ORDER BY SUM(e.registeredUsers) DESC'
+        )
+            ->setMaxResults(20);
+
+        $query->setCacheMode(Cache::MODE_NORMAL)
+            ->setCacheable(true)
+            ->setResultCacheId('trending_id')
+            ->setLifetime(300);
+
         return $query->getResult();
     }
 
@@ -126,30 +113,4 @@ class ExperienceRepository extends ServiceEntityRepository
             ->setParameter('published', EnumEventStatus::PUBLISHED);
         return $query->getResult();
     }
-
-//    }
-//    /**
-//     * @return Experience[] Returns an array of Experience objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Experience
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

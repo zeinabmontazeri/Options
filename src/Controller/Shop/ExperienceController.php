@@ -16,6 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 
 #[Route('api/v1/shop')]
 class ExperienceController extends AbstractController
@@ -26,8 +27,7 @@ class ExperienceController extends AbstractController
         ExperienceRepository          $experienceRepository,
         GetExperiencesByFilterService $service,
         ExperienceFilterRequest       $experienceFilterRequest,
-    ): JsonResponse
-    {
+    ): JsonResponse {
 
         $result = $service->getExperience($experienceFilterRequest, $experienceRepository);
         return $this->json(
@@ -35,7 +35,8 @@ class ExperienceController extends AbstractController
                 'data' => $result,
                 'message' => 'Experiences Successfully Retrieved',
                 'status' => 'success',
-            ], Response::HTTP_OK
+            ],
+            Response::HTTP_OK
         );
     }
 
@@ -45,8 +46,8 @@ class ExperienceController extends AbstractController
     public function getExperiences(
         Experience                    $experience,
         EventRepository               $eventRepository,
-        GetAllExperienceEventsService $getAllExperienceEventsService): JsonResponse
-    {
+        GetAllExperienceEventsService $getAllExperienceEventsService
+    ): JsonResponse {
         $result = $getAllExperienceEventsService->getExperienceEvents($experience, $eventRepository);
         return $this->json([
             'data' => $result,
@@ -59,15 +60,23 @@ class ExperienceController extends AbstractController
     #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_HOST, User::ROLE_ADMIN)]
     public function getTrendingExperiences(
         ExperienceRepository $experienceRepository,
-    ): JsonResponse
-    {
+        SerializerInterface $serializer,
+    ): Response {
         $result = $experienceRepository->getTrendingExperiences();
-        return $this->json(
+        $data = $serializer->serialize(
             [
                 'data' => $result,
                 'message' => 'Experiences Successfully Retrieved',
                 'status' => 'success',
-            ], Response::HTTP_OK
+            ],
+            'json',
+            ['groups' => 'experience']
+        );
+
+        return new Response(
+            $data,
+            Response::HTTP_OK,
+            ['Content-type' => 'application/json'],
         );
     }
 
@@ -83,7 +92,8 @@ class ExperienceController extends AbstractController
                 'data' => $experiences,
                 'message' => 'Experiences Successfully Retrieved',
                 'status' => 'success',
-            ], Response::HTTP_OK
+            ],
+            Response::HTTP_OK
         );
     }
 }
