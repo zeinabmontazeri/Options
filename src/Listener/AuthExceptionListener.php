@@ -19,11 +19,10 @@ final class AuthExceptionListener
     public function setAuthenticationExceptionResponse(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
-
         if ($exception instanceof AuthException) {
             $response = new JsonResponse(
                 data: [
-                    'status' => false,
+                    'status' => 'failed',
                     'data' => [],
                     'message' => $exception->getMessage(),
                 ],
@@ -40,17 +39,10 @@ final class AuthExceptionListener
         ) {
             $previous = $exception->getPrevious();
             if ($previous instanceof NoSuchPropertyException) {
-                $response = new JsonResponse(
-                    data: [
-                        'status' => false,
-                        'data' => [],
-                        'message' => "'phoneNumber' and 'password' must be provided."
-                    ],
-                    status: JsonResponse::HTTP_BAD_REQUEST
-                );
+                throw new BadRequestHttpException("'phoneNumber' and 'password' must be provided.");
+
             }
         }
-
         if (isset($response)) {
             $event->setResponse($response);
         }

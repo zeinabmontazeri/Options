@@ -13,16 +13,20 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserRegisterService
 {
     function __construct(
-        private UserRepository $userRepository,
+        private UserRepository              $userRepository,
         private UserPasswordHasherInterface $hasher,
-        private EntityManagerInterface $entityManager
-    ) {
+        private EntityManagerInterface      $entityManager
+    )
+    {
     }
 
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function register(UserRegisterRequest $request): User
     {
         //Check if user already exists
-        if($this->userRepository->checkExistsByPhoneNumber($request->phoneNumber))
+        if ($this->userRepository->checkExistsByPhoneNumber($request->phoneNumber))
             throw new Exception('User Already Exists');
 
 

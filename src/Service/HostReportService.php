@@ -3,11 +3,12 @@
 namespace App\Service;
 
 use App\Auth\AuthenticatedUser;
-use App\Entity\EnumOrderStatus;
+use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Experience;
 use App\Entity\Host;
 use App\Entity\User;
 use App\Repository\ExperienceRepository;
+use App\Repository\HostRepository;
 use App\Repository\OrderRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -27,18 +28,18 @@ class HostReportService
      */
     public function totalReport(
         OrderRepository      $orderRepository,
-        Host                 $host,
-        ExperienceRepository $experienceRepository): array
+        ExperienceRepository $experienceRepository,
+        HostRepository       $hostRepository,
+    ): array
     {
-        if ($this->security->getRole() != User::ROLE_ADMIN)
-            if ($this->security->getUser() !== $host->getUser())
-                throw new AccessDeniedHttpException("You are not allowed to perform this action.");
+        $user = $this->security->getUser();
+        $host = $hostRepository->findOneBy(['user' => $user]);
         $orders = $orderRepository->findAll();
         $totalIncome = 0;
         $totalOrderCount = 0;
         $totalEventCount = 0;
         foreach ($orders as $order) {
-            if ($order->getStatus() == EnumOrderStatus::CHECKOUT->value) {
+            if ($order->getStatus() === EnumOrderStatus::CHECKOUT) {
                 $event = $order->getEvent();
                 $experience = $event->getExperience();
                 if ($experience->getHost() === $host) {
@@ -59,12 +60,13 @@ class HostReportService
     }
 
     public function preciseReport(
-        Host            $host,
         Experience      $experience,
-        OrderRepository $orderRepository): array
+        OrderRepository $orderRepository,
+        HostRepository  $hostRepository
+    ): array
     {
-        if ($this->security->getUser() !== $host->getUser())
-            throw new NotFoundHttpException("Resource not found.");
+        $user = $this->security->getUser();
+        $host = $hostRepository->findOneBy(['user' => $user]);
         $orders = $orderRepository->findAll();
         $totalIncomePerExperience = 0;
         $totalOrderCountPerExperience = 0;

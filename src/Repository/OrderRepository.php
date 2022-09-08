@@ -2,9 +2,15 @@
 
 namespace App\Repository;
 
+use App\Entity\Enums\EnumEventStatus;
+use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @extends ServiceEntityRepository<Order>
@@ -39,28 +45,95 @@ class OrderRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Order[] Returns an array of Order objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('o.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function findByUserEventId($userId, $eventId): int
+    {
+        return intval($this->createQueryBuilder('o')
+            ->select('o.id')
+            ->where('o.user=:var1')
+            ->andWhere('o.event=:var2')
+            ->setParameter('var1', $userId)
+            ->setParameter('var2', $eventId)
+            ->getQuery()
+            ->getResult());
+    }
 
-//    public function findOneBySomeField($value): ?Order
-//    {
-//        return $this->createQueryBuilder('o')
-//            ->andWhere('o.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function getTotalRegisteredEvent($eventId): int
+    {
+        return intval($this->createQueryBuilder('o')
+            ->select('count(o.id)')
+            ->where('o.event=:var1')
+            ->setParameter('var1', $eventId)
+            ->getQuery()
+            ->getSingleScalarResult());
+    }
+
+    public function getHostSalesForSetBusinessClass($fromDate, $toDate)
+    {
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery
+        (
+            'SELECT h.id as hostId, COUNT(o.id) ordersCount, SUM(o.payablePrice) as totalSell
+            FROM App\Entity\Host h, App\Entity\Order o
+            INNER JOIN App\Entity\Event e WITH o.event = e.id
+            INNER JOIN App\Entity\Experience ex WITH e.experience = ex.id
+            WHERE h.id = ex.host AND (o.createdAt >= :fromDate AND o.createdAt <= :toDate) AND o.status = :status
+            GROUP BY h.id ORDER BY totalSell DESC')
+            ->setParameter('fromDate', $fromDate)
+            ->setParameter('toDate', $toDate)
+            ->setParameter('status', 'checkout');
+        return $query->getResult();
+    }
+
+    public function setOrderAsCheckedOut(int $invoiceId): bool
+    {
+        $order = $this->find($invoiceId);
+
+        if (is_null($order)) {
+            return false;
+        }
+
+        $order->setStatus(EnumOrderStatus::CHECKOUT);
+
+        $this
+            ->getEntityManager()
+            ->persist($order);
+
+        $this
+            ->getEntityManager()
+            ->flush();
+
+        return true;
+    }
+
+    public function isEventOrderPurchasable(int $orderId): ?Order
+    {
+        $query = $this
+            ->getEntityManager()
+            ->createQuery("
+                SELECT o
+                FROM App\Entity\Order o
+                LEFT JOIN o.event e
+                WHERE o.status = :status
+                    AND o.id = :orderId
+                    AND e.startsAt > :today
+                    AND e.status = :eventStatus
+            ")
+            ->setParameter('status', EnumOrderStatus::DRAFT)
+            ->setParameter('orderId', $orderId)
+            ->setParameter('today', new \DateTimeImmutable())
+            ->setParameter('eventStatus', EnumEventStatus::PUBLISHED);
+
+        try {
+            $result = $query->getSingleResult();
+        } catch (NonUniqueResultException $e) {
+            throw new HttpException(
+                JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
+                sprintf('Multiple orders with same id(%d)', $orderId),
+            );
+        } catch (NoResultException $e) {
+            return null;
+        }
+
+        return $result;
+    }
 }

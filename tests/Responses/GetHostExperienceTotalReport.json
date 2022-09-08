@@ -1,0 +1,9 @@
+{
+  "data": {
+    "totalIncome": 2000,
+    "totalEvent": 2,
+    "totalOrder": 1
+  },
+  "message": "Successfully retrieve total report.",
+  "status": true
+}
