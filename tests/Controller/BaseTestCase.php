@@ -34,8 +34,8 @@ abstract class BaseTestCase extends JsonApiTestCase
                 $this->loader->addFixture(new $path($this->passwordHasher));
             else
                 $this->loader->addFixture(new $path());
+            $this->executor->execute($this->loader->getFixtures());
         }
-        $this->executor->execute($this->loader->getFixtures());
     }
 
     /**
@@ -119,6 +119,26 @@ abstract class BaseTestCase extends JsonApiTestCase
             , [], [
                 'CONTENT_TYPE' => 'application/json',
                 'Connection' => 'keep-alive'
+            ], json_encode($content));
+        $response = $this->client->getResponse();
+        $response = json_decode($response->getContent());
+        return $response->data->token;
+    }
+
+    public function getTokenWithLogin($phoneNumber, $role)
+    {
+        $this->authenticatedUser = $this->entityManager
+            ->getRepository(User::class)
+            ->findOneBy(['phoneNumber' => $phoneNumber]);
+        $content = [
+            'phoneNumber' => $phoneNumber,
+            'password' => 'pass_1234',
+            'role' => $role
+        ];
+
+        $this->client->request('POST', '/api/v1/auth/login', []
+            , [], [
+                'CONTENT_TYPE' => 'application/json',
             ], json_encode($content));
         $response = $this->client->getResponse();
         $response = json_decode($response->getContent());
