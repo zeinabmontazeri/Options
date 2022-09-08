@@ -65,17 +65,22 @@ class ExperienceRepository extends ServiceEntityRepository
     {
         $entityManager = $this->getEntityManager();
 
-        $query = $entityManager->createQuery('SELECT ex.id ,SUM(e.registeredUsers) as total_buyers
-        FROM App\Entity\Experience ex
-        INNER JOIN App\Entity\Event e
-        WITH ex.id = e.experience
-        WHERE e.startsAt > CURRENT_TIMESTAMP() and e.capacity - e.registeredUsers > 0  
-        GROUP BY ex.id
-        ORDER BY total_buyers DESC')->setMaxResults(20);
+        $query = $entityManager->createQuery(
+            'SELECT ex
+            FROM App\Entity\Experience ex
+            INNER JOIN App\Entity\Event e WITH ex.id = e.experience
+            WHERE e.startsAt > CURRENT_TIMESTAMP() 
+                AND e.capacity - e.registeredUsers > 0  
+            GROUP BY ex.id
+            ORDER BY SUM(e.registeredUsers) DESC'
+        )
+            ->setMaxResults(20);
+
         $query->setCacheMode(Cache::MODE_NORMAL)
             ->setCacheable(true)
             ->setResultCacheId('trending_id')
             ->setLifetime(300);
+
         return $query->getResult();
     }
 
@@ -89,30 +94,4 @@ class ExperienceRepository extends ServiceEntityRepository
             ->setParameter('published', EnumEventStatus::PUBLISHED);
         return $query->getResult();
     }
-
-//    }
-//    /**
-//     * @return Experience[] Returns an array of Experience objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Experience
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }
