@@ -29,7 +29,7 @@ class OrderController extends AbstractController
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/orders/{id}/remove/', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
+    #[Route('/orders/{id}/', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function index(
         Order              $order,
@@ -50,6 +50,9 @@ class OrderController extends AbstractController
         }
     }
 
+    /**
+     * @throws JWTDecodeFailureException
+     */
     #[Route('/users/events/{event_id}/order', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'], methods: ['POST'])]
     #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
@@ -60,10 +63,12 @@ class OrderController extends AbstractController
             'data' => $result['data'],
             'message' => $result['message'],
             'status' => $result['status'],
-            'code' => Response::HTTP_CREATED
-        ]);
+        ], Response::HTTP_OK);
     }
 
+    /**
+     * @throws JWTDecodeFailureException
+     */
     #[Route('/users/orders', name: 'app_shop_users_order', methods: 'GET')]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function getExperiencerOrder(OrderService $orderService, AuthenticatedUser $security): Response
@@ -73,8 +78,7 @@ class OrderController extends AbstractController
             'data' => $res,
             'message' => 'get all user\'s orders successfully',
             'status' => 'success',
-            'code' => Response::HTTP_OK
-        ]);
+        ], Response::HTTP_OK);
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Service\Shop;
+
 use App\Entity\Comment;
 use App\Entity\Enums\EnumEventStatus;
 use App\Exception\InvalidInputException;
@@ -9,13 +10,15 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class CommentEventService
 {
-    private $result=[];
+    private $result = [];
+
     public function __construct(private readonly CommentRepository $commentRepository)
     {
     }
-    public function commentTheEvent($user, $event, $comment):array
+
+    public function commentTheEvent($user, $event, $comment): array
     {
-        if($event->getStatus()==EnumEventStatus::PUBLISHED) {
+        if ($event->getStatus() == EnumEventStatus::PUBLISHED) {
             $commentobj = new Comment();
             $commentobj->SetUser($user);
             $commentobj->setEvent($event);
@@ -25,8 +28,7 @@ class CommentEventService
             $this->result['data'] = ['commentId' => $commentobj->getId()];
             $this->result['message'] = 'The user commented successfully';
             return $this->result;
-        }else
-        {
+        } else {
             throw new BadRequestHttpException('This event has not yet been published');
         }
     }
