@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y unzip symfony-cli
 
 #install soap
 RUN apt-get update && \
-    apt-get install -y libxml2-dev
+ apt-get install -y libxml2-dev
 # install mysql driver
 RUN docker-php-ext-install pdo_mysql
 
@@ -28,7 +28,7 @@ COPY composer.json /app/
 COPY composer.lock /app/
 COPY db_check.php /app/
 COPY phpunit.xml.dist /app/
-COPY composer-installer.php /tmp/
+COPY build/composer-setup.php /tmp/
 
 
 #ENV APP_ENV="dev"
@@ -39,9 +39,10 @@ COPY composer-installer.php /tmp/
 #ENV JWT_PUBLIC_KEY="%kernel.project_dir%/config/jwt/public.pem"
 #ENV JWT_PASSPHRASE="a1cf6b9aac1455b11b0e08a92deb9892"
 
-# Install Composer
-RUN ["php", "/tmp/composer-installer.php", "--install-dir=/bin", "--filename=composer"]
 
+# Install Composer
+RUN ["php", "/tmp/composer-setup.php", "--install-dir=/bin", "--filename=composer"]
+RUN ["composer", "require", "nelmio/api-doc-bundle"]
 # install php requirements
 RUN ["composer", "install"]
 
@@ -50,4 +51,4 @@ RUN ["composer", "update"]
 EXPOSE 8000
 
 ENTRYPOINT ["symfony", "server:start", "--no-tls"]
-#ENTRYPOINT ["sh", "-c", "while true; do sleep 1; done"]
+ #ENTRYPOINT ["sh", "-c", "while true; do sleep 1; done"]
