@@ -76,7 +76,7 @@ class BankOperatonManager
     public function getCallbackUrl(string $callbackToken)
     {
         $url = $this->router->generate(
-            name: 'app.payment.checkout_callback',
+            name: 'app_payment_checkout_callback',
             parameters: [
                 'callback_token' => $callbackToken
             ],
