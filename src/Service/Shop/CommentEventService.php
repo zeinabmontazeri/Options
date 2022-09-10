@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class CommentEventService
 {
-    private $result = [];
+    private array $result = [];
 
     public function __construct(private readonly CommentRepository $commentRepository)
     {

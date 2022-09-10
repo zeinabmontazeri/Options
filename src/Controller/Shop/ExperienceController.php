@@ -163,7 +163,7 @@ class ExperienceController extends AbstractController
 
     #[Route('/experiences/search/{word}', name: 'app_experience_search', methods: ['GET'])]
     #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_ADMIN, User::ROLE_HOST)]
-    public function searchExperience($word, ExperienceRepository $experienceRepository)
+    public function searchExperience($word, ExperienceRepository $experienceRepository): JsonResponse
     {
         $searchResult = $experienceRepository->searchByWord($word);
         $experienceCollection = DtoFactory::getInstance('experienceFilter');
