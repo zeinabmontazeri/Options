@@ -8,7 +8,7 @@ use App\Entity\User;
 use App\Repository\HostRepository;
 use App\Request\AuthorizeAdminRequest;
 use App\Request\HostAuthorizationFilterRequest;
-use App\Service\Admin\AuthorizeHostByAdminService;
+use App\Service\Admin\HostApprovalService;
 use App\Service\Admin\GetHostAuthorizationStatusByFilterService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,16 +16,30 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('api/v1/admins')]
+#[Route('api/v1/admin')]
 class HostController extends AbstractController
 {
+    #[Route('/hosts/pending-approvals', name: 'app_admin_host_pending_approvals',methods: 'GET')]
+//    #[AcceptableRoles(User::ROLE_ADMIN)]
+    public function pendingApprovals(
+        HostApprovalService $service): JsonResponse
+    {
+
+        $test = $service->getPendingList();
+        return $this->json([
+            'data' => $test,
+            'message' => 'successfully got pending requests',
+            'status' => 'success',
+        ], Response::HTTP_OK);
+    }
+
     #[Route('/hosts/{host_id}/authorize/', name: 'app_admin_host_authorization', requirements: ['id' => '\d+'], methods: 'POST')]
     #[ParamConverter('host', class: Host::class, options: ['id' => 'host_id'])]
     #[AcceptableRoles(User::ROLE_ADMIN)]
     public function authorizeHost(
         Host                        $host,
         HostRepository              $hostRepository,
-        AuthorizeHostByAdminService $service,
+        HostApprovalService $service,
         AuthorizeAdminRequest       $request): JsonResponse
     {
 
