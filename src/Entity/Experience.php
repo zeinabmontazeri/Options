@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ExperienceRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
-#[ORM\Cache(usage: 'READ_WRITE')]
+#[ORM\Cache(usage: 'READ_ONLY')]
 class Experience
 {
     use SoftDeleteableEntity;
