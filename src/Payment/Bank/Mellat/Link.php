@@ -12,8 +12,8 @@ class Link implements LinkInterface
 {
     private readonly BankCredential $credential;
     private \SoapClient $client;
-    private const WSDL_URI = 'https://banktest.ir/gateway/bpm.shaparak.ir/pgwchannel/services/pgw?wsdl';
-    public const PAYMENT_URI = 'https://banktest.ir/gateway/pgw.bpm.bankmellat.ir/pgwchannel/startpay.mellat';
+    private const WSDL_URI = 'https://old.banktest.ir/gateway/bpm.shaparak.ir/pgwchannel/services/pgw?wsdl';
+    public const PAYMENT_URI = 'https://old.banktest.ir/gateway/pgw.bpm.bankmellat.ir/pgwchannel/startpay.mellat';
 
     public function __construct(
         string $bankTerminalId,

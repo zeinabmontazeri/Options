@@ -2,6 +2,8 @@
 
 namespace App\DTO;
 
+use App\Repository\MediaRepository;
+
 class ExperienceCollection implements CollectionInterface
 {
     protected array $result = [];
@@ -13,6 +15,7 @@ class ExperienceCollection implements CollectionInterface
             $data['title'] = $entity->getTitle();
             $data['description'] = $entity->getDescription();
             $data['createdAt'] = $entity->getCreatedAt();
+            $data['media'] = $entity->getMediaFileNames();
             $this->result[] = $data;
         }
         return $this->result;

@@ -41,13 +41,24 @@ abstract class BaseRequest
         if ($request->getMethod() === 'GET') {
             return $request->query->all();
         } else {
-            $payload = json_decode($request->getContent(), true);
-            if ($payload === null) {
-                throw new BadRequestException('Invalid JSON payload.');
-            } else {
-                return $payload;
+            # request is form-data with uploaded files
+            $files = $request->files->all();
+            if ($files){
+                return $files;
+                    $uploadedFile = $request->files->get($key);
+                    $fileFormat = $uploadedFile->getClientOriginalExtension();
+                    $fileName = $uploadedFile->getClientOriginalName();
+                    $file = $uploadedFile->move('./media', base64_encode($fileName).'_'.base64_encode($content['title']).'.'.$fileFormat);
             }
-
+            # request is json
+            else {
+                $payload = json_decode($request->getContent(), true);
+                if ($payload === null) {
+                    throw new BadRequestException('Invalid JSON payload.');
+                } else {
+                    return $payload;
+                }
+            }
         }
     }
 
