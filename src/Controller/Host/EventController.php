@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/v1/hosts')]
+#[Route('/api/v1/host')]
 class EventController extends AbstractController
 {
     #[Route('/experiences/{experience_id}/events/create', name: 'app_host_create_event', methods: ['POST'])]
@@ -29,8 +29,7 @@ class EventController extends AbstractController
             ],
             'message' => "event created successfully",
             'status' => 'success',
-            'code' => Response::HTTP_CREATED
-        ]);
+        ], Response::HTTP_OK);
     }
 
     #[Route('/events/{event_id}/report', name: 'app_host_event_report', methods: ['GET'])]
