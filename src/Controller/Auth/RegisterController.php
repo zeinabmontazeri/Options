@@ -5,14 +5,12 @@ namespace App\Controller\Auth;
 use App\Request\UserRegisterRequest;
 use App\Service\UserRegisterService;
 use Doctrine\DBAL\Exception;
-use OpenApi\Annotations\JsonContent;
+use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use OpenApi\Annotations as OA;
 
 #[Route('api/v1/auth/', name: 'auth.')]
-
 class RegisterController extends AbstractController
 {
     /**
@@ -42,9 +40,9 @@ class RegisterController extends AbstractController
      *                 mediaType="application/json",
      *                 @OA\Schema(
      *                     @OA\Property(
-     *                         property="success",
+     *                         property="status",
      *                         type="boolean",
-     *                         description="action result"
+     *                         description="for 200 is success"
      *                     ),
      *                     @OA\Property(
      *                         property="data",
@@ -56,7 +54,7 @@ class RegisterController extends AbstractController
      *                         description="The action message",
      *                     ),
      *                     example={
-     *                             "success": true,
+     *                             "status": "success",
      *                             "data": null,
      *                             "message": "User has been created successfully"
      *                     }
@@ -73,9 +71,9 @@ class RegisterController extends AbstractController
      *                 mediaType="application/json",
      *                 @OA\Schema(
      *                     @OA\Property(
-     *                         property="success",
-     *                         type="boolean",
-     *                         description="action result"
+     *                         property="status",
+     *                         type="string",
+     *                         description="For HttpException is failure."
      *                     ),
      *                     @OA\Property(
      *                         property="data",
@@ -87,9 +85,9 @@ class RegisterController extends AbstractController
      *                         description="The action message",
      *                     ),
      *                     example={
-     *                             "success": false,
-     *                             "data": null,
-     *                             "message": "Bad Request: User Already Exists"
+     *                             "status": "failed",
+     *                             "data": "[]",
+     *                             "message": "Bad Request: proper message!"
      *                     }
      *                 )
      *             )
@@ -97,7 +95,7 @@ class RegisterController extends AbstractController
      *     )
      * @throws Exception
      */
-    #[Route('register', name: 'register',methods:['post'])]
+    #[Route('register', name: 'register', methods: ['post'])]
     public function index(
         UserRegisterRequest $validatedRequest,
         UserRegisterService $userRegisterService
