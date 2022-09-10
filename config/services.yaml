@@ -22,7 +22,11 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
+    App\Command\FlushCacheCommand:
+        arguments:
+            $redisHost: '%env(REDIS_HOST)%'
+            $redisPort: '%env(REDIS_PORT)%'
+        public: true
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
     gedmo.listener.softdeleteable:
@@ -44,3 +48,4 @@ services:
         public: true
         arguments:
           [ '@security.password_hasher_factory' ]
+
