@@ -20,8 +20,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use OpenApi\Annotations as OA;
-use OpenApi\Attributes as OA2;
 
 #[Route('api/v1/shop')]
 class OrderController extends AbstractController
@@ -116,7 +114,7 @@ class OrderController extends AbstractController
     #[Route(
         '/orders/{order_id<\d+>}/checkout',
         name: 'app.order.checkout',
-        
+
     )]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function orderCheckout(int $order_id, OrderCheckoutService $orderCheckoutService)
