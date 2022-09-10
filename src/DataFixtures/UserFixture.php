@@ -29,7 +29,8 @@ class UserFixture extends Fixture
                 ->setFirstName($faker->firstName)
                 ->setLastName($faker->lastName)
                 ->setBirthDate($faker->dateTimeBetween('-60 years', '-18 years'))
-                ->setCreatedAt($faker->dateTime)->setGender($faker->randomElements(EnumGender::cases())[0]->value)
+                ->setCreatedAt($faker->dateTime)
+                ->setGender(EnumGender::FEMALE)
                 ->setRoles($faker->randomElements(['ROLE_EXPERIENCER', 'ROLE_HOST', 'ROLE_ADMIN']));
             $manager->persist($user);
             $manager->flush();

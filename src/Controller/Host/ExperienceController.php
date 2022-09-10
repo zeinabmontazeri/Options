@@ -3,18 +3,17 @@
 namespace App\Controller\Host;
 
 use App\Auth\AcceptableRoles;
-use App\Entity\Host;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
 use App\Repository\ExperienceRepository;
 use App\Request\ExperienceRequest;
 use App\Service\ExperienceService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('api/v1/hosts')]
+#[Route('api/v1/host')]
 class ExperienceController extends AbstractController
 {
     #[Route('/experiences', name: 'app_host_experience', methods: 'GET')]

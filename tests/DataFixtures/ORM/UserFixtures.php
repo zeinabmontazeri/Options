@@ -32,7 +32,7 @@ class UserFixtures extends Fixture
             ->setFirstName('Itachi')
             ->setLastName('Uchiha')
             ->setCreatedAt(new \DateTimeImmutable())
-            ->setGender(EnumGender::MALE->value)
+            ->setGender(EnumGender::MALE)
             ->setRoles([User::ROLE_ADMIN]);
         $this->addReference(self::ADMIN_USER_REFERENCE, $adminUser);
         $manager->persist($adminUser);
@@ -44,7 +44,7 @@ class UserFixtures extends Fixture
             ->setFirstName('Kakashi')
             ->setLastName('Hatake')
             ->setCreatedAt(new \DateTimeImmutable())
-            ->setGender(EnumGender::MALE->value)
+            ->setGender(EnumGender::MALE)
             ->setRoles([User::ROLE_HOST]);
         $manager->persist($user1);
         $manager->flush();
@@ -55,7 +55,7 @@ class UserFixtures extends Fixture
             ->setFirstName('Naruto')
             ->setLastName('Uzumaki')
             ->setCreatedAt(new \DateTimeImmutable())
-            ->setGender(EnumGender::MALE->value)
+            ->setGender(EnumGender::MALE)
             ->setRoles([User::ROLE_EXPERIENCER]);
         $manager->persist($experiencerUser);
         $this->addReference(self::EXPERIENCER_USER_REFERENCE, $experiencerUser);
