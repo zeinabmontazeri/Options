@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Enums\EnumOrderStatus;
 use App\Repository\OrderRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -25,8 +26,8 @@ class Order
     #[ORM\ManyToOne(inversedBy: 'orders')]
     private ?Event $event = null;
 
-    #[ORM\Column(name: 'status', type: TYPES::STRING)]
-    private string $status = 'draft';
+    #[ORM\Column(name: 'status', enumType: EnumOrderStatus::class)]
+    private EnumOrderStatus $status = EnumOrderStatus::DRAFT;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3)]
     private ?string $payablePrice = null;
@@ -40,6 +41,11 @@ class Order
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+
+    public function __construct()
+    {
+    }
 
     public function getId(): ?int
     {
@@ -58,12 +64,12 @@ class Order
         return $this;
     }
 
-    public function getStatus(): string
+    public function getStatus(): EnumOrderStatus
     {
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(EnumOrderStatus $status): self
     {
         $this->status = $status;
 

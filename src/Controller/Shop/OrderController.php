@@ -2,38 +2,126 @@
 
 namespace App\Controller\Shop;
 
+use App\Auth\AcceptableRoles;
+use App\Auth\AuthenticatedUser;
+use App\Entity\Enums\EnumOrderStatus;
+use App\Entity\Event;
+use App\Entity\Order;
+use App\Entity\User;
 use App\Repository\OrderRepository;
+use App\Service\OrderCheckoutService;
+use App\Service\OrderEventService;
+use App\Service\Shop\OrderService;
 use App\Service\Shop\RemoveOrderService;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use OpenApi\Annotations as OA;
+use OpenApi\Attributes as OA2;
 
-#[Route('api/shop')]
+#[Route('api/v1/shop')]
 class OrderController extends AbstractController
 {
-
-    #[Route('/orders/{id}/remove', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
+    /**
+     * @throws JWTDecodeFailureException
+     */
+    #[Route('/orders/{id}/remove/', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
+    #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function index(
-        Request            $request,
+        Order              $order,
         RemoveOrderService $removeOrderService,
-        OrderRepository    $orderRepository): JsonResponse
+        OrderRepository    $orderRepository,
+        AuthenticatedUser  $security): JsonResponse
     {
-
-        $order = $orderRepository->find((int)($request->get('id')));
-
-        if ($order and $order->getStatus() == 'draft') {
-            $result = $removeOrderService->removeOrder($order, $orderRepository);
+        if ($order->getStatus() == EnumOrderStatus::DRAFT and $order->getUser() === $security->getUser()) {
+            $removeOrderService->removeOrder($order, $orderRepository);
             return $this->json([
                 'message' => 'Order Removed Successfully.',
-                'status' => $result['status']],
+                'data' => [],
+                'status' => 'success'],
                 Response::HTTP_OK);
         } else {
-            return $this->json([
-                'message' => 'Order Id is not correct.',
-                'status' => 'failed'],
-                Response::HTTP_BAD_REQUEST);
+            throw new AccessDeniedHttpException(
+                'You are not allowed to remove this order.');
         }
+    }
+
+    #[Route('/users/events/{event_id}/order', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'], methods: ['POST'])]
+    #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
+    #[AcceptableRoles(User::ROLE_EXPERIENCER)]
+    public function OrderAnEvent(Event $event, OrderEventService $orderEventService, AuthenticatedUser $security): Response
+    {
+        $result = $orderEventService->orderTheEvent($security->getUser(), $event);
+        return $this->json([
+            'data' => $result['data'],
+            'message' => $result['message'],
+            'status' => $result['status'],
+            'code' => Response::HTTP_CREATED
+        ]);
+    }
+
+    #[Route('/users/orders', name: 'app_shop_users_order', methods: 'GET')]
+    #[AcceptableRoles(User::ROLE_EXPERIENCER)]
+    public function getExperiencerOrder(OrderService $orderService, AuthenticatedUser $security): Response
+    {
+        $res = $orderService->getUserOrders($security->getUser()->getId());
+        return $this->json([
+            'data' => $res,
+            'message' => 'get all user\'s orders successfully',
+            'status' => 'success',
+            'code' => Response::HTTP_OK
+        ]);
+    }
+
+
+    // /**
+    //  * Checkout a draft order
+    //  *
+    //  * Redirect Experiencer to bank if order is purchasable
+    //  * @OA\Tag(name="Order")
+    //  * @OA\PathParameter (
+    //  *      name="order_id",
+    //  *      required=true
+    //  * )
+    //  * @OA\Response(
+    //  *     response="400",
+    //  *     description="order is not purchasable",
+    //  *     content={
+    //  *         @OA\MediaType(
+    //  *             mediaType="application/json",
+    //  *             @OA\Schema(
+    //  *                 @OA\Property(
+    //  *                     property="status",
+    //  *                     type="string",
+    //  *                     description="action result"
+    //  *                 ),
+    //  *                 @OA\Property(
+    //  *                     property="data",
+    //  *                     type="string"
+    //  *                     description="A message to describe failure reason."
+    //  *                 ),
+    //  *                 example={
+    //  *                         "status": "failure",
+    //  *                         "data": "The order id(#orderId) is not purchasable."
+    //  *                 }
+    //  *             )
+    //  *         )
+    //  *     }
+    //  * )
+    //  */
+    #[Route(
+        '/orders/{order_id<\d+>}/checkout',
+        name: 'app.order.checkout',
+        
+    )]
+    #[AcceptableRoles(User::ROLE_EXPERIENCER)]
+    public function orderCheckout(int $order_id, OrderCheckoutService $orderCheckoutService)
+    {
+        $redirectLink = $orderCheckoutService->checkout($order_id);
+        return $this->redirect($redirectLink);
     }
 }

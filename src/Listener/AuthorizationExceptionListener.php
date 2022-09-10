@@ -7,29 +7,23 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 #[AsEventListener(
     event: 'kernel.exception',
     method: 'setAuthorizationExceptionResponse',
+    priority: 9,
 )]
 final class AuthorizationExceptionListener
 {
     public function setAuthorizationExceptionResponse(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
-
         if (
             $exception instanceof HttpException
             and $exception->getMessage() === 'AUTHORIZATION_FAILED'
         ) {
-            $response = new JsonResponse(
-                data: [
-                    'status' => false,
-                    'data' => [],
-                    'message' => 'Access denied.',
-                ],
-                status: $exception->getStatusCode()
-            );
+            throw new UnauthorizedHttpException('challenge', 'Access Denied');
         }
 
         if (
@@ -38,7 +32,7 @@ final class AuthorizationExceptionListener
         ) {
             $response = new JsonResponse(
                 data: [
-                    'status' => false,
+                    'status' => 'failed',
                     'data' => [],
                     'message' => 'Invalid controller setting.',
                 ],

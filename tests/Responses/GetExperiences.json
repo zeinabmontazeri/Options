@@ -1,0 +1,12 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "this title by host 1",
+      "description": "this description by host 1",
+      "createdAt": @datetime@
+    }
+  ],
+  "status": true,
+  "message": "Successfully retrieve all experience"
+}

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\Enums\EnumEventStatus;
+use App\Entity\Enums\EnumPermissionStatus;
 use App\Repository\ExperienceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -9,11 +11,13 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ExperienceRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
+#[ORM\Cache(usage: 'READ_WRITE')]
 class Experience
 {
     use SoftDeleteableEntity;
@@ -22,19 +26,23 @@ class Experience
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['experience'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['experience'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Unique]
+    #[Groups(['experience'])]
     private ?string $title = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $media = null;
 
     #[ORM\Column]
+    #[Groups(['experience'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'experiences')]
@@ -47,6 +55,12 @@ class Experience
 
     #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class)]
     private Collection $events;
+
+    #[ORM\Column(name: 'status', enumType: EnumEventStatus::class)]
+    private EnumEventStatus $status = EnumEventStatus::DRAFT;
+
+    #[ORM\Column(name: 'approvalStatus', enumType: EnumPermissionStatus::class)]
+    private EnumPermissionStatus $approvalStatus = EnumPermissionStatus::PENDING;
 
     public function __construct()
     {
@@ -156,6 +170,30 @@ class Experience
                 $event->setExperience(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): EnumEventStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(EnumEventStatus $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getApprovalStatus(): EnumPermissionStatus
+    {
+        return $this->approvalStatus;
+    }
+
+    public function setApprovalStatus(EnumPermissionStatus $approvalStatus): self
+    {
+        $this->approvalStatus = $approvalStatus;
 
         return $this;
     }

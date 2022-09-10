@@ -9,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use OpenApi\Annotations as OA;
-use OpenApi\Attributes as OA2;
 
 #[Route('api/v1/auth/', name: 'auth.')]
 
@@ -97,24 +96,17 @@ class RegisterController extends AbstractController
      *     )
      */
     #[Route('register', name: 'register',methods:['post'])]
-//    #[OA2\Response(
-//        response:400,
-//        description:"Bad Request",
-//        content: new OA2\JsonContent(
-//            ref:
-//        )
-//    )]
     public function index(
         UserRegisterRequest $validatedRequest,
         UserRegisterService $userRegisterService
     ): JsonResponse
     {
-            $userRegisterService->register($validatedRequest);
-            //TODO: We can generate token for user here
-            return $this->json([
-                'success' => true,
-                'data' => null,
-                'message' => 'User has been created successfully',
-            ]);
+        $userRegisterService->register($validatedRequest);
+        //TODO: We can generate token for user here
+        return $this->json([
+            'data' => null,
+            'message' => 'User has been created successfully',
+            'status' => 'success',
+        ]);
     }
 }
