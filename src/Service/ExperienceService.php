@@ -14,9 +14,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExperienceService
 {
-    private AuthenticatedUser $security;
-
-    public function __construct(AuthenticatedUser $security)
+    public function __construct(private AuthenticatedUser $security)
     {
         $this->security = $security;
     }
@@ -27,6 +25,12 @@ class ExperienceService
         $experiences = $repository->findBy(['host' => $host]);
         $experienceCollection = DtoFactory::getInstance('experience');
         return $experienceCollection->toArray($experiences);
+    }
+
+    public function getAllWithPagination(ExperienceRepository $repository, $perPage,$page): array
+    {
+        $host = $this->security->getUser()->getHost();
+        return $repository->findByPaginated(['host'=>$host->getId()],null, $page , $perPage);
     }
 
 

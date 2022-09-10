@@ -5,7 +5,10 @@ namespace App\Repository;
 use App\Entity\Enums\EnumEventStatus;
 use App\Entity\Experience;
 use DateTime;
+use App\Trait\findByPaginationTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\ORM\Cache;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,6 +22,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ExperienceRepository extends ServiceEntityRepository
 {
+    use findByPaginationTrait;
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Experience::class);
@@ -59,6 +63,21 @@ class ExperienceRepository extends ServiceEntityRepository
             }
         }
         return $baseQuery->getQuery()->getResult();
+    }
+
+    public function getAllPaginated($perPage,$page)
+    {
+        $queryBuilder = $this->createQueryBuilder('entity');
+        $queryBuilder
+            ->setFirstResult(($page-1)*$perPage)
+            ->setMaxResults($perPage);
+
+        $query = $queryBuilder->getQuery()
+            ->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
+        $paginator = new Paginator($query);
+        $result['results'] = $paginator->getIterator();
+        $result['total'] = $paginator->count();
+        return $result;
     }
 
     public function getTrendingExperiences()

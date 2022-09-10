@@ -35,12 +35,12 @@ class UserRegisterService
         try {
             $user = new User;
             $user->setPhoneNumber($request->phoneNumber)
-                ->setFirstName($request->firstName)
-                ->setLastName($request->lastName)
-                ->setBirthDate($request->birthDate)
-                ->setGender($request->gender)
-                ->setRoles([$request->role])
-                ->setPassword($this->hasher->hashPassword($user, $request->password));
+            ->setFirstName($request->firstName)
+            ->setLastName($request->lastName)
+            ->setBirthDate($request->birthDate)
+            ->setGender($request->gender)
+            ->setRoles([$request->role])
+            ->setPassword($this->hasher->hashPassword($user, $request->password));
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
