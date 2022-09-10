@@ -2,6 +2,7 @@
 
 namespace App\Request;
 
+use App\Entity\Enums\EnumGender;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class UserRegisterRequest extends BaseRequest
@@ -53,8 +54,8 @@ class UserRegisterRequest extends BaseRequest
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\Choice(['MALE', 'FEMALE'])]
-    public readonly ?string $gender;
+    #[Assert\choice(choices: [EnumGender::FEMALE, EnumGender::MALE])]
+    public readonly ?EnumGender $gender;
 
     #[Assert\NotBlank]
     #[Assert\NotNull]

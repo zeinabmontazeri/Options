@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Enums\EnumGender;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -53,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     /**
-    *  @OA\Property(type="array", @OA\Items(type="string"))
+     * @OA\Property(type="array", @OA\Items(type="string"))
      */
     private array $roles = [];
 
@@ -66,8 +67,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Host $host = null;
 
-    #[ORM\Column(name: 'gender', type: 'string')]
-    private ?string $gender;
+    #[ORM\Column(nullable: True, enumType: EnumGender::class)]
+    private ?EnumGender $gender = null;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Order::class)]
     private Collection $orders;
@@ -106,15 +107,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getGender(): ?string
+    public function getGender(): EnumGender
     {
         return $this->gender;
     }
 
-    public function setGender(string $gender): self
+
+    public function setGender(EnumGender $gender): self
     {
         $this->gender = $gender;
-
         return $this;
     }
 
