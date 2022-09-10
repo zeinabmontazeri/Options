@@ -32,3 +32,4 @@ composer.lock
 symfony.lock
 docker-compose.override.yml
 docker-compose.yaml
+dump.rdb
