@@ -4,6 +4,7 @@ namespace App\Controller\Auth;
 
 use App\Request\UserRegisterRequest;
 use App\Service\UserRegisterService;
+use Doctrine\DBAL\Exception;
 use OpenApi\Annotations\JsonContent;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,7 +34,7 @@ class RegisterController extends AbstractController
      *       @OA\Property(property="lastName", type="string", format="text", example="محمدی"),
      *    ),
      * )
-     *     @OA\Response(
+     * @OA\Response(
      *         response="200",
      *         description="ok",
      *         content={
@@ -64,7 +65,7 @@ class RegisterController extends AbstractController
      *         }
      *     )
      *
-     *     @OA\Response(
+     * @OA\Response(
      *         response="400",
      *         description="failure",
      *         content={
@@ -94,6 +95,7 @@ class RegisterController extends AbstractController
      *             )
      *         }
      *     )
+     * @throws Exception
      */
     #[Route('register', name: 'register',methods:['post'])]
     public function index(
@@ -104,7 +106,7 @@ class RegisterController extends AbstractController
         $userRegisterService->register($validatedRequest);
         //TODO: We can generate token for user here
         return $this->json([
-            'data' => null,
+            'data' => [],
             'message' => 'User has been created successfully',
             'status' => 'success',
         ]);
