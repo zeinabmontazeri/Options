@@ -28,9 +28,8 @@ class EventController extends AbstractController
                 'id' => $createdEvent->getId()
             ],
             'message' => "event created successfully",
-            'status' => 'success',
-            'code' => Response::HTTP_CREATED
-        ]);
+            'status' => 'success'
+        ], Response::HTTP_CREATED);
     }
 
     #[Route('/events/{event_id}/report', name: 'app_host_event_report', methods: ['GET'])]

@@ -6,9 +6,13 @@ use App\Auth\AuthenticatedUser;
 use App\DTO\DtoFactory;
 use App\Entity\Experience;
 use App\Entity\Host;
+use App\Entity\Media;
 use App\Repository\CategoryRepository;
 use App\Repository\ExperienceRepository;
+use App\Repository\MediaRepository;
 use App\Request\ExperienceRequest;
+use App\Request\MediaRequest;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -54,4 +58,14 @@ class ExperienceService
         return $res;
     }
 
+    public function addMedia(Experience $experience, MediaRepository $repository, MediaRequest $request)
+    {
+        if ($experience->getHost()->getUser() !== $this->security->getUser())
+            throw new AccessDeniedException();
+        $media = new Media();
+        $media->setExperience($experience);
+        $fileName = $media->uploadMedia($request->media);
+        $media->setFileName($fileName);
+        $repository->add($media, true);
+    }
 }
