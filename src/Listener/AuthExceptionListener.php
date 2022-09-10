@@ -6,9 +6,10 @@ use App\Exception\AuthException;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[AsEventListener(
     event: 'kernel.exception',
@@ -16,6 +17,12 @@ use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 )]
 final class AuthExceptionListener
 {
+    public function __construct(
+        private UrlGeneratorInterface $router,
+        private RequestStack $requestStack,
+    ) {
+    }
+
     public function setAuthenticationExceptionResponse(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
@@ -30,18 +37,13 @@ final class AuthExceptionListener
             );
         }
 
-
-        $request = Request::createFromGlobals();
+        $request = $this->requestStack->getCurrentRequest();
         $uri = $request->getRequestUri();
         if (
             $exception instanceof BadRequestHttpException
-            and $uri === '/api/v1/auth/login'
+            and $uri === $this->router->generate('auth_login')
         ) {
-            $previous = $exception->getPrevious();
-            if ($previous instanceof NoSuchPropertyException) {
-                throw new BadRequestHttpException("'phoneNumber' and 'password' must be provided.");
-
-            }
+            throw new BadRequestHttpException("'phoneNumber' and 'password' must be provided.");
         }
         if (isset($response)) {
             $event->setResponse($response);

@@ -122,7 +122,7 @@ class OrderController extends AbstractController
      */
     #[Route(
         '/orders/{order_id<\d+>}/checkout',
-        name: 'app.order.checkout',
+        name: 'app_order_checkout',
         methods: 'GET',
     )]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]

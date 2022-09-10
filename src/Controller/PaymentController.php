@@ -26,9 +26,10 @@ class PaymentController extends AbstractController
 
     #[Route(
         '/api/v1/checkoutCallback/{callback_token}',
-        name: 'app.payment.checkout_callback',
+        name: 'app_payment_checkout_callback',
         methods: ['POST']
     )]
+    #[AcceptableRoles(User::ROLE_GUEST)]
     public function checkoutCallback(
         Request $request,
         string $callback_token,
