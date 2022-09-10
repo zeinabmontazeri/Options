@@ -14,22 +14,23 @@ use App\Service\OrderEventService;
 use App\Service\Shop\OrderService;
 use App\Service\Shop\RemoveOrderService;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
+use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
-use OpenApi\Annotations as OA;
-use OpenApi\Attributes as OA2;
 
-#[Route('api/v1/shop')]
+#[Route('api/v1')]
 class OrderController extends AbstractController
 {
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/orders/{id}/', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
+    #[Route('/orders/{order_id}/', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
+    #[ParamConverter('event', class: Order::class, options: ['id' => 'order_id'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function index(
         Order              $order,
@@ -53,7 +54,7 @@ class OrderController extends AbstractController
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/users/events/{event_id}/order', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'], methods: ['POST'])]
+    #[Route('/events/{event_id}/order', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'], methods: ['POST'])]
     #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function OrderAnEvent(Event $event, OrderEventService $orderEventService, AuthenticatedUser $security): Response
@@ -69,9 +70,11 @@ class OrderController extends AbstractController
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/users/orders', name: 'app_shop_users_order', methods: 'GET')]
+    #[Route('/orders', name: 'app_shop_get_user_order', methods: 'GET')]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
-    public function getExperiencerOrder(OrderService $orderService, AuthenticatedUser $security): Response
+    public function getExperiencerOrder(
+        OrderService      $orderService,
+        AuthenticatedUser $security): Response
     {
         $res = $orderService->getUserOrders($security->getUser()->getId());
         return $this->json([
@@ -126,7 +129,7 @@ class OrderController extends AbstractController
         methods: 'GET',
     )]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
-    public function orderCheckout(int $order_id, OrderCheckoutService $orderCheckoutService)
+    public function orderCheckout(int $order_id, OrderCheckoutService $orderCheckoutService): RedirectResponse
     {
         $redirectLink = $orderCheckoutService->checkout($order_id);
         return $this->redirect($redirectLink);

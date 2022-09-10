@@ -9,7 +9,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
@@ -127,7 +127,7 @@ class OrderRepository extends ServiceEntityRepository
             $result = $query->getSingleResult();
         } catch (NonUniqueResultException $e) {
             throw new HttpException(
-                JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
+                Response::HTTP_INTERNAL_SERVER_ERROR,
                 sprintf('Multiple orders with same id(%d)', $orderId),
             );
         } catch (NoResultException $e) {
@@ -136,4 +136,17 @@ class OrderRepository extends ServiceEntityRepository
 
         return $result;
     }
+
+    public function getExperiencerOrder($userId)
+    {
+        return $this->createQueryBuilder('o')
+            ->select('o.id as orderId,order_event.id as eventId,order_experience.title as title,o.status as status')
+            ->andWhere('o.user=:var1')
+            ->setParameter('var1', $userId)
+            ->innerJoin('o.event', 'order_event')
+            ->innerJoin('order_event.experience', 'order_experience')
+            ->getQuery()
+            ->execute();
+    }
+
 }
