@@ -12,13 +12,13 @@ use App\Repository\MediaRepository;
 use App\Request\ExperienceRequest;
 use App\Request\MediaRequest;
 use App\Service\ExperienceService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use OpenApi\Annotations as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('api/v1/hosts')]
+#[Route('api/v1/host')]
 class ExperienceController extends AbstractController
 {
     #[Route('/experiences', name: 'app_host_experience', methods: 'GET')]

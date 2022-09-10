@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DataFixtures;
+namespace App\Tests\DataFixtures\ORM;
 
 
 use App\Entity\Enums\EnumEventStatus;
@@ -11,24 +11,22 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-
-class ActiveEventFixture extends Fixture implements DependentFixtureInterface
+class DeActiveEventFixture extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
         $experiences = $manager->getRepository(Experience::class)->findAll();
-        $experiencesWithActiveEventsCount = array_slice($experiences, 0, sizeof($experiences) / 2);
-
+        $experiencesWithActiveEventsCount = array_slice($experiences, sizeof($experiences) / 2);
         for ($i = 0; $i < 20; $i++) {
             $event = new Event();
             $event->setRegisteredUsers($faker->numberBetween(1, 9))
                 ->setExperience($faker->randomElement($experiencesWithActiveEventsCount))
                 ->setCapacity($faker->numberBetween(10, 100))
                 ->setDuration(120)
-                ->setPrice($faker->numberBetween(1000, 100000))
-                ->setStartsAt($faker->dateTimeBetween('+1 year', '+4 year'))
+                ->setPrice($faker->numberBetween(100, 1000))
                 ->setStatus($faker->randomElement(EnumEventStatus::cases()))
+                ->setStartsAt($faker->dateTimeBetween('-3 year', '-1 year'))
                 ->setCreatedAt($faker->dateTime);
             $manager->persist($event);
             $isOnline = $faker->numberBetween(0, 1);
@@ -42,10 +40,5 @@ class ActiveEventFixture extends Fixture implements DependentFixtureInterface
             $manager->persist($event);
         }
         $manager->flush();
-    }
-
-    public function getDependencies(): array
-    {
-        return [ExperienceFixture::class];
     }
 }

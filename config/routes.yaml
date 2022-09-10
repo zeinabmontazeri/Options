@@ -1,11 +1,15 @@
-auth.login:
+app.swagger_ui:
+    path: /api/doc
+    methods: GET
+    defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+auth_login:
     path: /api/v1/auth/login
     methods: ['POST']
-auth.refresh:
+auth_refresh:
     path: /api/v1/auth/refresh
     methods: ['POST']
     controller: gesdinet.jwtrefreshtoken::refresh
-auth.logout:
+auth_logout:
     path: /api/v1/auth/logout
     methods: ['POST']
 controllers:

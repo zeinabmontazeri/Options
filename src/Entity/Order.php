@@ -29,7 +29,7 @@ class Order
     #[ORM\Column(name: 'status', enumType: EnumOrderStatus::class)]
     private EnumOrderStatus $status = EnumOrderStatus::DRAFT;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 3)]
     private ?string $payablePrice = null;
 
     #[ORM\Column]
