@@ -12,8 +12,15 @@ components:
       description: JWT authentivcation token
 security:
   - jwt: []
+tags:
+  - name: Auth
+    description: End-points to autenticate user and provide refresh token.
+  - name: Admin
+    description: End-points which are accessible just to the admin user.
 paths:
   /api/v1/auth/login:
     $ref: ./Auth/Login.yml
   /api/v1/orders/{order-id}/checkout:
     $ref: ./Orders/Checkout.yml
+  /api/v1/admin/categories:
+    $ref: ./Admin/Category/GetCategories.yml

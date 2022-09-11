@@ -14,6 +14,11 @@ nelmio_api_doc:
           description: JWT authentivcation token
     security:
     - jwt: []
+    tags:
+    - name: Auth
+      description: End-points to autenticate user and provide refresh token.
+    - name: Admin
+      description: End-points which are accessible just to the admin user.
     paths:
       /api/v1/auth/login:
         post:
@@ -153,6 +158,68 @@ nelmio_api_doc:
                     example:
                       status: failed
                       messaage: The order id(order-id) is not purchasable.
+      /api/v1/admin/categories:
+        get:
+          tags:
+          - Admin
+          summary: Admin get all categories
+          security:
+          - jwt: []
+          description: 'This end-point is accessible to admin and returns all registered
+            categories.
+
+            '
+          responses:
+            '200':
+              description: List of all categories
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: array
+                        description: List of all experiences' categories.
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Index of category.
+                            name:
+                              type: string
+                              description: Name of the category.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      data:
+                      - id: 1
+                        name: Painting
+                      - id: 2
+                        name: Caligraphy
+                      message: successfully retrieve all categories
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
   areas:
     default:
       path_patterns:
