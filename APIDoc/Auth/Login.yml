@@ -23,11 +23,11 @@ post:
               type: string
               description: The role to be logged in with.
           example:
-            phoneNumber: '9121234567'
+            phoneNumber: "9121234567"
             password: pass_1234
             role: role_experiencer
   responses:
-    '200':
+    "200":
       description: User authenticated successfuly.
       content:
         application/json:
@@ -60,7 +60,7 @@ post:
                 token: a jwt token
                 refresh_token: a refresh token
               message: User authenticated successfully.
-    '400':
+    "400":
       description: A required parameter is missing or a variable format is wrong.
       content:
         application/json:
@@ -70,13 +70,23 @@ post:
               status:
                 type: string
                 description: Result of the action
+              details:
+                type: object
+                description: Details of the validation errors on fields.
+                properties:
+                  fieldName:
+                    type: array
+                    description: List of validation errors on this field
+                    items:
+                      type: string
               message:
                 type: string
-                description: A message describing result of the action.
+                description: A discription about failure.
             example:
               status: failed
+              details:
               message: The key "password" is required.
-    '401':
+    "401":
       description: User provided invalid credentials.
       content:
         application/json:
@@ -86,9 +96,19 @@ post:
               status:
                 type: string
                 description: Result of the action
+              details:
+                type: object
+                description: Details of the validation errors on fields.
+                properties:
+                  fieldName:
+                    type: array
+                    description: List of validation errors on this field
+                    items:
+                      type: string
               message:
                 type: string
-                description: A message describing result of the action.
+                description: A discription about failure.
             example:
               status: failed
+              details:
               message: Invalid Credentials.

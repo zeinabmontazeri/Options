@@ -8,17 +8,17 @@ nelmio_api_doc:
     components:
       securitySchemes:
         jwt:
-          type: apiKey
-          name: jwt
-          in: header
+          type: http
           description: JWT authentivcation token
+          scheme: bearer
+          bearerFormat: JWT
     security:
     - jwt: []
     tags:
     - name: Auth
       description: End-points to autenticate user and provide refresh token.
     - name: Admin
-      description: End-points which are accessible just to the admin user.
+      description: End-points which are just accessible to the admin user.
     paths:
       /api/v1/auth/login:
         post:
@@ -98,11 +98,21 @@ nelmio_api_doc:
                       status:
                         type: string
                         description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
                       message:
                         type: string
-                        description: A message describing result of the action.
+                        description: A discription about failure.
                     example:
                       status: failed
+                      details: null
                       message: The key "password" is required.
             '401':
               description: User provided invalid credentials.
@@ -114,11 +124,21 @@ nelmio_api_doc:
                       status:
                         type: string
                         description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
                       message:
                         type: string
-                        description: A message describing result of the action.
+                        description: A discription about failure.
                     example:
                       status: failed
+                      details: null
                       message: Invalid Credentials.
       /api/v1/orders/{order_id}/checkout:
         get:
@@ -162,7 +182,7 @@ nelmio_api_doc:
         post:
           tags:
           - Admin
-          summary: Admin create a new category
+          summary: Admin creates a new category
           security:
           - jwt: []
           description: 'Using this end point admin creates a new category.
@@ -194,28 +214,48 @@ nelmio_api_doc:
                         type: string
                         description: Result of the action
                       data:
-                        type: array
-                        description: List of all experiences' categories.
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: integer
-                              description: Index of category.
-                            name:
-                              type: string
-                              description: Name of the category.
+                        type: object
+                        description: Information about the created category.
+                        properties:
+                          id:
+                            type: integer
+                            description: Unique id of the created category.
                       message:
                         type: string
                         description: A message describing result of the action.
                     example:
                       status: success
                       data:
-                      - id: 1
-                        name: Painting
-                      - id: 2
-                        name: Caligraphy
-                      message: successfully retrieve all categories
+                        id: 10
+                      message: category successfully created
+            '400':
+              description: User provided wrong input.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      details:
+                        name:
+                        - This field should not be blank.
+                      message: Validation error.
             '403':
               description: The user has not sufficient permission to access this end
                 point.
@@ -227,16 +267,26 @@ nelmio_api_doc:
                       status:
                         type: string
                         description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
                       message:
                         type: string
-                        description: A message describing result of the action.
+                        description: A discription about failure.
                     example:
                       status: failed
+                      details: null
                       message: AUTHORIZATION FAILED.
         get:
           tags:
           - Admin
-          summary: Admin get all categories
+          summary: Admin gets all categories
           security:
           - jwt: []
           description: 'This end-point is accessible to admin and returns all registered
@@ -288,11 +338,21 @@ nelmio_api_doc:
                       status:
                         type: string
                         description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
                       message:
                         type: string
-                        description: A message describing result of the action.
+                        description: A discription about failure.
                     example:
                       status: failed
+                      details: null
                       message: AUTHORIZATION FAILED.
   areas:
     default:

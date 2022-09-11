@@ -1,6 +1,6 @@
 tags:
   - Admin
-summary: Admin create a new category
+summary: Admin creates a new category
 security:
   - jwt: []
 description: >
@@ -30,52 +30,48 @@ responses:
               type: string
               description: Result of the action
             data:
-              type: array
-              description: List of all experiences' categories.
-              items:
-                type: object
-                properties:
-                  id:
-                    type: integer
-                    description: Index of category.
-                  name:
-                    type: string
-                    description: Name of the category.
+              type: object
+              description: Information about the created category.
+              properties:
+                id:
+                  type: integer
+                  description: Unique id of the created category.
             message:
               type: string
               description: A message describing result of the action.
           example:
             status: success
             data:
-              - id: 1
-                name: Painting
-              - id: 2
-                name: Caligraphy
-            message: successfully retrieve all categories
-  # '400':
-  #   description: User provided wrong input.
-  #   content:
-  #     application/json:
-  #       schema:
-  #         type: object
-  #         properties:
-  #           status:
-  #             type: string
-  #             description: Result of the action
-  #           message:
-  #             type: object
-  #             description: List of Validation errors.
-  #             properties:
-  #               name:
-  #                 type: array
-  #                 description: Validation errors in name.
-  #                 items:
-  #                   - Errors
-  #         example:
-  #           status: failed
-  #           message:
-  #             name:
-  #               - This value should not be blank.
+              id: 10
+            message: category successfully created
+  '400':
+    description: User provided wrong input.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Result of the action
+            details:
+              type: object
+              description: Details of the validation errors on fields.
+              properties:
+                fieldName:
+                  type: array
+                  description: List of validation errors on this field
+                  items:
+                    type: string
+            message:
+              type: string
+              description: A discription about failure.
+          example:
+            status: failed
+            details:
+              name:
+                - This field should not be blank.
+            message: Validation error.
   '403':
     description: The user has not sufficient permission to access this end point.
     content:
@@ -86,9 +82,19 @@ responses:
             status:
               type: string
               description: Result of the action
+            details:
+              type: object
+              description: Details of the validation errors on fields.
+              properties:
+                fieldName:
+                  type: array
+                  description: List of validation errors on this field
+                  items:
+                    type: string
             message:
               type: string
-              description: A message describing result of the action.
+              description: A discription about failure.
           example:
             status: failed
+            details:
             message: AUTHORIZATION FAILED.
