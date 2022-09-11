@@ -16,8 +16,9 @@ class OrderEventService
     {
     }
 
-    public function orderTheEvent($user, $event): array
+    public function orderTheEvent($user, $request, $eventRepository): array
     {
+        $event = $eventRepository->find($request->eventId);
         if ($this->orderValidation($user, $event)) {
             $order = new Order();
             $order->setUser($user);
