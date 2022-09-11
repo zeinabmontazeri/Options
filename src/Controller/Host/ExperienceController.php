@@ -13,6 +13,7 @@ use App\Request\ExperienceRequest;
 use App\Request\MediaRequest;
 use App\Service\ExperienceService;
 use OpenApi\Annotations as OA;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -27,7 +28,7 @@ class ExperienceController extends AbstractController
     {
         return $this->json([
             'data' => $service->getAll($repository),
-            'status' => true,
+            'status' => 'success',
             'message' => 'Successfully retrieve all experience'
         ]);
     }
@@ -43,6 +44,41 @@ class ExperienceController extends AbstractController
         $res = $service->create($repository, $request, $categoryRepository);
         return $this->json([
             'data' => $res['data'],
+            'status' => $res['status'],
+            'message' => $res['message']
+        ]);
+    }
+
+    #[Route('/experiences/{experience_id}', name: 'app_host_experience_update', methods: 'PATCH')]
+    #[AcceptableRoles(User::ROLE_HOST)]
+    #[ParamConverter(data: 'experience' , class: Experience::class ,options: ['id' => 'experience_id'])]
+    public function update(
+        ExperienceService    $service,
+        ExperienceRepository $repository,
+        CategoryRepository   $categoryRepository,
+        ExperienceRequest    $request,
+        Experience           $experience): Response
+    {
+        $res = $service->update($repository, $request, $categoryRepository , $experience);
+        return $this->json([
+            'data' => [],
+            'status' => $res['status'],
+            'message' => $res['message']
+        ]);
+    }
+
+
+    #[Route('/experiences/{experience_id}', name: 'app_host_experience_delete', methods: 'DELETE')]
+    #[AcceptableRoles(User::ROLE_HOST)]
+    #[ParamConverter(data: 'experience' , class: Experience::class ,options: ['id' => 'experience_id'])]
+    public function delete(
+        ExperienceService    $service,
+        ExperienceRepository $repository,
+        Experience           $experience): Response
+    {
+        $res = $service->delete($repository , $experience);
+        return $this->json([
+            'data' => [],
             'status' => $res['status'],
             'message' => $res['message']
         ]);
