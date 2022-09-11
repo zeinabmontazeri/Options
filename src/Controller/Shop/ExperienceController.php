@@ -15,11 +15,12 @@ use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('api/v1/shop')]
+#[Route('api/v1')]
 class ExperienceController extends AbstractController
 {
     /** Get experiences by filter
@@ -161,11 +162,15 @@ class ExperienceController extends AbstractController
         );
     }
 
-    #[Route('/experiences/search/{word}', name: 'app_experience_search', methods: ['GET'])]
+    #[Route('/experiences/search', name: 'app_experience_search', methods: ['GET'])]
     #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_ADMIN, User::ROLE_HOST)]
-    public function searchExperience($word, ExperienceRepository $experienceRepository)
+    public function searchExperience(Request $request, ExperienceRepository $experienceRepository): JsonResponse
     {
-        $searchResult = $experienceRepository->searchByWord($word);
+        $word = $request->query->get('word');
+        if ($word)
+            $searchResult = $experienceRepository->searchByWord($word);
+        else
+            $searchResult = $experienceRepository->findAll();
         $experienceCollection = DtoFactory::getInstance('experienceFilter');
         $experiences = $experienceCollection->toArray($searchResult);
         return $this->json(
