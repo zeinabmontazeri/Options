@@ -19,6 +19,7 @@ use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
@@ -85,7 +86,7 @@ class OrderController extends AbstractController
             'data' => $res,
             'message' => 'get all user\'s orders successfully',
             'status' => 'success',
-        ], Response::HTTP_OK);], Response::HTTP_OK);
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -133,7 +134,7 @@ class OrderController extends AbstractController
         methods: 'GET',
     )]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
-    public function orderCheckout(int $order_id, OrderCheckoutService $orderCheckoutService)
+    public function orderCheckout(int $order_id, OrderCheckoutService $orderCheckoutService): RedirectResponse
     {
         $redirectLink = $orderCheckoutService->checkout($order_id);
         return $this->redirect($redirectLink);
