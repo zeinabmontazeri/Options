@@ -15,8 +15,13 @@ post:
           properties:
             phoneNumber:
               type: string
+              description: Phone number is the unique dentifier of the use.
             password:
               type: string
+              description: User's password.
+            role:
+              type: string
+              description: The role to be logged in with.
           example:
             phoneNumber: '9121234567'
             password: pass_1234
@@ -31,17 +36,23 @@ post:
             properties:
               status:
                 type: string
+                description: Result of the action
               data:
                 type: object
+                description: Date payload returned from the server.
                 properties:
                   id:
                     type: integer
+                    description: Id of the created user.
                   token:
                     type: string
+                    description: JWT to be used while working with application.
                   refresh_token:
                     type: string
+                    description: The refresh token to get new JWT if it expired.
               message:
                 type: string
+                description: A message describing result of the action.
             example:
               status: success
               data:
@@ -58,8 +69,10 @@ post:
             properties:
               status:
                 type: string
+                description: Result of the action
               message:
                 type: string
+                description: A message describing result of the action.
             example:
               status: failed
               message: The key "password" is required.
@@ -72,8 +85,10 @@ post:
             properties:
               status:
                 type: string
+                description: Result of the action
               message:
                 type: string
+                description: A message describing result of the action.
             example:
               status: failed
               message: Invalid Credentials.
