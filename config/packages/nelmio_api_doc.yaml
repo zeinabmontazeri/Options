@@ -1,13 +1,144 @@
 nelmio_api_doc:
-    documentation:
-        info:
-            title: HamTajrobe
-            description: This is an awesome app to share experiences!
-            version: 1.0.0
-    areas: # to filter documented areas
-        # default:
-        #     path_patterns:
-        #         - ^/api/v1/auth/register # Accepts routes under /api except /api/doc
-        default:
-            path_patterns:
-                - ^/api(?!/(doc|v1\/auth\/refresh)$) # Accepts routes under /api except /api/doc
+  documentation:
+    openapi: 3.0.0
+    info:
+      title: Ham  Tajrobe
+      version: '1'
+      description: A place to share awesome experiences
+    components:
+      securitySchemes:
+        jwt:
+          type: apiKey
+          name: jwt
+          in: header
+          description: JWT authentivcation token
+    security:
+    - jwt: []
+    paths:
+      /api/v1/auth/login:
+        post:
+          tags:
+          - Auth
+          summary: Login end-point
+          security: []
+          description: 'Login a user by the given credentials. It returns a `token`
+            and a `refresh_token`.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - phoneNumber
+                  - password
+                  properties:
+                    phoneNumber:
+                      type: string
+                    password:
+                      type: string
+                  example:
+                    phoneNumber: '9121234567'
+                    password: pass_1234
+                    role: role_experiencer
+          responses:
+            '200':
+              description: User authenticated successfuly.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                          token:
+                            type: string
+                          refresh_token:
+                            type: string
+                      message:
+                        type: string
+                    example:
+                      status: success
+                      data:
+                        id: 1
+                        token: a jwt token
+                        refresh_token: a refresh token
+                      message: User authenticated successfully.
+            '400':
+              description: A required parameter is missing or a variable format is
+                wrong.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                      message:
+                        type: string
+                    example:
+                      status: failed
+                      message: The key "password" is required.
+            '401':
+              description: User provided invalid credentials.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                      message:
+                        type: string
+                    example:
+                      status: failed
+                      message: Invalid Credentials.
+      /api/v1/orders/{order-id}/checkout:
+        get:
+          tags:
+          - Orders
+          summary: Order checkout
+          security:
+          - jwt: []
+          description: 'If the order is purchasable redirect experiencer to bank page.
+
+            '
+          parameters:
+          - name: order-id
+            required: true
+            in: path
+            description: 'The id of the order to be purchased.
+
+              '
+            schema:
+              type: integer
+          responses:
+            '303':
+              description: Experiencer is redirected to bank page.
+            '400':
+              description: The user is trying to purchase a wrong order
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action.
+                      message:
+                        type: string
+                        description: Description about what happened.
+                    example:
+                      status: failed
+                      messaage: The order id(order-id) is not purchasable.
+  areas:
+    default:
+      path_patterns:
+      - ^/api(?!/(doc|v1\/checkoutCallback|v1\/auth\/refresh))
