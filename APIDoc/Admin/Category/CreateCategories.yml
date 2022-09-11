@@ -1,13 +1,26 @@
 tags:
   - Admin
-summary: Admin get all categories
+summary: Admin create a new category
 security:
   - jwt: []
 description: >
-  This end-point is accessible to admin and returns all registered categories.
+  Using this end point admin creates a new category.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required: [name]
+        properties:
+          name:
+            type: string
+            description: Name of the new category
+        example:
+          name: Skydiving
 responses:
   '200':
-    description: List of all categories
+    description: Admin created a new category
     content:
       application/json:
         schema:
@@ -39,6 +52,30 @@ responses:
               - id: 2
                 name: Caligraphy
             message: successfully retrieve all categories
+  # '400':
+  #   description: User provided wrong input.
+  #   content:
+  #     application/json:
+  #       schema:
+  #         type: object
+  #         properties:
+  #           status:
+  #             type: string
+  #             description: Result of the action
+  #           message:
+  #             type: object
+  #             description: List of Validation errors.
+  #             properties:
+  #               name:
+  #                 type: array
+  #                 description: Validation errors in name.
+  #                 items:
+  #                   - Errors
+  #         example:
+  #           status: failed
+  #           message:
+  #             name:
+  #               - This value should not be blank.
   '403':
     description: The user has not sufficient permission to access this end point.
     content:

@@ -120,7 +120,7 @@ nelmio_api_doc:
                     example:
                       status: failed
                       message: Invalid Credentials.
-      /api/v1/orders/{order-id}/checkout:
+      /api/v1/orders/{order_id}/checkout:
         get:
           tags:
           - Orders
@@ -159,6 +159,80 @@ nelmio_api_doc:
                       status: failed
                       messaage: The order id(order-id) is not purchasable.
       /api/v1/admin/categories:
+        post:
+          tags:
+          - Admin
+          summary: Admin create a new category
+          security:
+          - jwt: []
+          description: 'Using this end point admin creates a new category.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      type: string
+                      description: Name of the new category
+                  example:
+                    name: Skydiving
+          responses:
+            '200':
+              description: Admin created a new category
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: array
+                        description: List of all experiences' categories.
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Index of category.
+                            name:
+                              type: string
+                              description: Name of the category.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      data:
+                      - id: 1
+                        name: Painting
+                      - id: 2
+                        name: Caligraphy
+                      message: successfully retrieve all categories
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
         get:
           tags:
           - Admin
