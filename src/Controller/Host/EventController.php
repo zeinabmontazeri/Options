@@ -29,7 +29,7 @@ class EventController extends AbstractController
             ],
             'message' => "event created successfully",
             'status' => 'success'
-        ], Response::HTTP_CREATED);
+        ], Response::HTTP_OK);
     }
 
     #[Route('/events/{event_id}/report', name: 'app_host_event_report', methods: ['GET'])]
