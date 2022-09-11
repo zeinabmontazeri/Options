@@ -82,6 +82,7 @@ class OrderRepository extends ServiceEntityRepository
             ->setParameter('toDate', $toDate)
             ->setParameter('status', 'checkout');
         return $query->getResult();
+
     }
 
     public function setOrderAsCheckedOut(int $invoiceId): bool
