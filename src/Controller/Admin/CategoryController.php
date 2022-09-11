@@ -18,7 +18,9 @@ class CategoryController extends AbstractController
 {
     #[Route('/categories', name: 'app_admin_category_get', methods: 'GET')]
     #[AcceptableRoles(User::ROLE_ADMIN)]
-    public function index(CategoryService $categoryService, CategoryRepository $repository): Response
+    public function index(
+        CategoryService    $categoryService,
+        CategoryRepository $repository): Response
     {
         return $this->json([
             'data' => $categoryService->getAll($repository),
@@ -36,7 +38,7 @@ class CategoryController extends AbstractController
     {
         $res = $categoryService->create($repository, $request);
         return $this->json([
-            'data' => [],
+            'data' => $res['data'],
             'message' => $res['message'],
             'status' => $res['status'],
         ], Response::HTTP_OK);
