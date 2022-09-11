@@ -13,9 +13,9 @@ class HostApprovalService
     {
     }
 
-    public function getPendingList(): array
+    public function getPendingList($page=1,$perPage = 20): array
     {
-        return $this->upgradeRequestRepository->findAll();
+        return $this->upgradeRequestRepository->getPendingRequests($page,$perPage);
     }
 
     public function authorizeHost(

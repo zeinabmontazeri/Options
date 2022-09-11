@@ -25,7 +25,7 @@ class HostController extends AbstractController
         HostApprovalService $service): JsonResponse
     {
 
-        $test = $service->getPendingList();
+        $test = $service->getPendingList($page=1,$perPage = 20);
         return $this->json([
             'data' => $test,
             'message' => 'successfully got pending requests',

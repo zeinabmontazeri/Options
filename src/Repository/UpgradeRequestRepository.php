@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Enums\EnumPermissionStatus;
 use App\Entity\UpgradeRequest;
+use App\Trait\findByPaginationTrait;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,6 +20,8 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class UpgradeRequestRepository extends ServiceEntityRepository
 {
+    use findByPaginationTrait;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, UpgradeRequest::class);
@@ -40,13 +45,21 @@ class UpgradeRequestRepository extends ServiceEntityRepository
         }
     }
 
-    public function getPendingRequests(){
-        return $this->createQueryBuilder('u')
-            ->where('status=:status')
-            ->setParameter('status',EnumPermissionStatus.PENDING)
+    public function getPendingRequests($page=1,$perPage = 20){
+        $query = $this->createQueryBuilder('u')
+            ->where('u.status=:status')
+            ->setParameter('status',EnumPermissionStatus::PENDING->value)
+            ->setFirstResult(($page-1)*$perPage)
+            ->setMaxResults($perPage)
             ->getQuery()
-            ->setHydrationMode(AbstractQuery::HYDRATE_ARRAY)
-            ->getResult();
+            ->setHydrationMode(AbstractQuery::HYDRATE_ARRAY);
+
+        $paginator = new Paginator($query);
+        $result['results'] = $paginator->getIterator();
+        $result['current_page'] = $page;
+        $result['per_page'] = $perPage;
+        $result['total'] = $paginator->count();
+        return $result;
     }
 
 //    /**
