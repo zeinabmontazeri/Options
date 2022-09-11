@@ -2,10 +2,15 @@
 
 namespace App\Repository;
 
-use App\Entity\EnumOrderStatus;
+use App\Entity\Enums\EnumEventStatus;
+use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @extends ServiceEntityRepository<Order>
@@ -77,6 +82,60 @@ class OrderRepository extends ServiceEntityRepository
             ->setParameter('toDate', $toDate)
             ->setParameter('status', 'checkout');
         return $query->getResult();
+
+    }
+
+    public function setOrderAsCheckedOut(int $invoiceId): bool
+    {
+        $order = $this->find($invoiceId);
+
+        if (is_null($order)) {
+            return false;
+        }
+
+        $order->setStatus(EnumOrderStatus::CHECKOUT);
+
+        $this
+            ->getEntityManager()
+            ->persist($order);
+
+        $this
+            ->getEntityManager()
+            ->flush();
+
+        return true;
+    }
+
+    public function isEventOrderPurchasable(int $orderId): ?Order
+    {
+        $query = $this
+            ->getEntityManager()
+            ->createQuery("
+                SELECT o
+                FROM App\Entity\Order o
+                LEFT JOIN o.event e
+                WHERE o.status = :status
+                    AND o.id = :orderId
+                    AND e.startsAt > :today
+                    AND e.status = :eventStatus
+            ")
+            ->setParameter('status', EnumOrderStatus::DRAFT)
+            ->setParameter('orderId', $orderId)
+            ->setParameter('today', new \DateTimeImmutable())
+            ->setParameter('eventStatus', EnumEventStatus::PUBLISHED);
+
+        try {
+            $result = $query->getSingleResult();
+        } catch (NonUniqueResultException $e) {
+            throw new HttpException(
+                JsonResponse::HTTP_INTERNAL_SERVER_ERROR,
+                sprintf('Multiple orders with same id(%d)', $orderId),
+            );
+        } catch (NoResultException $e) {
+            return null;
+        }
+
+        return $result;
     }
 
     public function getExperiencerOrder($userId)

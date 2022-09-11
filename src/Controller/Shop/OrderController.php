@@ -10,10 +10,12 @@ use App\Entity\User;
 use App\Repository\EventRepository;
 use App\Repository\OrderRepository;
 use App\Request\OrderEventRequest;
+use App\Service\OrderCheckoutService;
 use App\Service\OrderEventService;
 use App\Service\Shop\OrderService;
 use App\Service\Shop\RemoveOrderService;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
+use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -83,6 +85,57 @@ class OrderController extends AbstractController
             'data' => $res,
             'message' => 'get all user\'s orders successfully',
             'status' => 'success',
-        ], Response::HTTP_OK);
+        ], Response::HTTP_OK);], Response::HTTP_OK);
+    }
+
+    /**
+     * Checkout a draft order
+     *
+     * Redirect Experiencer to bank if order is purchasable
+     * @OA\Tag(name="Order")
+     * @OA\PathParameter (
+     *      name="order_id",
+     *      required=true
+     * )
+     * @OA\Response(
+     *     response="400",
+     *     description="Order is not purchasable.",
+     *     content={
+     *         @OA\MediaType(
+     *             mediaType="application/json",
+     *             @OA\Schema(
+     *                 @OA\Property(
+     *                     property="status",
+     *                     type="string",
+     *                     description="action result"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="data",
+     *                     type="string",
+     *                     description="A message to describe failure reason."
+     *                 ),
+     *                 example={
+     *                         "status": "failure",
+     *                         "data": "The order id(#orderId) is not purchasable."
+     *                 }
+     *             )
+     *         )
+     *     }
+     * )
+     * @OA\Response(
+     *     response="303",
+     *     description="Redirect to bank for payment.",
+     * )
+     */
+    #[Route(
+        '/orders/{order_id<\d+>}/checkout',
+        name: 'app_order_checkout',
+        methods: 'GET',
+    )]
+    #[AcceptableRoles(User::ROLE_EXPERIENCER)]
+    public function orderCheckout(int $order_id, OrderCheckoutService $orderCheckoutService)
+    {
+        $redirectLink = $orderCheckoutService->checkout($order_id);
+        return $this->redirect($redirectLink);
     }
 }

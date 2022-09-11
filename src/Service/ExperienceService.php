@@ -2,29 +2,46 @@
 
 namespace App\Service;
 
+use App\Auth\AuthenticatedUser;
 use App\DTO\DtoFactory;
 use App\Entity\Experience;
 use App\Entity\Host;
+use App\Entity\Media;
 use App\Repository\CategoryRepository;
 use App\Repository\ExperienceRepository;
+use App\Repository\MediaRepository;
 use App\Request\ExperienceRequest;
+use App\Request\ExperienceSearchRequest;
+use App\Request\MediaRequest;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExperienceService
 {
+    private AuthenticatedUser $security;
 
-    public function getAll(ExperienceRepository $repository, Host $host): array
+    public function __construct(AuthenticatedUser $security)
     {
+        $this->security = $security;
+    }
+
+    public function getAll(ExperienceRepository $repository): array
+    {
+        $host = $this->security->getUser()->getHost();
         $experiences = $repository->findBy(['host' => $host]);
-        $experienceCollection = DtoFactory::getInstance('experience');
+        $experienceCollection = DtoFactory::getInstance(Experience::class);
         return $experienceCollection->toArray($experiences);
     }
 
 
-    public function create(ExperienceRepository $repository, ExperienceRequest $request, CategoryRepository $categoryRepository, Host $host): array
+    public function create(
+        ExperienceRepository $repository,
+        ExperienceRequest    $request,
+        CategoryRepository   $categoryRepository): array
     {
         $res = ['data' => []];
+        $host = $this->security->getUser()->getHost();
         $experience = $repository->findBy(['title' => $request->title]);
         if (!$experience) {
             $experience = new Experience();
@@ -45,4 +62,55 @@ class ExperienceService
         return $res;
     }
 
+
+    public function update(
+        ExperienceRepository $repository,
+        ExperienceRequest    $request,
+        CategoryRepository   $categoryRepository,
+        Experience           $experience): array
+    {
+        $res = ['data' => []];
+        $host = $this->security->getUser()->getHost();
+        $category = $categoryRepository->findOneBy(['name' => $request->category_name]);
+        if (!$category)
+            throw new NotFoundHttpException("Category name does not exist.");
+        $experience->setCategory($category);
+        $experience->setHost($host);
+        $experience->setTitle($request->title);
+        $experience->setDescription($request->description);
+        $repository->add($experience, true);
+        $res['message'] = 'Experience successfully updated';
+        $res['status'] = 'success';
+        return $res;
+    }
+
+
+    public function delete(
+        ExperienceRepository $repository,
+        Experience           $experience): array
+    {
+        $res = [];
+        $repository->remove($experience, true);
+        $res['message'] = 'Experience successfully deleted';
+        $res['status'] = 'success';
+        return $res;
+    }
+
+    public function addMedia(Experience $experience, MediaRepository $repository, MediaRequest $request)
+    {
+        if ($experience->getHost()->getUser() !== $this->security->getUser())
+            throw new AccessDeniedException();
+        $media = new Media();
+        $media->setExperience($experience);
+        $fileName = $media->uploadMedia($request->media);
+        $media->setFileName($fileName);
+        $repository->add($media, true);
+    }
+
+    public function search(ExperienceRepository $repository, ExperienceSearchRequest $request)
+    {
+        $searchedExperience = $repository->searchByWord($request->word);
+        $experienceCollection = DtoFactory::getInstance('experienceFilter');
+        return $experienceCollection->toArray($searchedExperience);
+    }
 }

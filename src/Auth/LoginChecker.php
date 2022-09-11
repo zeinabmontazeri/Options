@@ -31,7 +31,7 @@ class LoginChecker implements UserCheckerInterface
             ->getCurrentRequest();
 
 
-        if ($request->getPathInfo() !== $this->router->generate('auth.login')) {
+        if ($request->getPathInfo() !== $this->router->generate('auth_login')) {
             return;
         }
 
