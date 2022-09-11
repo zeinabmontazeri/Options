@@ -20,13 +20,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('api/v1/shop')]
+#[Route('api/v1')]
 class OrderController extends AbstractController
 {
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/orders/{id}/remove/', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
+    #[Route('/orders/{order_id}/', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
+    #[ParamConverter('event', class: Order::class, options: ['id' => 'order_id'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function index(
         Order              $order,
@@ -47,21 +48,30 @@ class OrderController extends AbstractController
         }
     }
 
-    #[Route('/users/events/{event_id}/order', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'], methods: ['POST'])]
+    /**
+     * @throws JWTDecodeFailureException
+     */
+    #[Route('/events/{event_id}/order', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'], methods: ['POST'])]
     #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
-    public function OrderAnEvent(Event $event, OrderEventService $orderEventService, AuthenticatedUser $security): Response
+    public function OrderAnEvent(
+        Event             $event,
+        OrderEventService $orderEventService,
+        AuthenticatedUser $security): Response
     {
         $result = $orderEventService->orderTheEvent($security->getUser(), $event);
         return $this->json([
             'data' => $result['data'],
             'message' => $result['message'],
             'status' => $result['status'],
-            'code' => Response::HTTP_CREATED
-        ]);
+
+        ], Response::HTTP_OK);
     }
 
-    #[Route('/users/orders', name: 'app_shop_users_order', methods: 'GET')]
+    /**
+     * @throws JWTDecodeFailureException
+     */
+    #[Route('/orders', name: 'app_shop_users_order', methods: 'GET')]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function getExperiencerOrder(OrderService $orderService, AuthenticatedUser $security): Response
     {
@@ -70,7 +80,6 @@ class OrderController extends AbstractController
             'data' => $res,
             'message' => 'get all user\'s orders successfully',
             'status' => 'success',
-            'code' => Response::HTTP_OK
-        ]);
+        ], Response::HTTP_OK);
     }
 }
