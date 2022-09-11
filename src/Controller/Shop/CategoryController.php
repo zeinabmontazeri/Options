@@ -10,11 +10,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('api/v1/shop')]
+#[Route('api/v1')]
 class CategoryController extends AbstractController
 {
     #[Route('/categories', name: 'app_shop_categories', methods: ['GET'])]
-    #[AcceptableRoles(User::ROLE_HOST,User::ROLE_EXPERIENCER,User::ROLE_ADMIN,User::ROLE_GUEST)]
+    #[AcceptableRoles(User::ROLE_HOST, User::ROLE_EXPERIENCER, User::ROLE_ADMIN, User::ROLE_GUEST)]
     public function index(CategoryService $categoryService, CategoryRepository $repository): Response
     {
         $data = $categoryService->getAll($repository);
@@ -22,7 +22,6 @@ class CategoryController extends AbstractController
             'data' => $data,
             'message' => 'successfully retrieve all categories',
             'status' => 'success',
-            'code' => Response::HTTP_OK
-        ]);
+        ], Response::HTTP_OK);
     }
 }

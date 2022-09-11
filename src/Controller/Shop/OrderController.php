@@ -5,10 +5,11 @@ namespace App\Controller\Shop;
 use App\Auth\AcceptableRoles;
 use App\Auth\AuthenticatedUser;
 use App\Entity\Enums\EnumOrderStatus;
-use App\Entity\Event;
 use App\Entity\Order;
 use App\Entity\User;
+use App\Repository\EventRepository;
 use App\Repository\OrderRepository;
+use App\Request\OrderEventRequest;
 use App\Service\OrderEventService;
 use App\Service\Shop\OrderService;
 use App\Service\Shop\RemoveOrderService;
@@ -48,18 +49,20 @@ class OrderController extends AbstractController
         }
     }
 
+//    /
+
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/events/{event_id}/order', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'], methods: ['POST'])]
-    #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
+    #[Route('/order/events', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'], methods: ['POST'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function OrderAnEvent(
-        Event             $event,
+        OrderEventRequest $request,
+        EventRepository   $eventRepository,
         OrderEventService $orderEventService,
         AuthenticatedUser $security): Response
     {
-        $result = $orderEventService->orderTheEvent($security->getUser(), $event);
+        $result = $orderEventService->orderTheEvent($security->getUser(), $request, $eventRepository);
         return $this->json([
             'data' => $result['data'],
             'message' => $result['message'],
