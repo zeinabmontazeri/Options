@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('api/v1/shop')]
+#[Route('api/v1')]
 class OrderController extends AbstractController
 {
     /**
