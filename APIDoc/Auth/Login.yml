@@ -96,19 +96,9 @@ post:
               status:
                 type: string
                 description: Result of the action
-              details:
-                type: object
-                description: Details of the validation errors on fields.
-                properties:
-                  fieldName:
-                    type: array
-                    description: List of validation errors on this field
-                    items:
-                      type: string
               message:
                 type: string
                 description: A discription about failure.
             example:
               status: failed
-              details:
               message: Invalid Credentials.

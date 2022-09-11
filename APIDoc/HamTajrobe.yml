@@ -23,6 +23,6 @@ paths:
   /api/v1/orders/{order_id}/checkout:
     $ref: ./Orders/Checkout.yml
   /api/v1/admin/categories:
-    $ref: ./Admin/Category/Categories.yml
+    $ref: ./Admin/Category/Categories_Create_Get.yml
   /api/v1/admin/categories/{category_id}:
-    $ref: ./Admin/Category/DeleteCategories.yml
+    $ref: ./Admin/Category/Categories_Patch_Delete.yml

@@ -1,21 +1,34 @@
 tags:
   - Admin
-summary: Admin deletes a category
+summary: Admin updates a category
 security:
   - jwt: []
 description: >
-  This end-point is accessible to admin and delete a registered categories.
+  This end-point is accessible to admin and update a categories.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required: [name]
+        properties:
+          name:
+            type: string
+            description: Name of the category to be updated.
+        example:
+          name: Skydiving
 parameters:
   - name: category_id
     required: true
     in: path
     description: >
-      The id of the category to be deleted.
+      The id of the category to be updated.
     schema:
       type: integer
 responses:
   '200':
-    description: A category just deleted.
+    description: The category updated.
     content:
       application/json:
         schema:
@@ -26,6 +39,7 @@ responses:
               description: Result of the action
             data:
               type: array
+              description: List of all experiences' categories.
               items: {}
             message:
               type: string
