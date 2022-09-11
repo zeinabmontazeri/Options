@@ -8,7 +8,6 @@ use App\Repository\OrderRepository;
 use Exception;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
-
 class HostBusinessClassService
 {
     use UpdateHostBusinessClassTrait;
@@ -64,5 +63,4 @@ class HostBusinessClassService
 
         }
     }
-
 }
