@@ -1,0 +1,79 @@
+post:
+  tags:
+    - Auth
+  summary: Login end-point
+  security: []
+  description: >
+    Login a user by the given credentials. It returns a `token` and a `refresh_token`.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [phoneNumber, password]
+          properties:
+            phoneNumber:
+              type: string
+            password:
+              type: string
+          example:
+            phoneNumber: '9121234567'
+            password: pass_1234
+            role: role_experiencer
+  responses:
+    '200':
+      description: User authenticated successfuly.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              data:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  token:
+                    type: string
+                  refresh_token:
+                    type: string
+              message:
+                type: string
+            example:
+              status: success
+              data:
+                id: 1
+                token: a jwt token
+                refresh_token: a refresh token
+              message: User authenticated successfully.
+    '400':
+      description: A required parameter is missing or a variable format is wrong.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              message:
+                type: string
+            example:
+              status: failed
+              message: The key "password" is required.
+    '401':
+      description: User provided invalid credentials.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              message:
+                type: string
+            example:
+              status: failed
+              message: Invalid Credentials.

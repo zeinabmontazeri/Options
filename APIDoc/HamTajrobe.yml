@@ -1,0 +1,17 @@
+openapi: 3.0.0
+info:
+  title: Ham  Tajrobe
+  version: '1'
+  description: A place to share awesome experiences
+components:
+  securitySchemes:
+    jwt:
+      type: apiKey
+      name: jwt
+      in: header
+      description: JWT authentivcation token
+security:
+  - jwt: []
+paths:
+  /api/v1/auth/login:
+    $ref: ./Auth/Login.yml
