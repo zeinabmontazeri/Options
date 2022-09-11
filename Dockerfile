@@ -30,9 +30,9 @@ RUN ["apk", "add", "--no-cache", "symfony-cli"]
 RUN ["rm", "/tmp/symfony-cli-alpine.sh"]
 
 ## install mysql driver
-RUN docker-php-ext-install pdo_mysql soap
+RUN docker-php-ext-install pdo_mysql
 #RUN docker-php-ext-install opcache
-RUN docker-php-ext-enable pdo_mysql soap
+RUN docker-php-ext-enable pdo_mysql
 
 
 
@@ -56,7 +56,7 @@ RUN (crontab -l ; echo "* * * * * cd /app && symfony console app:host:update-bus
 
 # TODO: generate private public key jwt
 EXPOSE 8000
-
+RUN ["symfony", "console", "lexik:jwt:generate-keypair", "--overwrite", "--no-interaction"]
 ENTRYPOINT ["symfony", "server:ca:install"]
 COPY build/entrypoint.sh /app
 ENTRYPOINT ["bash", "/app/entrypoint.sh"]
