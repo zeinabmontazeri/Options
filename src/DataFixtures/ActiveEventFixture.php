@@ -26,7 +26,7 @@ class ActiveEventFixture extends Fixture implements DependentFixtureInterface
                 ->setExperience($faker->randomElement($experiencesWithActiveEventsCount))
                 ->setCapacity($faker->numberBetween(10, 100))
                 ->setDuration(120)
-                ->setPrice($faker->numberBetween(100, 1000))
+                ->setPrice($faker->numberBetween(1000, 100000))
                 ->setStartsAt($faker->dateTimeBetween('+1 year', '+4 year'))
                 ->setStatus($faker->randomElement(EnumEventStatus::cases()))
                 ->setCreatedAt($faker->dateTime);

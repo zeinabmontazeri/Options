@@ -46,7 +46,7 @@ class Transaction
     #[ORM\Column(name: 'user_id', type: Types::INTEGER, nullable: true)]
     private ?int $userId = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 7, scale: 3, nullable: true)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 3, nullable: true)]
     private ?string $amount = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

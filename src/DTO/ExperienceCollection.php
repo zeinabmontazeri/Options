@@ -2,6 +2,8 @@
 
 namespace App\DTO;
 
+
+
 class ExperienceCollection implements CollectionInterface
 {
     protected array $result = [];
@@ -18,10 +20,11 @@ class ExperienceCollection implements CollectionInterface
             $data['host'] = [
                 'hostId' => $entity->getHost()->getId(),
                 'hostName' => $entity->getHost()->getFullName()];
-            $data['media'] = $entity->getMedia();
             $data['createdAt'] = $entity->getCreatedAt();
+            $data['media'] = $entity->getMediaFileNames();
             $this->result[] = $data;
         }
         return $this->result;
     }
+
 }

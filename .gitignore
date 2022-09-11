@@ -6,6 +6,7 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
+/public/media/
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
@@ -32,3 +33,4 @@ composer.lock
 symfony.lock
 docker-compose.override.yml
 docker-compose.yaml
+dump.rdb
