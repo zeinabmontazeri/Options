@@ -22,6 +22,10 @@ doctrine:
             region_cache_driver:
                 type: pool
                 pool: doctrine.result_cache_pool
+            regions:
+                locking:
+                    lock_path: '%kernel.cache_dir%/doctrine/orm/lock'
+                    type: filelock
 
         metadata_cache_driver:
             type: pool

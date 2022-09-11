@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Auth\AuthenticatedUser;
 use App\DTO\DtoFactory;
 use App\Entity\Experience;
-use App\Entity\Host;
 use App\Repository\CategoryRepository;
 use App\Repository\ExperienceRepository;
 use App\Request\ExperienceRequest;
@@ -25,12 +24,15 @@ class ExperienceService
     {
         $host = $this->security->getUser()->getHost();
         $experiences = $repository->findBy(['host' => $host]);
-        $experienceCollection = DtoFactory::getInstance('experience');
+        $experienceCollection = DtoFactory::getInstance(Experience::class);
         return $experienceCollection->toArray($experiences);
     }
 
 
-    public function create(ExperienceRepository $repository, ExperienceRequest $request, CategoryRepository $categoryRepository): array
+    public function create(
+        ExperienceRepository $repository,
+        ExperienceRequest    $request,
+        CategoryRepository   $categoryRepository): array
     {
         $res = ['data' => []];
         $host = $this->security->getUser()->getHost();
@@ -51,6 +53,40 @@ class ExperienceService
         } else {
             throw new BadRequestException("Experience title should be unique , you have already this title name. ", 400);
         }
+        return $res;
+    }
+
+
+    public function update(
+        ExperienceRepository $repository,
+        ExperienceRequest    $request,
+        CategoryRepository   $categoryRepository,
+        Experience           $experience): array
+    {
+        $res = ['data' => []];
+        $host = $this->security->getUser()->getHost();
+        $category = $categoryRepository->findOneBy(['name' => $request->category_name]);
+        if (!$category)
+            throw new NotFoundHttpException("Category name does not exist.");
+        $experience->setCategory($category);
+        $experience->setHost($host);
+        $experience->setTitle($request->title);
+        $experience->setDescription($request->description);
+        $repository->add($experience, true);
+        $res['message'] = 'Experience successfully updated';
+        $res['status'] = 'success';
+        return $res;
+    }
+
+
+    public function delete(
+        ExperienceRepository $repository,
+        Experience           $experience): array
+    {
+        $res = [];
+        $repository->remove($experience, true);
+        $res['message'] = 'Experience successfully deleted';
+        $res['status'] = 'success';
         return $res;
     }
 

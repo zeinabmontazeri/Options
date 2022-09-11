@@ -14,7 +14,7 @@ class CategoryService
     public function getAll(CategoryRepository $repository): array
     {
         $categories = $repository->findAll();
-        $categoryCollection = DtoFactory::getInstance('category');
+        $categoryCollection = DtoFactory::getInstance(Category::class);
         return $categoryCollection->toArray($categories);
     }
 
@@ -27,6 +27,7 @@ class CategoryService
             $category->setName($request->name);
             $category->setCreatedAt();
             $repository->add($category, true);
+            $res['data']['id'] = $category->getId();
             $res['message'] = 'category successfully created';
             $res['status'] = 'success';
         } else {
