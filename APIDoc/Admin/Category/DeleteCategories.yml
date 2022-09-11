@@ -1,0 +1,91 @@
+delete:
+  tags:
+    - Admin
+  summary: Admin deletes a category
+  security:
+    - jwt: []
+  description: >
+    This end-point is accessible to admin and delete a registered categories.
+  parameters:
+    - name: category_id
+      required: true
+      in: path
+      description: >
+        The id of the category to be deleted.
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: A category just deleted.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Result of the action
+              data:
+                type: array
+                description: List of all experiences' categories.
+                items: {}
+              message:
+                type: string
+                description: A message describing result of the action.
+            example:
+              status: success
+              data:
+              message: category successfully deleted
+    '400':
+      description: The requested category does not exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Result of the action
+              details:
+                type: object
+                description: Details of the validation errors on fields.
+                properties:
+                  fieldName:
+                    type: array
+                    description: List of validation errors on this field
+                    items:
+                      type: string
+              message:
+                type: string
+                description: A discription about failure.
+            example:
+              status: failed
+              details:
+              message: Object not found
+
+    '403':
+      description: The user has not sufficient permission to access this end point.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Result of the action
+              details:
+                type: object
+                description: Details of the validation errors on fields.
+                properties:
+                  fieldName:
+                    type: array
+                    description: List of validation errors on this field
+                    items:
+                      type: string
+              message:
+                type: string
+                description: A discription about failure.
+            example:
+              status: failed
+              details:
+              message: AUTHORIZATION FAILED.

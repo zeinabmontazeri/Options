@@ -24,3 +24,5 @@ paths:
     $ref: ./Orders/Checkout.yml
   /api/v1/admin/categories:
     $ref: ./Admin/Category/Categories.yml
+  /api/v1/admin/categories/{category_id}:
+    $ref: ./Admin/Category/DeleteCategories.yml
