@@ -6,7 +6,7 @@ class ExperienceSearchRequest extends BaseRequest
 {
     use ValidateRequestTrait;
 
-    public readonly ?string $word;
+    public ?string $word = null;
 
     protected function autoValidateRequest(): bool
     {
