@@ -11,6 +11,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\ExperienceRepository;
 use App\Repository\MediaRepository;
 use App\Request\ExperienceRequest;
+use App\Request\ExperienceSearchRequest;
 use App\Request\MediaRequest;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
@@ -67,5 +68,12 @@ class ExperienceService
         $fileName = $media->uploadMedia($request->media);
         $media->setFileName($fileName);
         $repository->add($media, true);
+    }
+
+    public function search(ExperienceRepository $repository, ExperienceSearchRequest $request)
+    {
+        $searchedExperience = $repository->searchByWord($request->word);
+        $experienceCollection = DtoFactory::getInstance('experienceFilter');
+        return $experienceCollection->toArray($searchedExperience);
     }
 }

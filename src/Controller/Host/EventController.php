@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/v1/host')]
 class EventController extends AbstractController
 {
-    #[Route('/experiences/{experience_id}/events/create', name: 'app_host_create_event', methods: ['POST'])]
+    #[Route('/experiences/{experience_id}/events', name: 'app_host_create_event', methods: ['POST'])]
     #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
     #[AcceptableRoles(User::ROLE_HOST)]
     public function create(Experience $experience, EventService $eventService, EventRequest $eventRequest): JsonResponse

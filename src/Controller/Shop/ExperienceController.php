@@ -9,6 +9,8 @@ use App\Entity\User;
 use App\Repository\EventRepository;
 use App\Repository\ExperienceRepository;
 use App\Request\ExperienceFilterRequest;
+use App\Request\ExperienceSearchRequest;
+use App\Service\ExperienceService;
 use App\Service\Shop\GetAllExperienceEventsService;
 use App\Service\Shop\GetExperiencesByFilterService;
 use OpenApi\Annotations as OA;
@@ -106,10 +108,14 @@ class ExperienceController extends AbstractController
         ExperienceRepository          $experienceRepository,
         GetExperiencesByFilterService $service,
         ExperienceFilterRequest       $experienceFilterRequest,
+        ExperienceSearchRequest       $searchRequest,
+        ExperienceService             $experienceService
     ): JsonResponse
     {
-
-        $result = $service->getExperience($experienceFilterRequest, $experienceRepository);
+        if ($searchRequest->word)
+            $result = $experienceService->search($experienceRepository, $searchRequest);
+        else
+            $result = $service->getExperience($experienceFilterRequest, $experienceRepository);
         return $this->json(
             [
                 'data' => $result,
@@ -159,27 +165,6 @@ class ExperienceController extends AbstractController
             $data,
             Response::HTTP_OK,
             ['Content-type' => 'application/json'],
-        );
-    }
-
-    #[Route('/experiences/search', name: 'app_experience_search', methods: ['GET'])]
-    #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_ADMIN, User::ROLE_HOST)]
-    public function searchExperience(Request $request, ExperienceRepository $experienceRepository): JsonResponse
-    {
-        $word = $request->query->get('word');
-        if ($word)
-            $searchResult = $experienceRepository->searchByWord($word);
-        else
-            $searchResult = $experienceRepository->findAll();
-        $experienceCollection = DtoFactory::getInstance('experienceFilter');
-        $experiences = $experienceCollection->toArray($searchResult);
-        return $this->json(
-            [
-                'data' => $experiences,
-                'message' => 'Experiences Successfully Retrieved',
-                'status' => 'success',
-            ],
-            Response::HTTP_OK
         );
     }
 }
