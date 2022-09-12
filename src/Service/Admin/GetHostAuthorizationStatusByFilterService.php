@@ -16,7 +16,7 @@ class GetHostAuthorizationStatusByFilterService
     ): array
     {
         $hosts = $hostRepository->getHostByAuthorizationStatus($hostAuthorizationFilterRequest);
-        $hostCollection = DtoFactory::getInstance('host');
+        $hostCollection = DtoFactory::getInstance();
         return $hostCollection->toArray($hosts);
     }
 }

@@ -33,8 +33,8 @@ class ExperienceService
     {
         $host = $this->security->getUser()->getHost();
         $experiences = $repository->findBy(['host' => $host]);
-        $experienceCollection = DtoFactory::getInstance(Experience::class);
-        return $experienceCollection->toArray($experiences);
+        $experienceCollection = DtoFactory::getInstance();
+        return $experienceCollection->toArray($experiences ,['host']);
     }
 
 
