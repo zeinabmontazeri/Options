@@ -3,9 +3,7 @@
 namespace App\Controller\Host;
 
 use App\Auth\AcceptableRoles;
-use App\Auth\AuthenticatedUser;
 use App\Entity\Experience;
-use App\Entity\Host;
 use App\Entity\User;
 use App\Repository\ExperienceRepository;
 use App\Repository\HostRepository;

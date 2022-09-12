@@ -3,12 +3,13 @@
 namespace App\Controller\Shop;
 
 use App\Auth\AcceptableRoles;
-use App\DTO\DtoFactory;
 use App\Entity\Experience;
 use App\Entity\User;
 use App\Repository\EventRepository;
 use App\Repository\ExperienceRepository;
 use App\Request\ExperienceFilterRequest;
+use App\Request\ExperienceSearchRequest;
+use App\Service\ExperienceService;
 use App\Service\Shop\GetAllExperienceEventsService;
 use App\Service\Shop\GetExperiencesByFilterService;
 use OpenApi\Annotations as OA;
@@ -19,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('api/v1/shop')]
+#[Route('api/v1')]
 class ExperienceController extends AbstractController
 {
     /** Get experiences by filter
@@ -105,10 +106,14 @@ class ExperienceController extends AbstractController
         ExperienceRepository          $experienceRepository,
         GetExperiencesByFilterService $service,
         ExperienceFilterRequest       $experienceFilterRequest,
+        ExperienceSearchRequest       $searchRequest,
+        ExperienceService             $experienceService
     ): JsonResponse
     {
-
-        $result = $service->getExperience($experienceFilterRequest, $experienceRepository);
+        if ($searchRequest->word)
+            $result = $experienceService->search($experienceRepository, $searchRequest);
+        else
+            $result = $service->getExperience($experienceFilterRequest, $experienceRepository);
         return $this->json(
             [
                 'data' => $result,
@@ -158,23 +163,6 @@ class ExperienceController extends AbstractController
             $data,
             Response::HTTP_OK,
             ['Content-type' => 'application/json'],
-        );
-    }
-
-    #[Route('/experiences/search/{word}', name: 'app_experience_search', methods: ['GET'])]
-    #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_ADMIN, User::ROLE_HOST)]
-    public function searchExperience($word, ExperienceRepository $experienceRepository)
-    {
-        $searchResult = $experienceRepository->searchByWord($word);
-        $experienceCollection = DtoFactory::getInstance('experienceFilter');
-        $experiences = $experienceCollection->toArray($searchResult);
-        return $this->json(
-            [
-                'data' => $experiences,
-                'message' => 'Experiences Successfully Retrieved',
-                'status' => 'success',
-            ],
-            Response::HTTP_OK
         );
     }
 }

@@ -23,7 +23,7 @@ class OrderFixture extends Fixture implements DependentFixtureInterface
             $event = $faker->randomElement($events);
             $order->setUser($faker->randomElement($users))
                 ->setEvent($event)
-                ->setStatus($faker->randomElements(EnumOrderStatus::cases())[0])
+                ->setStatus($faker->randomElement(EnumOrderStatus::cases()))
                 ->setPayablePrice($event->getPrice())
                 ->setCreatedAt($faker->dateTime);
             $manager->persist($order);

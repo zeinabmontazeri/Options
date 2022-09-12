@@ -16,8 +16,8 @@ class CreateEventControllerTest extends BaseTestCase
 
     public function testCreateEvent()
     {
-        for ($i = 1; $i <= 20; $i++) {
-            $experience = $this->entityManager->getRepository(Experience::class)->find($i);
+        $experiences = $this->entityManager->getRepository(Experience::class)->findAll();
+        foreach ($experiences as $experience) {
             $phoneNumber = $experience->getHost()->getUser()->getPhoneNumber();
             $token = $this->getTokenWithLogin($phoneNumber, 'ROLE_HOST');
             $experience_id = $experience->getId();
@@ -40,7 +40,7 @@ class CreateEventControllerTest extends BaseTestCase
                 "address" => $address
             ];
             $this->client->request(
-                'POST', "/api/v1/hosts/experiences/$experience_id/events/create", []
+                'POST', "/api/v1/host/experiences/$experience_id/events", []
                 , [], [
                 'HTTP_AUTHORIZATION' => 'Bearer ' . $token,
                 'CONTENT_TYPE' => 'application/json',

@@ -8,12 +8,11 @@ use App\Service\Host\HostBusinessClassService;
 use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
-#[AsCommand(name: 'app:business-class')]
+#[AsCommand(name: 'app:host:update-business-class')]
 class HostBusinessClassCommand extends Command
 {
 
@@ -38,25 +37,21 @@ class HostBusinessClassCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $currentDateTime = date('Y-m-d H:i:s');
         $this->hostBusinessClassService->setBusinessClass(
             $this->hostRepository,
             $this->orderRepository,
-            $input->getArgument('fromDate'),
-            $input->getArgument('toDate')
+            $currentDateTime
         );
         return Command::SUCCESS;
     }
 
     protected function configure(): void
     {
-        $this->setDescription('This command allows you to set business class for hosts.')
+        $this->setDescription('This command runs daily to update host business class')
             ->setHelp('First parameter is fromDate and second is toDate. Input date range in format YYYY-MM-DD.'
                 . "\n" .
-                'Date range cannot be more than 62 days.'
-                . "\n" .
-                'Example: symfony console app:business-class 2021-01-01 2021-03-01')
-            ->addArgument('fromDate', InputArgument::REQUIRED, 'From date')
-            ->addArgument('toDate', InputArgument::REQUIRED, 'To date');
+                'Example: symfony console app:business-class');
     }
 
 }
