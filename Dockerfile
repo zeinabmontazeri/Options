@@ -28,11 +28,18 @@ RUN ["bash", "/tmp/symfony-cli-alpine.sh"]
 # Install (unzip for symfony/flex), symfony,
 RUN ["apk", "add", "--no-cache", "symfony-cli"]
 RUN ["rm", "/tmp/symfony-cli-alpine.sh"]
+#RUN set -eux; \
+#        apk update; \
+#        apk add php-soap; \
 
+RUN apk add libxml2-dev
 ## install mysql driver
-RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install pdo_mysql soap
 #RUN docker-php-ext-install opcache
-RUN docker-php-ext-enable pdo_mysql
+RUN docker-php-ext-enable pdo_mysql soap
+
+
+
 
 
 
@@ -54,7 +61,6 @@ COPY phpunit.xml.dist /app/
 #RUN ["symfony", "console", "doctrine:migrations:migrate", "--no-interaction"]
 RUN (crontab -l ; echo "* * * * * cd /app && symfony console app:host:update-business-class") | crontab -
 
-# TODO: generate private public key jwt
 EXPOSE 8000
 RUN ["symfony", "console", "lexik:jwt:generate-keypair", "--overwrite", "--no-interaction"]
 ENTRYPOINT ["symfony", "server:ca:install"]
