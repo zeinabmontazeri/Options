@@ -124,7 +124,7 @@ class ExperienceController extends AbstractController
         );
     }
 
-    #[Route('/experiences/{experience_id}/events/', name: 'app_experience_event_list', methods: ['GET'])]
+    #[Route('/experiences/{experience_id}/events', name: 'app_experience_event_list', methods: ['GET'])]
     #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
     #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_ADMIN, User::ROLE_HOST)]
     public function getExperiences(
@@ -141,7 +141,7 @@ class ExperienceController extends AbstractController
         ], Response::HTTP_OK);
     }
 
-    #[Route('/experiences/trending/', name: 'app_trending_experience', methods: ['GET'])]
+    #[Route('/experiences/trending', name: 'app_trending_experience', methods: ['GET'])]
     #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_HOST, User::ROLE_ADMIN)]
     public function getTrendingExperiences(
         ExperienceRepository $experienceRepository,
