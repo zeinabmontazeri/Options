@@ -1,0 +1,90 @@
+tags:
+  - Admin
+summary: Admin creates a new category
+security:
+  - jwt: []
+description: >
+  Using this end point admin creates a new category.
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required: [name]
+        properties:
+          name:
+            type: string
+            description: Name of the new category
+        example:
+          name: Skydiving
+responses:
+  '200':
+    description: Admin created a new category
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Result of the action
+            data:
+              type: object
+              description: Information about the created category.
+              properties:
+                id:
+                  type: integer
+                  description: Unique id of the created category.
+            message:
+              type: string
+              description: A message describing result of the action.
+          example:
+            status: success
+            data:
+              id: 10
+            message: category successfully created
+  '400':
+    description: User provided wrong input.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Result of the action
+            details:
+              type: object
+              description: Details of the validation errors on fields.
+              properties:
+                fieldName:
+                  type: array
+                  description: List of validation errors on this field
+                  items:
+                    type: string
+            message:
+              type: string
+              description: A discription about failure.
+          example:
+            status: failed
+            details:
+              name:
+                - This field should not be blank.
+            message: Validation error.
+  '403':
+    description: The user has not sufficient permission to access this end point.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Result of the action
+            message:
+              type: string
+              description: A discription about failure.
+          example:
+            status: failed
+            message: AUTHORIZATION FAILED.

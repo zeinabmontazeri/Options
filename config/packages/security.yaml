@@ -19,16 +19,16 @@ security:
             stateless: true
             entry_point: jwt
             json_login:
-                check_path: auth.login
+                check_path: auth_login
                 username_path: phoneNumber
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             user_checker: App\Auth\LoginChecker
             jwt: ~
             refresh_jwt:
-                check_path: auth.refresh
+                check_path: auth_refresh
             logout:
-                path: auth.logout
+                path: auth_logout
     access_decision_manager:
         strategy: unanimous
         allow_if_all_abstain: false

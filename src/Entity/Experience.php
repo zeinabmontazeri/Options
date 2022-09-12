@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ExperienceRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
-#[ORM\Cache(usage: 'READ_ONLY')]
+#[ORM\Cache(usage: 'READ_WRITE' , region: 'locking')]
 class Experience
 {
     use SoftDeleteableEntity;
@@ -38,9 +38,6 @@ class Experience
     #[Groups(['experience'])]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $media = null;
-
     #[ORM\Column]
     #[Groups(['experience'])]
     private ?\DateTimeImmutable $createdAt = null;
@@ -53,7 +50,7 @@ class Experience
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
-    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class)]
+    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class ,cascade: ['remove'])]
     private Collection $events;
 
     #[ORM\Column(name: 'status', enumType: EnumEventStatus::class)]
@@ -62,9 +59,13 @@ class Experience
     #[ORM\Column(name: 'approvalStatus', enumType: EnumPermissionStatus::class)]
     private EnumPermissionStatus $approvalStatus = EnumPermissionStatus::PENDING;
 
+    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Media::class)]
+    private Collection $media;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
+        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -92,18 +93,6 @@ class Experience
     public function setTitle(string $title): self
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getMedia(): ?string
-    {
-        return $this->media;
-    }
-
-    public function setMedia(?string $media): self
-    {
-        $this->media = $media;
 
         return $this;
     }
@@ -196,5 +185,45 @@ class Experience
         $this->approvalStatus = $approvalStatus;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedium(Media $medium): self
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setExperience($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(Media $medium): self
+    {
+        if ($this->media->removeElement($medium)) {
+            // set the owning side to null (unless already changed)
+            if ($medium->getExperience() === $this) {
+                $medium->setExperience(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getMediaFileNames()
+    {
+        $res = [];
+        foreach ($this->getMedia() as $media) {
+            $res[] = $media->getFileName();
+        }
+
+        return $res;
     }
 }

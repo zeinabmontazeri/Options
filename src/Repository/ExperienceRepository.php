@@ -95,7 +95,7 @@ class ExperienceRepository extends ServiceEntityRepository
         )
             ->setMaxResults(20);
 
-        $query->setCacheMode(Cache::MODE_NORMAL)
+        $query->setCacheMode(Cache::MODE_GET)
             ->setCacheable(true)
             ->setResultCacheId('trending_id')
             ->setLifetime(300);

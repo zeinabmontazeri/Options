@@ -16,7 +16,7 @@ class ExperienceRequest extends BaseRequest
     public readonly ?string $title;
 
     #[Assert\NotBlank]
-    public readonly ?string $category_name;
+    public readonly ?string $categoryName;
 
     protected function autoValidateRequest(): bool
     {

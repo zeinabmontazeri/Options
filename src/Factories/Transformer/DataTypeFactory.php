@@ -7,6 +7,7 @@ use App\Entity\Enums\EnumGender;
 use App\Entity\Enums\EnumHostBusinessClassStatus;
 use App\Entity\Enums\EnumOrderStatus;
 use App\Entity\Enums\EnumPermissionStatus;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class DataTypeFactory
@@ -33,6 +34,8 @@ class DataTypeFactory
         }
         if ($type == EnumGender::class)
             return new EnumGenderDataType();
+        if ($type == UploadedFile::class)
+            return new FileDataType();
 
         throw new NotFoundHttpException();
     }

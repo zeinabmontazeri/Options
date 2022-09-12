@@ -8,32 +8,34 @@ use App\Entity\User;
 use App\Payment\BankOperatonManager;
 use App\Payment\Service\CheckoutService;
 use App\Service\OrderCheckoutService;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class PaymentController extends AbstractController
 {
     public function __construct(
         private OrderCheckoutService $orderCheckoutService,
-        private CheckoutService $checkoutCallbackService,
-    ) {
+        private CheckoutService      $checkoutCallbackService,
+    )
+    {
     }
 
     #[Route(
         '/api/v1/checkoutCallback/{callback_token}',
-        name: 'app.payment.checkout_callback',
+        name: 'app_payment_checkout_callback',
         methods: ['POST']
     )]
+    #[AcceptableRoles(User::ROLE_GUEST)]
     public function checkoutCallback(
-        Request $request,
-        string $callback_token,
+        Request             $request,
+        string              $callback_token,
         BankOperatonManager $operationManager,
-    ) {
+    ): JsonResponse
+    {
         if (!Transaction::validateCallbackToken($callback_token)) {
             throw new BadRequestHttpException('Invalid callback Token');
         }
@@ -50,7 +52,6 @@ class PaymentController extends AbstractController
             ],
             'message' => 'Payment finished successfully.',
             'status' => 'success',
-            'code' => JsonResponse::HTTP_OK,
-        ]);
+        ], Response::HTTP_OK);
     }
 }

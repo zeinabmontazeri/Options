@@ -5,6 +5,7 @@ namespace App\Service;
 use App\DTO\DtoFactory;
 use App\Entity\Category;
 use App\Repository\CategoryRepository;
+use App\Repository\ExperienceRepository;
 use App\Request\CategoryRequest;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
@@ -14,7 +15,7 @@ class CategoryService
     public function getAll(CategoryRepository $repository): array
     {
         $categories = $repository->findAll();
-        $categoryCollection = DtoFactory::getInstance('category');
+        $categoryCollection = DtoFactory::getInstance(Category::class);
         return $categoryCollection->toArray($categories);
     }
 
@@ -27,6 +28,7 @@ class CategoryService
             $category->setName($request->name);
             $category->setCreatedAt();
             $repository->add($category, true);
+            $res['data']['id'] = $category->getId();
             $res['message'] = 'category successfully created';
             $res['status'] = 'success';
         } else {
@@ -36,13 +38,19 @@ class CategoryService
 
     }
 
-    public function delete(CategoryRepository $repository, Category $category): array
+    public function delete(CategoryRepository $repository, Category $category , ExperienceRepository $experienceRepository): array
     {
         $res = [];
+        $experiences = $experienceRepository->findBy(['category' => $category]);
+        $defaultCategory = $repository->findOneBy(['name' => 'uncategorized']);
+        foreach ($experiences as $experience)
+        {
+            $experience->setCategory($defaultCategory);
+            $experienceRepository->add($experience , true);
+        }
         $repository->remove($category, true);
         $res['message'] = 'category successfully deleted';
         $res['status'] = 'success';
-
         return $res;
     }
 

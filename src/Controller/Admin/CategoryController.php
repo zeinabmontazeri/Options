@@ -6,6 +6,7 @@ use App\Auth\AcceptableRoles;
 use App\Entity\Category;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
+use App\Repository\ExperienceRepository;
 use App\Request\CategoryRequest;
 use App\Service\CategoryService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -13,12 +14,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('api/v1/admins')]
+#[Route('api/v1/admin')]
 class CategoryController extends AbstractController
 {
     #[Route('/categories', name: 'app_admin_category_get', methods: 'GET')]
     #[AcceptableRoles(User::ROLE_ADMIN)]
-    public function index(CategoryService $categoryService, CategoryRepository $repository): Response
+    public function index(
+        CategoryService    $categoryService,
+        CategoryRepository $repository): Response
     {
         return $this->json([
             'data' => $categoryService->getAll($repository),
@@ -36,7 +39,7 @@ class CategoryController extends AbstractController
     {
         $res = $categoryService->create($repository, $request);
         return $this->json([
-            'data' => [],
+            'data' => $res['data'],
             'message' => $res['message'],
             'status' => $res['status'],
         ], Response::HTTP_OK);
@@ -46,11 +49,12 @@ class CategoryController extends AbstractController
     #[ParamConverter('category', class: Category::class, options: ['id' => 'category_id'])]
     #[AcceptableRoles(User::ROLE_ADMIN)]
     public function delete(
-        Category           $category,
-        CategoryService    $categoryService,
-        CategoryRepository $repository): Response
+        Category             $category,
+        CategoryService      $categoryService,
+        CategoryRepository   $repository,
+        ExperienceRepository $experienceRepository): Response
     {
-        $res = $categoryService->delete($repository, $category);
+        $res = $categoryService->delete($repository, $category , $experienceRepository);
         return $this->json([
             'data' => [],
             'message' => $res['message'],

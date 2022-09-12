@@ -3,9 +3,7 @@
 namespace App\Controller\Host;
 
 use App\Auth\AcceptableRoles;
-use App\Auth\AuthenticatedUser;
 use App\Entity\Experience;
-use App\Entity\Host;
 use App\Entity\User;
 use App\Repository\ExperienceRepository;
 use App\Repository\HostRepository;
@@ -18,7 +16,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('api/v1/hosts')]
+#[Route('api/v1/host')]
 class ReportController extends AbstractController
 {
     /**
