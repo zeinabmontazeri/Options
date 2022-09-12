@@ -32,4 +32,6 @@ paths:
     $ref: ./Experiencer/GetTrendingExperiences.yml
   /api/v1/experiences:
     $ref: ./Experiencer/GetExperiencesByFilter.yml
+  /api/v1/orders/{order_id}:
+    $ref: ./Experiencer/RemoveOrder.yml
 

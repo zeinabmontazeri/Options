@@ -15,7 +15,6 @@ use App\Service\OrderEventService;
 use App\Service\Shop\OrderService;
 use App\Service\Shop\RemoveOrderService;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
-use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -30,7 +29,7 @@ class OrderController extends AbstractController
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/orders/{order_id}/', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
+    #[Route('/orders/{order_id}', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
     #[ParamConverter('event', class: Order::class, options: ['id' => 'order_id'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function index(
@@ -52,7 +51,6 @@ class OrderController extends AbstractController
         }
     }
 
-//    /
 
     /**
      * @throws JWTDecodeFailureException
@@ -98,6 +96,6 @@ class OrderController extends AbstractController
     public function orderCheckout(int $order_id, OrderCheckoutService $orderCheckoutService): RedirectResponse
     {
         $redirectLink = $orderCheckoutService->checkout($order_id);
-        return $this->redirect($redirectLink, JsonResponse::HTTP_SEE_OTHER);
+        return $this->redirect($redirectLink, Response::HTTP_SEE_OTHER);
     }
 }
