@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Auth\AuthenticatedUser;
 use App\DTO\DtoFactory;
+use App\Entity\Enums\EnumEventStatus;
 use App\Entity\Experience;
 use App\Entity\Host;
 use App\Entity\Media;
@@ -11,10 +12,12 @@ use App\Repository\CategoryRepository;
 use App\Repository\ExperienceRepository;
 use App\Repository\MediaRepository;
 use App\Request\ExperienceRequest;
+use App\Request\ExperienceUpdateRequest;
 use App\Request\ExperienceSearchRequest;
 use App\Request\MediaRequest;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExperienceService
@@ -45,7 +48,7 @@ class ExperienceService
         $experience = $repository->findBy(['title' => $request->title]);
         if (!$experience) {
             $experience = new Experience();
-            $category = $categoryRepository->findOneBy(['name' => $request->category_name]);
+            $category = $categoryRepository->findOneBy(['name' => $request->categoryName]);
             if (!$category)
                 throw new NotFoundHttpException("Category name does not exist.");
             $experience->setCategory($category);
@@ -64,20 +67,25 @@ class ExperienceService
 
 
     public function update(
-        ExperienceRepository $repository,
-        ExperienceRequest    $request,
-        CategoryRepository   $categoryRepository,
-        Experience           $experience): array
+        ExperienceRepository    $repository,
+        ExperienceUpdateRequest $request,
+        CategoryRepository      $categoryRepository,
+        Experience              $experience): array
     {
         $res = ['data' => []];
         $host = $this->security->getUser()->getHost();
-        $category = $categoryRepository->findOneBy(['name' => $request->category_name]);
-        if (!$category)
-            throw new NotFoundHttpException("Category name does not exist.");
-        $experience->setCategory($category);
+        if (isset($request->categoryName)) {
+            $category = $categoryRepository->findOneBy(['name' => $request->categoryName]);
+            if (!$category)
+                throw new NotFoundHttpException("Category name does not exist.");
+            $experience->setCategory($category);
+        }
+        if (isset($request->description))
+            $experience->setDescription($request->description);
         $experience->setHost($host);
-        $experience->setTitle($request->title);
-        $experience->setDescription($request->description);
+        if (isset($request->title))
+            $experience->setTitle($request->title);
+
         $repository->add($experience, true);
         $res['message'] = 'Experience successfully updated';
         $res['status'] = 'success';
@@ -90,7 +98,13 @@ class ExperienceService
         Experience           $experience): array
     {
         $res = [];
-        $repository->remove($experience, true);
+        $allowToRemove = true;
+        foreach ($experience->getEvents() as $event)
+            if($event->getStatus() === EnumEventStatus::PUBLISHED)
+                $allowToRemove = false;
+        if(!$allowToRemove)
+            throw new BadRequestHttpException('Provided experience has active event.');
+        $repository->remove($experience , true);
         $res['message'] = 'Experience successfully deleted';
         $res['status'] = 'success';
         return $res;

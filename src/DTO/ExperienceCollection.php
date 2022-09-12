@@ -22,6 +22,7 @@ class ExperienceCollection implements CollectionInterface
                 'hostName' => $entity->getHost()->getFullName()];
             $data['createdAt'] = $entity->getCreatedAt();
             $data['media'] = $entity->getMediaFileNames();
+            $data['status'] = $entity->getStatus();
             $this->result[] = $data;
         }
         return $this->result;
