@@ -4,18 +4,16 @@ namespace App\Controller\Host;
 
 use App\Auth\AcceptableRoles;
 use App\Entity\Experience;
-use App\Entity\Host;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
 use App\Repository\ExperienceRepository;
 use App\Repository\MediaRepository;
 use App\Request\ExperienceRequest;
+use App\Request\ExperienceUpdateRequest;
 use App\Request\MediaRequest;
 use App\Service\ExperienceService;
-use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -56,7 +54,7 @@ class ExperienceController extends AbstractController
         ExperienceService    $service,
         ExperienceRepository $repository,
         CategoryRepository   $categoryRepository,
-        ExperienceRequest    $request,
+        ExperienceUpdateRequest    $request,
         Experience           $experience): Response
     {
         $res = $service->update($repository, $request, $categoryRepository , $experience);
