@@ -49,7 +49,7 @@ class ExperienceController extends AbstractController
 
     #[Route('/experiences/{experience_id}', name: 'app_host_experience_update', methods: 'PATCH')]
     #[AcceptableRoles(User::ROLE_HOST)]
-    #[ParamConverter(data: 'experience' , class: Experience::class ,options: ['id' => 'experience_id'])]
+    #[ParamConverter(data: 'experience', class: Experience::class, options: ['id' => 'experience_id'])]
     public function update(
         ExperienceService    $service,
         ExperienceRepository $repository,
@@ -57,7 +57,7 @@ class ExperienceController extends AbstractController
         ExperienceUpdateRequest    $request,
         Experience           $experience): Response
     {
-        $res = $service->update($repository, $request, $categoryRepository , $experience);
+        $res = $service->update($repository, $request, $categoryRepository, $experience);
         return $this->json([
             'data' => [],
             'status' => $res['status'],
@@ -68,13 +68,13 @@ class ExperienceController extends AbstractController
 
     #[Route('/experiences/{experience_id}', name: 'app_host_experience_delete', methods: 'DELETE')]
     #[AcceptableRoles(User::ROLE_HOST)]
-    #[ParamConverter(data: 'experience' , class: Experience::class ,options: ['id' => 'experience_id'])]
+    #[ParamConverter(data: 'experience', class: Experience::class, options: ['id' => 'experience_id'])]
     public function delete(
         ExperienceService    $service,
         ExperienceRepository $repository,
         Experience           $experience): Response
     {
-        $res = $service->delete($repository , $experience);
+        $res = $service->delete($repository, $experience);
         return $this->json([
             'data' => [],
             'status' => $res['status'],

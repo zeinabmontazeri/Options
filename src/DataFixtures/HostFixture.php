@@ -23,7 +23,7 @@ class HostFixture extends Fixture implements DependentFixtureInterface
             if (in_array('ROLE_HOST', $user->getRoles())) {
                 $host->setUser($user)
                     ->setApprovalStatus($faker->randomElement(EnumPermissionStatus::cases()))
-                    ->setLevel($faker->randomElement(EnumHostBusinessClassStatus::cases()))
+                    ->setLevel(EnumHostBusinessClassStatus::NORMAL)
                     ->setCreatedAt($faker->dateTime);
                 $manager->persist($host);
             }
