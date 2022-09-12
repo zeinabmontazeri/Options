@@ -505,10 +505,10 @@ nelmio_api_doc:
                     example:
                       status: failed
                       message: AUTHORIZATION FAILED.
-      /api/v1/experiences/{experinece_id}/events:
+      /api/v1/experiences/{experience_id}/events:
         get:
           tags:
-          - Shop
+          - Experiencer
           summary: Get all experience events.
           security:
           - jwt: []
@@ -600,6 +600,165 @@ nelmio_api_doc:
                         type: string
                         description: A description about failure.
                         example: Object not found
+      /api/v1/experiences/trending:
+        get:
+          tags:
+          - Experiencer
+          summary: Get Trending Experiences.
+          security:
+          - jwt: []
+          description: 'Get Trending Experiences based on number of registered users.
+
+            '
+          responses:
+            '200':
+              description: A list of trending experiences.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the experience.
+                            description:
+                              type: string
+                              description: Description of the experience.
+                            title:
+                              type: string
+                              description: Title of the experience.
+                            createdAt:
+                              type: string
+                              description: Creation date of the experience.
+                          example:
+                            id: 1
+                            description: atmosphere of joy.
+                            title: Buzz
+                            createdAt: '2020-12-12T12:12:12.000Z'
+                      message:
+                        type: string
+                        description: Message of the response.
+                        example: Experiences Successfully Retrieved
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: success
+      /api/v1/experiences:
+        get:
+          tags:
+          - Experiencer
+          summary: Get Experiences By filter.
+          security:
+          - jwt: []
+          description: 'We can filter experiences by these filters: (purchasable,
+            host, category). Host and Category filters can be list and all filters
+            can used in chain.
+
+            '
+          parameters:
+          - name: purchasable
+            required: false
+            in: query
+            description: 'Filter experiences by purchasable.
+
+              '
+            schema:
+              type: boolean
+          - name: host
+            required: false
+            in: query
+            description: 'Filter experiences by host.
+
+              '
+            example: host=1 or host=[1,2,3]
+            schema:
+              type: array
+              items:
+                type: integer
+          - name: category
+            required: false
+            in: query
+            description: 'Filter experiences by category.
+
+              '
+            schema:
+              type: array
+              items:
+                type: integer
+            example: category=1 or category=[1,2,3]
+          responses:
+            '200':
+              description: List of experiences that filtered.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the experience.
+                              example: 1
+                            title:
+                              type: string
+                              description: Title of the experience.
+                              example: poetry
+                            category:
+                              type: object
+                              properties:
+                                categoryId:
+                                  type: integer
+                                  description: Id of category.
+                                  example: 1
+                                categoryName:
+                                  type: string
+                                  description: Name of category.
+                                  example: sport
+                            description:
+                              type: string
+                              description: Description of the experience.
+                              example: soluta
+                            host:
+                              type: object
+                              properties:
+                                hostId:
+                                  type: integer
+                                  description: Id of host.
+                                  example: 1
+                                hostName:
+                                  type: string
+                                  description: Name of host;
+                                  example: Elmira Behnava
+                            createdAt:
+                              type: string
+                              description: Creation date of the experience.
+                            media:
+                              type: array
+                              items:
+                                type: string
+                              description: array of media urls.
+                              example: []
+                            status:
+                              type: string
+                              description: status of experience.
+                              example: CANCELED
+                      message:
+                        type: string
+                        description: Experiences Successfully Retrieved.
+                        example: Experiences Successfully Retrieved.
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: success
   areas:
     default:
       path_patterns:
