@@ -7,6 +7,7 @@ use App\Entity\Event;
 use App\Entity\Experience;
 use App\Entity\User;
 use App\Request\EventRequest;
+use App\Request\EventUpdateRequest;
 use App\Service\EventService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,5 +39,22 @@ class EventController extends AbstractController
     public function getReport(Event $event, EventService $service): JsonResponse
     {
         return $this->json($service->getOrdersInfo($event));
+    }
+
+    #[Route('/experiences/{experience_id}/events/{event_id}', name: 'app_host_update_event', methods: ['PATCH'])]
+    #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
+    #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
+    #[AcceptableRoles(User::ROLE_HOST)]
+    public function update(Experience $experience, Event $event, EventService $eventService, EventUpdateRequest $updateRequest): JsonResponse
+    {
+        dd($updateRequest);
+        $updatedEvent = $eventService->update($experience, $event, $updateRequest);
+        return $this->json([
+            'data' => [
+                'id' => $updatedEvent->getId()
+            ],
+            'message' => "event updated successfully",
+            'status' => 'success'
+        ], Response::HTTP_OK);
     }
 }
