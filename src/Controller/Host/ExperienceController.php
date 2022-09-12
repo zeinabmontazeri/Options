@@ -9,6 +9,7 @@ use App\Repository\CategoryRepository;
 use App\Repository\ExperienceRepository;
 use App\Repository\MediaRepository;
 use App\Request\ExperienceRequest;
+use App\Request\ExperienceUpdateRequest;
 use App\Request\MediaRequest;
 use App\Service\ExperienceService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -53,7 +54,7 @@ class ExperienceController extends AbstractController
         ExperienceService    $service,
         ExperienceRepository $repository,
         CategoryRepository   $categoryRepository,
-        ExperienceRequest    $request,
+        ExperienceUpdateRequest    $request,
         Experience           $experience): Response
     {
         $res = $service->update($repository, $request, $categoryRepository, $experience);
