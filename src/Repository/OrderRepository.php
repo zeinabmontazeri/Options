@@ -85,6 +85,7 @@ class OrderRepository extends ServiceEntityRepository
 
     }
 
+
     public function setOrderAsCheckedOut(int $invoiceId): bool
     {
         $order = $this->find($invoiceId);
