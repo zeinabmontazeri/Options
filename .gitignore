@@ -33,3 +33,5 @@ composer.lock
 symfony.lock
 
 dump.rdb
+.docker-compose.yaml
+.Dockerfile
