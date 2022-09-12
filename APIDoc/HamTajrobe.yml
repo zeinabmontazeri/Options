@@ -28,5 +28,7 @@ paths:
     $ref: ./Admin/Category/Categories_Patch_Delete.yml
   /api/v1/experiences/{experinece_id}/events:
     $ref: ./Shop/GetExperienceEvents.yml
+  /api/v1/experiences/trending:
+    $ref: ./Shop/GetTrendingExperiences.yml
 
 

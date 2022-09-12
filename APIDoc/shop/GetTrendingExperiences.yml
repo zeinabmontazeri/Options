@@ -1,0 +1,47 @@
+get:
+  tags:
+    - Experiencer
+  summary: Get Trending Experiences.
+  security:
+    - jwt: [ ]
+  description: >
+    Get Trending Experiences based on number of registered users.
+  responses:
+    "200":
+      description: A list of trending experiences.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Id of the experience.
+                    description:
+                      type: string
+                      description: Description of the experience.
+                    title:
+                      type: string
+                      description: Title of the experience.
+                    createdAt:
+                      type: string
+                      description: Creation date of the experience.
+                  example:
+                    id: 1
+                    description: "atmosphere of joy."
+                    title: "Buzz"
+                    createdAt: "2020-12-12T12:12:12.000Z"
+              message:
+                type: string
+                description: Message of the response.
+                example: "Experiences Successfully Retrieved"
+              status:
+                type: string
+                description: Result of the action
+                example: success
+
