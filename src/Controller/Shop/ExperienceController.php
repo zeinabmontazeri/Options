@@ -3,7 +3,6 @@
 namespace App\Controller\Shop;
 
 use App\Auth\AcceptableRoles;
-use App\DTO\DtoFactory;
 use App\Entity\Experience;
 use App\Entity\User;
 use App\Repository\EventRepository;
@@ -17,7 +16,6 @@ use OpenApi\Annotations as OA;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -126,7 +124,7 @@ class ExperienceController extends AbstractController
         );
     }
 
-    #[Route('/experiences/{experience_id}/events/', name: 'app_experience_event_list', methods: ['GET'])]
+    #[Route('/experiences/{experience_id}/events', name: 'app_experience_event_list', methods: ['GET'])]
     #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
     #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_ADMIN, User::ROLE_HOST)]
     public function getExperiences(
@@ -143,7 +141,7 @@ class ExperienceController extends AbstractController
         ], Response::HTTP_OK);
     }
 
-    #[Route('/experiences/trending/', name: 'app_trending_experience', methods: ['GET'])]
+    #[Route('/experiences/trending', name: 'app_trending_experience', methods: ['GET'])]
     #[AcceptableRoles(User::ROLE_GUEST, User::ROLE_EXPERIENCER, User::ROLE_HOST, User::ROLE_ADMIN)]
     public function getTrendingExperiences(
         ExperienceRepository $experienceRepository,

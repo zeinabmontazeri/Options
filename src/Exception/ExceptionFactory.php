@@ -5,6 +5,7 @@ namespace App\Exception;
 use Error;
 use ErrorException;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExceptionFactory
@@ -17,8 +18,13 @@ class ExceptionFactory
         ];
         $response = new JsonResponse();
         if (in_array($exception::class, HttpExceptionEnum::getConstants())) {
+            if($exception instanceof BadRequestHttpException)
+            {
+                $exceptionData['details'] = null;
+            }
             if ($exception instanceof ValidationException) {
-                $exceptionData['message'] = $exception->getMessages();
+                $exceptionData['details'] = $exception->getMessages();
+                $exceptionData['message'] = 'Validation failed on provided data';
             } else if (str_contains($exception->getMessage(), 'object not found by the @ParamConverter')) {
                 $exceptionData['message'] = 'Object not found';
             } else {

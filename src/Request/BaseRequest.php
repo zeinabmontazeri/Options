@@ -43,9 +43,8 @@ abstract class BaseRequest
         } else {
             # request is form-data with uploaded files
             $files = $request->files->all();
-            if ($files){
+            if ($files)
                 return $files;
-            }
             # request is json
             else {
                 $payload = json_decode($request->getContent(), true);

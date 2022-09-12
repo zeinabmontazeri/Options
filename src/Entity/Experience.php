@@ -50,7 +50,7 @@ class Experience
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
-    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class)]
+    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class ,cascade: ['remove'])]
     private Collection $events;
 
     #[ORM\Column(name: 'status', enumType: EnumEventStatus::class)]
