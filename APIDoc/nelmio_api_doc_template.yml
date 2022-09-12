@@ -1,0 +1,10 @@
+nelmio_api_doc:
+    documentation:
+      !Include ./_build/OpenApi.yml
+    areas: # to filter documented areas
+      # default:
+      #     path_patterns:
+      #         - ^/api/v1/auth/register # Accepts routes under /api except /api/doc
+      default:
+        path_patterns:
+          - ^/api(?!/(doc|v1\/checkoutCallback|v1\/auth\/refresh)) # Accepts routes under /api except /api/doc

@@ -1,0 +1,32 @@
+openapi: 3.0.0
+info:
+  title: Ham  Tajrobe
+  version: "1"
+  description: A place to share awesome experiences
+components:
+  securitySchemes:
+    jwt:
+      type: http
+      description: JWT authentication token
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - jwt: []
+tags:
+  - name: Auth
+    description: End-points to authenticate user and provide refresh token.
+  - name: Admin
+    description: End-points which are just accessible to the admin user.
+paths:
+  /api/v1/auth/login:
+    $ref: ./Auth/Login.yml
+  /api/v1/orders/{order_id}/checkout:
+    $ref: ./Orders/Checkout.yml
+  /api/v1/admin/categories:
+    $ref: ./Admin/Category/Categories_Create_Get.yml
+  /api/v1/admin/categories/{category_id}:
+    $ref: ./Admin/Category/Categories_Patch_Delete.yml
+  /api/v1/experiences/{experinece_id}/events:
+    $ref: ./Shop/GetExperienceEvents.yml
+
+

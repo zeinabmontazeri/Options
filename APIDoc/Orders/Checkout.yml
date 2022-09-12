@@ -1,0 +1,35 @@
+get:
+  tags:
+    - Orders
+  summary: Order checkout
+  security:
+    - jwt: []
+  description: >
+    If the order is purchasable redirect experiencer to bank page.
+  parameters:
+    - name: order-id
+      required: true
+      in: path
+      description: >
+        The id of the order to be purchased.
+      schema:
+        type: integer
+  responses:
+    '303':
+      description: Experiencer is redirected to bank page.
+    '400':
+      description: The user is trying to purchase a wrong order
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Result of the action.
+              message:
+                type: string
+                description: Description about what happened.
+            example:
+              status: failed
+              messaage: The order id(order-id) is not purchasable.
