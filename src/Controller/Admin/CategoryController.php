@@ -6,6 +6,7 @@ use App\Auth\AcceptableRoles;
 use App\Entity\Category;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
+use App\Repository\ExperienceRepository;
 use App\Request\CategoryRequest;
 use App\Service\CategoryService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -48,11 +49,12 @@ class CategoryController extends AbstractController
     #[ParamConverter('category', class: Category::class, options: ['id' => 'category_id'])]
     #[AcceptableRoles(User::ROLE_ADMIN)]
     public function delete(
-        Category           $category,
-        CategoryService    $categoryService,
-        CategoryRepository $repository): Response
+        Category             $category,
+        CategoryService      $categoryService,
+        CategoryRepository   $repository,
+        ExperienceRepository $experienceRepository): Response
     {
-        $res = $categoryService->delete($repository, $category);
+        $res = $categoryService->delete($repository, $category , $experienceRepository);
         return $this->json([
             'data' => [],
             'message' => $res['message'],

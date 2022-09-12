@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Auth\AuthenticatedUser;
 use App\DTO\DtoFactory;
+use App\Entity\Enums\EnumEventStatus;
 use App\Entity\Experience;
 use App\Entity\Host;
 use App\Entity\Media;
@@ -12,9 +13,11 @@ use App\Repository\ExperienceRepository;
 use App\Repository\MediaRepository;
 use App\Request\ExperienceRequest;
 use App\Request\ExperienceUpdateRequest;
+use App\Request\ExperienceSearchRequest;
 use App\Request\MediaRequest;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ExperienceService
@@ -95,7 +98,13 @@ class ExperienceService
         Experience           $experience): array
     {
         $res = [];
-        $repository->remove($experience, true);
+        $allowToRemove = true;
+        foreach ($experience->getEvents() as $event)
+            if($event->getStatus() === EnumEventStatus::PUBLISHED)
+                $allowToRemove = false;
+        if(!$allowToRemove)
+            throw new BadRequestHttpException('Provided experience has active event.');
+        $repository->remove($experience , true);
         $res['message'] = 'Experience successfully deleted';
         $res['status'] = 'success';
         return $res;
@@ -110,5 +119,12 @@ class ExperienceService
         $fileName = $media->uploadMedia($request->media);
         $media->setFileName($fileName);
         $repository->add($media, true);
+    }
+
+    public function search(ExperienceRepository $repository, ExperienceSearchRequest $request)
+    {
+        $searchedExperience = $repository->searchByWord($request->word);
+        $experienceCollection = DtoFactory::getInstance('experienceFilter');
+        return $experienceCollection->toArray($searchedExperience);
     }
 }

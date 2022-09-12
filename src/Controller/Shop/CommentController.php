@@ -12,9 +12,10 @@ use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('api/v1/shop')]
+#[Route('api/v1')]
 class CommentController extends AbstractController
 {
     /**
@@ -22,7 +23,7 @@ class CommentController extends AbstractController
      */
     #[Route('/events/{event_id}/comments', name: 'app_shop_comment_event', requirements: ['event_id' => '\d+'], methods: 'POST')]
     #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
-    #[AcceptableRoles(User::ROLE_ADMIN, User::ROLE_HOST, User::ROLE_EXPERIENCER)]
+    #[AcceptableRoles(User::ROLE_ADMIN, User::ROLE_HOST, User::ROLE_EXPERIENCER, User::ROLE_GUEST)]
     public function commentOnEvent(
         Event                 $event,
         CommentOnEventRequest $validatedRequest,
