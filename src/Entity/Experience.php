@@ -59,7 +59,7 @@ class Experience
     #[ORM\Column(name: 'approvalStatus', enumType: EnumPermissionStatus::class)]
     private EnumPermissionStatus $approvalStatus = EnumPermissionStatus::PENDING;
 
-    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Media::class)]
+    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Media::class, cascade: ['remove'])]
     private Collection $media;
 
     public function __construct()
