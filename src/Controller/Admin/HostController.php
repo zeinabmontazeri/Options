@@ -25,7 +25,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class HostController extends AbstractController
 {
     #[Route('/hosts/pending-approvals', name: 'app_admin_host_pending_approvals',methods: 'GET')]
-//    #[AcceptableRoles(User::ROLE_ADMIN)]
+    #[AcceptableRoles(User::ROLE_ADMIN)]
     public function pendingApprovals(
         HostApprovalService $service): JsonResponse
     {
@@ -39,7 +39,7 @@ class HostController extends AbstractController
     }
 
     #[Route('/hosts/approve', name: 'app_admin_host_approve_host',methods: 'POST')]
-//    #[AcceptableRoles(User::ROLE_ADMIN)]
+    #[AcceptableRoles(User::ROLE_ADMIN)]
     public function approveHost(
         HostApproveRequest $approveRequest,
         UpgradeRequestRepository $repository,
@@ -49,11 +49,11 @@ class HostController extends AbstractController
         if(!$upgradeRequest) throw new BadRequestHttpException('The Requested resource not found');
         if($upgradeRequest->getStatus() != EnumPermissionStatus::PENDING) throw new BadRequestHttpException('The request already applied');
 
-dd($upgradeRequest);
-        $test = $service->getPendingList($page=1,$perPage = 20);
+        $service->changeUpgradeStatus($upgradeRequest,EnumPermissionStatus::from($approveRequest->status));
+
         return $this->json([
-            'data' => $test,
-            'message' => 'successfully got pending requests',
+            'data' => null,
+            'message' => 'The requested action has been applied successfully',
             'status' => 'success',
         ], Response::HTTP_OK);
     }
