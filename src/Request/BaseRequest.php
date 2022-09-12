@@ -30,7 +30,6 @@ abstract class BaseRequest
     public function validate(): void
     {
         $errors = $this->validator->validate($this);
-        dd('ok');
         if (count($errors) > 0) {
             throw new ValidationException($errors);
         }

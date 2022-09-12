@@ -9,27 +9,25 @@ class EventUpdateRequest extends BaseRequest
     use ValidateRequestTrait;
 
     #[Assert\GreaterThanOrEqual(1)]
-    public readonly ?int $capacity;
+    public ?int $capacity = null;
 
-    public readonly ?int $duration;
+    public ?int $duration = null;
 
     #[Assert\Regex(
         pattern: '/[1-9]{1}[0-9]{3,}/',
         message: 'Price must be an integer greater than 1000.',
     )]
-    public readonly ?string $price;
+    public ?string $price = null;
 
     #[Assert\Type(type: 'boolean')]
-    public readonly ?bool $isOnline;
+    public ?bool $isOnline = null;
 
     #[Assert\GreaterThan(new \DateTime())]
-    public readonly ?\DateTimeInterface $startsAt;
+    public ?\DateTimeInterface $startsAt = null;
 
-    #[Assert\Expression("this.link or !this.isOnline", message: "if event is online link can not be blank.")]
-    public readonly ?string $link;
+    public ?string $link = null;
 
-    #[Assert\Expression("this.address or this.isOnline", message: "if event is not online address can not be blank.")]
-    public readonly ?string $address;
+    public ?string $address = null;
 
     protected function autoValidateRequest(): bool
     {

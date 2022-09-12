@@ -47,13 +47,26 @@ class EventController extends AbstractController
     #[AcceptableRoles(User::ROLE_HOST)]
     public function update(Experience $experience, Event $event, EventService $eventService, EventUpdateRequest $updateRequest): JsonResponse
     {
-        dd($updateRequest);
         $updatedEvent = $eventService->update($experience, $event, $updateRequest);
         return $this->json([
             'data' => [
                 'id' => $updatedEvent->getId()
             ],
             'message' => "event updated successfully",
+            'status' => 'success'
+        ], Response::HTTP_OK);
+    }
+
+    #[Route('/experiences/{experience_id}/events/{event_id}', name: 'app_host_delete_event', methods: ['DELETE'])]
+    #[ParamConverter('event', class: Event::class, options: ['id' => 'event_id'])]
+    #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
+    #[AcceptableRoles(User::ROLE_HOST)]
+    public function delete(Experience $experience, Event $event, EventService $eventService): JsonResponse
+    {
+        $eventService->delete($experience, $event);
+        return $this->json([
+            'data' => [],
+            'message' => "event deleted successfully",
             'status' => 'success'
         ], Response::HTTP_OK);
     }
