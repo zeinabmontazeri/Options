@@ -2,18 +2,11 @@
 
 namespace App\DTO;
 
-use PHPUnit\Util\Exception;
-
 class DtoFactory
 {
 
-    public static function getInstance(string $collectionType)
+    public static function getInstance()
     {
-        $path = explode('\\', $collectionType);
-        $collection = $path[0] . '\DTO\\' . $path[2] . 'Collection';
-        if (class_exists($collection))
-            return new $collection();
-        else
-            throw new Exception("Invalid collection type.", 500);
+        return new Collection();
     }
 }
