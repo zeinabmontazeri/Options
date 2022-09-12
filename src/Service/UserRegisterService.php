@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Host;
+use App\Entity\UpgradeRequest;
 use App\Entity\User;
 use App\Entity\UserUpgradeRequest;
 use App\Repository\UserRepository;
@@ -46,7 +47,7 @@ class UserRegisterService
             $this->entityManager->flush();
 
             if ($request->role === "ROLE_HOST") {
-                $req = new UserUpgradeRequest();
+                $req = new UpgradeRequest();
                 $req->setUser($user);
                 $req->setMessage("Wants to be host as new user");
 

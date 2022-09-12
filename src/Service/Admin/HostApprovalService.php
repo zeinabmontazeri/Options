@@ -2,6 +2,7 @@
 
 namespace App\Service\Admin;
 
+use App\Auth\AuthenticatedUser;
 use App\Entity\Enums\EnumHostBusinessClassStatus;
 use App\Entity\Enums\EnumPermissionStatus;
 use App\Entity\Host;
@@ -12,12 +13,14 @@ use App\Request\AuthorizeAdminRequest;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class HostApprovalService
 {
     public function __construct(
         private UpgradeRequestRepository $upgradeRequestRepository,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private AuthenticatedUser $security
     )
     {
     }
@@ -58,11 +61,18 @@ class HostApprovalService
         return $this->upgradeRequestRepository->getPendingRequests($page,$perPage);
     }
 
-    public function authorizeHost(
-        Host                  $host,
-        HostRepository        $hostRepository,
-        AuthorizeAdminRequest $request): void
-    {
-        $hostRepository->updateHostApprovalStatus($host->getId(), $request->approvalStatus);
+    public function addUpgradeRequest(){
+        $user = $this->security->getUser();
+        $existingRequest = $this->upgradeRequestRepository->findOneBy(['user'=>$user,'status'=>EnumPermissionStatus::PENDING]);
+
+        if($existingRequest != null)
+            throw new BadRequestHttpException('You already have a pending request for upgrade');
+
+        $req = new UpgradeRequest();
+        $req->setUser($user);
+        $req->setMessage("Wants to be host as existing user");
+
+        $this->entityManager->persist($req);
+        $this->entityManager->flush();
     }
 }

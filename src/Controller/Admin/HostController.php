@@ -57,39 +57,4 @@ class HostController extends AbstractController
             'status' => 'success',
         ], Response::HTTP_OK);
     }
-
-    #[Route('/hosts/{host_id}/authorize/', name: 'app_admin_host_authorization', requirements: ['id' => '\d+'], methods: 'POST')]
-    #[ParamConverter('host', class: Host::class, options: ['id' => 'host_id'])]
-    #[AcceptableRoles(User::ROLE_ADMIN)]
-    public function authorizeHost(
-        Host                        $host,
-        HostRepository              $hostRepository,
-        HostApprovalService $service,
-        AuthorizeAdminRequest       $request): JsonResponse
-    {
-
-        $service->authorizeHost($host, $hostRepository, $request);
-        return $this->json([
-            'data' => [],
-            'message' => 'successfully authorize host.',
-            'status' => 'success',
-        ], Response::HTTP_OK);
-    }
-
-    #[Route('/hosts/approval-status/', name: 'app_admin_host_approval_status', methods: 'GET')]
-//    #[AcceptableRoles(User::ROLE_ADMIN)]
-    public function filterHostByAuthorizationStatus(
-        HostRepository                            $hostRepository,
-        HostAuthorizationFilterRequest            $request,
-        GetHostAuthorizationStatusByFilterService $service): JsonResponse
-    {
-        $result = $service->getHostByAuthorizationStatus($hostRepository, $request);
-        return $this->json([
-            'data' => $result,
-            'message' => 'successfully get host by authorization status.',
-            'status' => 'success',
-        ], Response::HTTP_OK);
-
-    }
-
 }
