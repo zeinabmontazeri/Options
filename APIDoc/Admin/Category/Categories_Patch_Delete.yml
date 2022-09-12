@@ -1,0 +1,4 @@
+delete:
+  $ref: ./DeleteCategories.yml
+patch:
+  $ref: ./PatchCategories.yml

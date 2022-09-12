@@ -1,0 +1,89 @@
+get:
+  tags:
+    - Experiencer
+  summary: Get all experience events.
+  security:
+    - jwt: [ ]
+  description: >
+    Get a valid experience id in path parameter and get all events of that experience.
+  parameters:
+    - name: experience_id
+      required: true
+      in: path
+      description: >
+        The id of the experience to get its events.
+      schema:
+        type: integer
+  responses:
+    '200':
+      description: A list of events of the experience.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Id of the event.
+                    price:
+                      type: number
+                      description: Price of the event.
+                    capacity:
+                      type: integer
+                      description: Capacity of the event.
+                    duration:
+                      type: integer
+                      description: Duration of the event.
+                    isOnline:
+                      type: boolean
+                      description: Is the event online or not.
+                    startsAt:
+                      type: string
+                      description: Start date of the event.
+                    link:
+                      type: string
+                      description: Link to the event.
+                    address:
+                      type: string
+                      description: Address of the event.
+                    createdAt:
+                      type: string
+                      description: Creation date of the event.
+                  example:
+                    id: 1,
+                    price: "49435.000"
+                    capacity: 95
+                    duration: 120
+                    isOnline: 0
+                    startsAt: "2024-02-19T09:22:17+00:00"
+                    link: "http://www.schumm.org/neque-provident-quasi-commodi-eligendi-porro-quasi.html"
+                    address: "640 Blanda Hollow Apt. 147\nNew Catalina, AK 80653"
+                    "createdAt": "2022-09-12T09:52:07+00:00"
+              message:
+                type: string
+                description: All events successfully retrieved.
+                example: All events successfully retrieved.
+              status:
+                type: string
+                description: Result of the action
+                example: success
+    '400':
+      description: The requested experience does not exist.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Result of the action
+                example: failed
+              message:
+                type: string
+                description: A description about failure.
+                example: Object not found

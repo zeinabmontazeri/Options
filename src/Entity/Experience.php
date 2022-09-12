@@ -63,8 +63,9 @@ class Experience
     #[Groups(['host' , 'experiencer'])]
     private EnumPermissionStatus $approvalStatus = EnumPermissionStatus::PENDING;
 
-    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Media::class)]
+
     #[Groups(['host' , 'experiencer'])]
+    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Media::class, cascade: ['remove'])]
     private Collection $media;
 
     public function __construct()

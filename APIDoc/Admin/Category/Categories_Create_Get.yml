@@ -1,0 +1,4 @@
+post:
+  $ref: ./CreateCategories.yml
+get:
+  $ref: ./GetCategories.yml
