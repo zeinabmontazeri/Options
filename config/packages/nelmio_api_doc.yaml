@@ -1088,6 +1088,128 @@ nelmio_api_doc:
                     example:
                       status: failed
                       message: AUTHORIZATION FAILED.
+      /api/v1/orders:
+        get:
+          tags:
+          - Experiencer
+          summary: Get User Orders.
+          security:
+          - jwt: []
+          description: 'Authenticated Experience can get his/her orders.
+
+            '
+          responses:
+            '200':
+              description: List of user orders.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            orderId:
+                              type: integer
+                              description: Id of the order.
+                              example: 1
+                            eventId:
+                              type: integer
+                              description: Id of the event.
+                              example: 1
+                            title:
+                              type: string
+                              description: Title of the experience.
+                              example: poetry
+                            status:
+                              type: string
+                              description: Status of the order.
+                              example: PENDING
+                      message:
+                        type: string
+                        description: Message of the response.
+                        example: Orders Successfully Retrieved
+      /api/v1/events/{event_id}/comments:
+        post:
+          tags:
+          - Experiencer
+          summary: Create a comment.
+          security:
+          - jwt: []
+          description: 'An authenticated user can create comment for an event.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - event_id
+                  - comment
+                  properties:
+                    comment:
+                      type: string
+                      description: Comment to be added.
+                  example:
+                    comment: This is a comment.
+          responses:
+            '200':
+              description: The comment created.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        description: Information about the created comment.
+                        properties:
+                          commentId:
+                            type: integer
+                            description: Unique id of the created comment.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                      status:
+                        type: string
+                        description: Result of the action
+                    example:
+                      data:
+                        commentId: 1
+                      message: The user commented successfully.
+                      status: success
+            '400':
+              description: If key of post param is not provided.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          comment:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                    example:
+                      status: failed
+                      message: Event is not published or deactivated.
+                      details:
+                        eventId:
+                        - This value should not be null.
   areas:
     default:
       path_patterns:

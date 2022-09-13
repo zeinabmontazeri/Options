@@ -42,4 +42,6 @@ paths:
     $ref: ./Experiencer/OrderAnEvent.yml
   /api/v1/orders:
     $ref: ./Experiencer/GetUserOrders.yml
+  /api/v1/events/{event_id}/comments:
+    $ref: ./Experiencer/CreateComment.yml
 
