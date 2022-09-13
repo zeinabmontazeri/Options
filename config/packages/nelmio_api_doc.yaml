@@ -680,42 +680,40 @@ nelmio_api_doc:
                             id:
                               type: integer
                               description: Id of the event.
-                            price:
-                              type: number
-                              description: Price of the event.
                             capacity:
                               type: integer
                               description: Capacity of the event.
                             duration:
                               type: integer
                               description: Duration of the event.
+                            price:
+                              type: number
+                              description: Price of the event.
                             isOnline:
                               type: boolean
                               description: Is the event online or not.
                             startsAt:
                               type: string
                               description: Start date of the event.
-                            link:
-                              type: string
-                              description: Link to the event.
-                            address:
-                              type: string
-                              description: Address of the event.
                             createdAt:
                               type: string
                               description: Creation date of the event.
+                            registeredUser:
+                              type: integer
+                              description: Number of registered users for the event.
+                            status:
+                              type: string
+                              description: Status of the event.
                           example:
-                            id: 1,
-                            price: '49435.000'
-                            capacity: 95
+                            id: 15
+                            capacity: 23
                             duration: 120
-                            isOnline: 0
-                            startsAt: '2024-02-19T09:22:17+00:00'
-                            link: http://www.schumm.org/neque-provident-quasi-commodi-eligendi-porro-quasi.html
-                            address: '640 Blanda Hollow Apt. 147
-
-                              New Catalina, AK 80653'
+                            price: '75539.000'
+                            isOnline: true
+                            startsAt: '2019-11-27T09:16:34+00:00'
                             createdAt: '2022-09-12T09:52:07+00:00'
+                            registeredUsers: 6
+                            status: DRAFT
                       message:
                         type: string
                         description: All events successfully retrieved.
