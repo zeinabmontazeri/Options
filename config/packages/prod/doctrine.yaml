@@ -1,0 +1,36 @@
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+    orm:
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+
+        mappings:
+            App:
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App
+        filters:
+            softdeleteable:
+                class: Gedmo\SoftDeleteable\Filter\SoftDeleteableFilter
+                enabled: true
+
+        second_level_cache:
+            enabled: true
+            region_lifetime: 30
+            region_cache_driver:
+                type: pool
+                pool: doctrine.result_cache_pool
+
+        metadata_cache_driver:
+            type: pool
+            pool: doctrine.system_cache_pool
+
+        query_cache_driver:
+            type: pool
+            pool: doctrine.system_cache_pool
+
+        result_cache_driver:
+            type: pool
+            pool: doctrine.result_cache_pool

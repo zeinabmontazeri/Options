@@ -3,7 +3,6 @@
 namespace App\Service\Shop;
 
 use App\DTO\DtoFactory;
-use App\Entity\Experience;
 use App\Repository\ExperienceRepository;
 use App\Request\ExperienceFilterRequest;
 
@@ -16,7 +15,7 @@ class GetExperiencesByFilterService
     ): array
     {
         $experiencesData = $experienceRepository->filterExperience($experienceFilterRequest);
-        $experienceCollection = DtoFactory::getInstance(Experience::class);
-        return $experienceCollection->toArray($experiencesData);
+        $experienceCollection = DtoFactory::getInstance();
+        return $experienceCollection->toArray($experiencesData , ['experiencer']);
     }
 }

@@ -54,7 +54,7 @@ class UserRegisterRequest extends BaseRequest
 
     #[Assert\NotBlank]
     #[Assert\NotNull]
-    #[Assert\choice(choices: [EnumGender::FEMALE, EnumGender::MALE])]
+    #[Assert\Choice(choices: [EnumGender::FEMALE, EnumGender::MALE])]
     public readonly ?EnumGender $gender;
 
     #[Assert\NotBlank]

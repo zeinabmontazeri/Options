@@ -15,7 +15,7 @@ post:
           properties:
             phoneNumber:
               type: string
-              description: Phone number is the unique dentifier of the use.
+              description: Phone number is the unique identifier of the use.
             password:
               type: string
               description: User's password.
@@ -28,7 +28,7 @@ post:
             role: role_experiencer
   responses:
     "200":
-      description: User authenticated successfuly.
+      description: User authenticated successfully.
       content:
         application/json:
           schema:
@@ -39,7 +39,7 @@ post:
                 description: Result of the action
               data:
                 type: object
-                description: Date payload returned from the server.
+                description: Data payload returned from the server.
                 properties:
                   id:
                     type: integer
@@ -81,7 +81,7 @@ post:
                       type: string
               message:
                 type: string
-                description: A discription about failure.
+                description: A description about failure.
             example:
               status: failed
               details:
@@ -98,7 +98,7 @@ post:
                 description: Result of the action
               message:
                 type: string
-                description: A discription about failure.
+                description: A description about failure.
             example:
               status: failed
               message: Invalid Credentials.

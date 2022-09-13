@@ -20,6 +20,10 @@ tags:
 paths:
   /api/v1/auth/login:
     $ref: ./Auth/Login.yml
+  /api/v1/auth/refresh:
+    $ref: ./Auth/Refresh.yml
+  /api/v1/auth/logout:
+    $ref: ./Auth/Logout.yml
   /api/v1/orders/{order_id}/checkout:
     $ref: ./Orders/Checkout.yml
   /api/v1/admin/categories:
