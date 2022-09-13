@@ -1,6 +1,6 @@
 get:
   tags:
-    - Shop
+    - Experiencer
   summary: Get all experience events.
   security:
     - jwt: [ ]

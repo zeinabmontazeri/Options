@@ -8,7 +8,7 @@ class ExperienceCollection implements CollectionInterface
 {
     protected array $result = [];
 
-    public function toArray($entities): array
+    public function toArray(array $entities  , array $groups = null): array
     {
         foreach ($entities as $entity) {
             $data['id'] = $entity->getId();

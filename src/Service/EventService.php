@@ -4,11 +4,17 @@ namespace App\Service;
 
 use App\Entity\Event;
 use App\Entity\Experience;
+use App\Exception\ValidationException;
 use App\Repository\EventRepository;
 use App\Request\EventRequest;
+use App\Request\EventUpdateRequest;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Validator\Exception\ValidatorException;
 
 class EventService
 {
@@ -57,5 +63,36 @@ class EventService
             'status' => 'success',
             'code' => Response::HTTP_OK
         ];
+    }
+
+    public function update(Experience $experience, Event $event, EventUpdateRequest $updateRequest)
+    {
+        if ($experience->getHost()->getUser() !== $this->security->getUser())
+            throw new AccessDeniedHttpException();
+        if ($experience !== $event->getExperience())
+            throw new BadRequestHttpException('This event does not belong to provided experience.');
+        if ($updateRequest->isOnline != null and $updateRequest->isOnline and !$updateRequest->link)
+            throw new BadRequestHttpException('if event is online link can not be blank.');
+        if ($updateRequest->isOnline != null and !$updateRequest->isOnline and !$updateRequest->address)
+            throw new BadRequestHttpException('if event is not online address can not be blank.');
+        $eventUpdate = new \ReflectionClass(EventUpdateRequest::class);
+        foreach ($updateRequest as $key => $value) {
+            if (isset($value)) {
+                $propertyName = ucfirst($key);
+                $setMethod = 'set' . $propertyName;
+                $event->$setMethod($value);
+            }
+        }
+        $this->eventRepository->add($event, true);
+        return $event;
+    }
+
+    public function delete(Experience $experience, Event $event)
+    {
+        if ($experience->getHost()->getUser() !== $this->security->getUser())
+            throw new AccessDeniedHttpException();
+        if ($experience !== $event->getExperience())
+            throw new BadRequestHttpException('This event does not belong to provided experience.');
+        $this->eventRepository->remove($event, true);
     }
 }

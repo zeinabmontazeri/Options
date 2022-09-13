@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: HostRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -21,10 +22,12 @@ class Host
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['experiencer'])]
     private ?int $id = null;
 
     #[ORM\OneToOne(inversedBy: 'host', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['experiencer'])]
     private ?User $user = null;
 
     #[ORM\Column]
@@ -83,6 +86,7 @@ class Host
         return $this->experiences;
     }
 
+    #[Groups(['host'])]
     public function getFullName(): string
     {
         return $this->user->getFirstName() . ' ' . $this->user->getLastName();
