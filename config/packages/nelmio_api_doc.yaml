@@ -854,11 +854,11 @@ nelmio_api_doc:
                             category:
                               type: object
                               properties:
-                                categoryId:
+                                id:
                                   type: integer
                                   description: Id of category.
                                   example: 1
-                                categoryName:
+                                name:
                                   type: string
                                   description: Name of category.
                                   example: sport
@@ -869,14 +869,21 @@ nelmio_api_doc:
                             host:
                               type: object
                               properties:
-                                hostId:
+                                id:
                                   type: integer
                                   description: Id of host.
                                   example: 1
-                                hostName:
-                                  type: string
-                                  description: Name of host;
-                                  example: Elmira Behnava
+                                user:
+                                  type: object
+                                  properties:
+                                    firstName:
+                                      type: string
+                                      description: First name of host.
+                                      example: Ali
+                                    lastName:
+                                      type: string
+                                      description: Last name of host.
+                                      example: Rezaei
                             createdAt:
                               type: string
                               description: Creation date of the experience.
