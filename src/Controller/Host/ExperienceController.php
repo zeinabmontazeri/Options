@@ -12,6 +12,7 @@ use App\Request\ExperienceRequest;
 use App\Request\ExperienceUpdateRequest;
 use App\Request\MediaRequest;
 use App\Service\ExperienceService;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +32,6 @@ class ExperienceController extends AbstractController
         $perPage = intval($request->query->get('perpage', 10));
         $page = intval($request->query->get('page', 1));
         $data = $service->getAllWithPagination($repository, $perPage, $page);
-
         $prev_page = $page <= 1 ? 1 : $page - 1;
         $last_page = ceil($data['total'] / $perPage);
         $next_page = $page < $last_page ? $page + 1 : $last_page;

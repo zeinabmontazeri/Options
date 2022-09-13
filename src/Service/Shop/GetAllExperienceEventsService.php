@@ -17,8 +17,8 @@ class GetAllExperienceEventsService
     {
         $experienceId = $experience->getId();
         $eventsData = $eventRepository->getEventsByExperienceId($experienceId);
-        $eventCollection = DtoFactory::getInstance(Event::class);
-        return $eventCollection->toArray($eventsData);
+        $eventCollection = DtoFactory::getInstance();
+        return $eventCollection->toArray($eventsData , ['event']);
     }
 }
 

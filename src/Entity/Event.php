@@ -10,6 +10,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Gedmo\SoftDeleteable\Traits\SoftDeleteableEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -21,6 +22,7 @@ class Event
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['event'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
@@ -28,24 +30,30 @@ class Event
     private ?Experience $experience = null;
 
     #[ORM\Column]
+    #[Groups(['event'])]
     private ?int $capacity = 0;
 
     #[ORM\Column]
+    #[Groups(['event'])]
     private ?int $duration = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 11, scale: 3)]
+    #[Groups(['event'])]
     private ?string $price = null;
 
     #[ORM\Column]
+    #[Groups(['event'])]
     private ?bool $isOnline = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['event'])]
     private ?\DateTimeInterface $startsAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $link = null;
 
     #[ORM\Column]
+    #[Groups(['event'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -55,12 +63,14 @@ class Event
     private Collection $orders;
 
     #[ORM\Column]
+    #[Groups(['event'])]
     private ?int $registeredUsers = 0;
 
     #[ORM\OneToMany(mappedBy: 'event', targetEntity: Comment::class)]
     private Collection $comments;
 
     #[ORM\Column(name: 'status', enumType: EnumEventStatus::class)]
+    #[Groups(['event'])]
     private EnumEventStatus $status = EnumEventStatus::DRAFT;
 
     public function __construct()
