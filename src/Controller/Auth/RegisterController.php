@@ -17,7 +17,7 @@ class RegisterController extends AbstractController
      * Register new user
      *
      * Creates new user if all fields are valid
-     * @OA\Tag(name="User")
+     * @OA\Tag(name="Auth")
      * @OA\RequestBody(
      *    required=true,
      *    description="Provide All Data Below",

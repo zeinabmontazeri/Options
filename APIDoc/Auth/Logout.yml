@@ -1,0 +1,61 @@
+post:
+  tags:
+    - Auth
+  summary: Logout end-point
+  security: []
+  description: >
+    Invalidates the refresh token.
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required: [refresh_token]
+          properties:
+            refresh_token:
+              type: string
+              description: the refresh token of user.
+          example:
+            refresh_token: "8a4d4faea9090fd01b07724b1f56b4731ae7c046aae3e1e6ee0d642a8ff5142a332ab447d956d8c3422f09bb62730df4f87e97f43ac3d1f4de0ceafc79ad3cc5"
+  responses:
+    "200":
+      description: User logged out successfully.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Result of the action
+              data:
+                type: object
+                description: Date payload returned from the server.
+              message:
+                type: string
+                description: A message describing result of the action.
+            example:
+              status: success
+              data: null
+              message: The supplied refresh_token has been invalidated.
+    "400":
+      description: A required parameter is missing or a variable format is wrong.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Result of the action
+              data:
+                type: object
+                description: Details of the validation errors on fields.
+              message:
+                type: string
+                description: A description about failure.
+            example:
+              status: failed
+              data: null
+              message: No refresh_token found.
