@@ -459,7 +459,7 @@ nelmio_api_doc:
                         description: Result of the action
                       message:
                         type: string
-                        description: A discription about failure.
+                        description: A description about failure.
                     example:
                       status: failed
                       message: AUTHORIZATION FAILED.
@@ -905,7 +905,7 @@ nelmio_api_doc:
           summary: Remove an order.
           security:
           - jwt: []
-          description: 'An authenticated experience can remove his/her order.
+          description: 'An authenticated experiencer can remove his/her order.
 
             '
           parameters:
@@ -971,6 +971,118 @@ nelmio_api_doc:
                     example:
                       status: failed
                       message: AUTHORIZATION FAILED
+      /api/v1/events/add-to-cart:
+        post:
+          tags:
+          - Experiencer
+          summary: Order an event.
+          security:
+          - jwt: []
+          description: 'An authenticated experiencer can order an event.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - event_id
+                  properties:
+                    eventId:
+                      type: integer
+                      description: Id of the event to be ordered.
+                  example:
+                    eventId: 1
+          responses:
+            '200':
+              description: The event ordered.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        description: Information about the ordered event.
+                        properties:
+                          orderId:
+                            type: integer
+                            description: Unique id of the ordered event.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                      status:
+                        type: string
+                        description: Result of the action
+                    example:
+                      data:
+                        orderId: 1
+                      message: Order Created Successfully.
+                      status: success
+            '400':
+              description: If uer wants to request create order for unpublished event
+                or deactivated event.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          eventId:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                    example:
+                      status: failed
+                      message: Event is not published or deactivated.
+                      details:
+                        eventId:
+                        - Event is not published or deactivated.
+            '401':
+              description: Json payload is not provided.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        description: HTTP status code.
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      code: 401
+                      message: Invalid JWT Token
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
   areas:
     default:
       path_patterns:

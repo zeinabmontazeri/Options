@@ -28,7 +28,7 @@ class OrderEventService
             $this->orderRepository->add($order, true);
             $this->result['status'] = 'success';
             $this->result['data'] = ['orderId' => $order->getId()];
-            $this->result['message'] = 'The user commented successfully';
+            $this->result['message'] = 'Order Created Successfully.';
         }
         return $this->result;
     }

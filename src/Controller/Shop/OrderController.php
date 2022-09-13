@@ -17,10 +17,10 @@ use App\Service\Shop\RemoveOrderService;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('api/v1')]
@@ -46,7 +46,7 @@ class OrderController extends AbstractController
                 'status' => 'success'],
                 Response::HTTP_OK);
         } else {
-            throw new AccessDeniedHttpException(
+            throw new AccessDeniedException(
                 'You are not allowed to remove this order.');
         }
     }
@@ -55,7 +55,7 @@ class OrderController extends AbstractController
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/order/events', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'], methods: ['POST'])]
+    #[Route('/events/add-to-cart', name: 'app_shop_order_event', methods: ['POST'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function OrderAnEvent(
         OrderEventRequest $request,

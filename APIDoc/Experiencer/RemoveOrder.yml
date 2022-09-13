@@ -5,7 +5,7 @@ delete:
   security:
     - jwt: [ ]
   description: >
-    An authenticated experience can remove his/her order.
+    An authenticated experiencer can remove his/her order.
   parameters:
     - name: order_id
       required: true
