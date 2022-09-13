@@ -3,15 +3,14 @@
 namespace App\Service;
 
 use App\Auth\AuthenticatedUser;
-use App\Entity\TransactionOriginEnum;
-use App\Entity\TransactionStatusEnum;
+use App\Entity\Enums\TransactionOriginEnum;
+use App\Entity\Enums\TransactionStatusEnum;
 use App\Payment\BankOperatonManager;
 use App\Payment\Cmd\PaymentCmd;
 use App\Payment\Event\PurchaseFailEvent;
 use App\Payment\Event\PurchaseSuccessEvent;
 use App\Repository\OrderRepository;
 use App\Repository\TransactionRepository;
-use Exception;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

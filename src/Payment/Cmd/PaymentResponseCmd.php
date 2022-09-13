@@ -2,7 +2,7 @@
 
 namespace App\Payment\Cmd;
 
-use App\Entity\TransactionStatusEnum;
+use App\Entity\Enums\TransactionStatusEnum;
 use App\Payment\Bank\CallbackResponseInterface;
 
 class PaymentResponseCmd extends BankCmd

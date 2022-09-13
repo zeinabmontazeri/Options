@@ -2,7 +2,7 @@
 
 namespace App\Payment\CmdHandler;
 
-use App\Entity\TransactionStatusEnum;
+use App\Entity\Enums\TransactionStatusEnum;
 use App\Payment\Bank\LinkInterface;
 use App\Payment\BankOperatonManager;
 use App\Payment\Cmd\BankCmd;

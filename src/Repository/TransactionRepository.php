@@ -2,15 +2,11 @@
 
 namespace App\Repository;
 
-use App\Entity\Enums\EnumOrderStatus;
-use App\Entity\Order;
+use App\Entity\Enums\TransactionCmdEnum;
+use App\Entity\Enums\TransactionOriginEnum;
+use App\Entity\Enums\TransactionStatusEnum;
 use App\Entity\Transaction;
-use App\Entity\TransactionCmdEnum;
-use App\Entity\TransactionOriginEnum;
-use App\Entity\TransactionStatusEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\NonUniqueResultException;
-use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**

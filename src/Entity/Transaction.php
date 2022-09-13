@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use App\Entity\Enums\TransactionCmdEnum;
+use App\Entity\Enums\TransactionOriginEnum;
+use App\Entity\Enums\TransactionStatusEnum;
 use App\Repository\TransactionRepository;
-use App\Entity\TransactionCmdEnum;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
