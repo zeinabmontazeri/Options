@@ -2183,4 +2183,4 @@ nelmio_api_doc:
   areas:
     default:
       path_patterns:
-      - ^/api(?!/(doc|v1\/checkoutCallback|v1\/auth\/refresh))
+      - ^/api(?!/(doc|v1\/checkoutCallback|v1\/auth\/refresh|.*add-media))
