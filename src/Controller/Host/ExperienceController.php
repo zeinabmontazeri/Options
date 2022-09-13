@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[Route('api/v1/host')]
 class ExperienceController extends AbstractController
 {
-    #[Route('/experiences', name: 'experience', methods: 'GET')]
+    #[Route('/experiences', name: 'app_host_experience', methods: 'GET')]
     #[AcceptableRoles(User::ROLE_HOST)]
     public function index(
         ExperienceService    $service,
