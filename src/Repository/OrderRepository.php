@@ -119,6 +119,7 @@ class OrderRepository extends ServiceEntityRepository
                     AND o.id = :orderId
                     AND e.startsAt > :today
                     AND e.status = :eventStatus
+                    AND e.capacity - e.registeredUsers > 0
             ")
             ->setParameter('status', EnumOrderStatus::DRAFT)
             ->setParameter('orderId', $orderId)
