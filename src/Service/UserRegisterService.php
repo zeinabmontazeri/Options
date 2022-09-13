@@ -40,7 +40,7 @@ class UserRegisterService
             ->setLastName($request->lastName)
             ->setBirthDate($request->birthDate)
             ->setGender($request->gender)
-            ->setRoles([$request->role])
+            ->setRoles(["ROLE_EXPERIENCER"])
             ->setPassword($this->hasher->hashPassword($user, $request->password));
 
             $this->entityManager->persist($user);
