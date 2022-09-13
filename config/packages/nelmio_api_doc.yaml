@@ -666,7 +666,7 @@ nelmio_api_doc:
 
             '
           parameters:
-          - name: experienceId
+          - name: experience_id
             required: true
             in: path
             description: 'The id of the experience to get its events.
@@ -1291,8 +1291,8 @@ nelmio_api_doc:
                     capacity: 10
                     duration: 2
                     price: 100000
-                    isOnline: false
-                    startsAt: 2020-12-12 12:00:00+00:00
+                    isOnline: 0
+                    startsAt: '2020-12-12 12:00:00'
                     address: Tehran, Iran
                     link: https://www.google.com
           responses:

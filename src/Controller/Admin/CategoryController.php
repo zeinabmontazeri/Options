@@ -54,7 +54,7 @@ class CategoryController extends AbstractController
         CategoryRepository   $repository,
         ExperienceRepository $experienceRepository): Response
     {
-        $res = $categoryService->delete($repository, $category , $experienceRepository);
+        $res = $categoryService->delete($repository, $category, $experienceRepository);
         return $this->json([
             'data' => [],
             'message' => $res['message'],

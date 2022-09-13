@@ -24,9 +24,10 @@ class ExperienceController extends AbstractController
 {
     #[Route('/experiences', name: 'experience', methods: 'GET')]
     #[AcceptableRoles(User::ROLE_HOST)]
-    public function index(ExperienceService    $service,
-                          ExperienceRepository $repository,
-                          Request              $request
+    public function index(
+        ExperienceService    $service,
+        ExperienceRepository $repository,
+        Request              $request
     ): Response
     {
         $perPage = intval($request->query->get('perpage', 10));
@@ -37,13 +38,13 @@ class ExperienceController extends AbstractController
         $next_page = $page < $last_page ? $page + 1 : $last_page;
 
         $data['next_page'] = $this->generateUrl('app_host_experience',
-            array('page' => $next_page, 'perpage' => $perPage),UrlGeneratorInterface::ABSOLUTE_URL);
+            array('page' => $next_page, 'perpage' => $perPage), UrlGeneratorInterface::ABSOLUTE_URL);
         $data['prev_page'] = $this->generateUrl('app_host_experience',
-            array('page' => $prev_page, 'perpage' => $perPage),UrlGeneratorInterface::ABSOLUTE_URL);
+            array('page' => $prev_page, 'perpage' => $perPage), UrlGeneratorInterface::ABSOLUTE_URL);
         $data['first_page'] = $this->generateUrl('app_host_experience',
-            array('page' => 1, 'perpage' => $perPage),UrlGeneratorInterface::ABSOLUTE_URL);
+            array('page' => 1, 'perpage' => $perPage), UrlGeneratorInterface::ABSOLUTE_URL);
         $data['last_page'] = $this->generateUrl('app_host_experience',
-            array('page' => $last_page, 'perpage' => $perPage),UrlGeneratorInterface::ABSOLUTE_URL);
+            array('page' => $last_page, 'perpage' => $perPage), UrlGeneratorInterface::ABSOLUTE_URL);
 
         return $this->json([
             'data' => $data,
@@ -72,11 +73,11 @@ class ExperienceController extends AbstractController
     #[AcceptableRoles(User::ROLE_HOST)]
     #[ParamConverter(data: 'experience', class: Experience::class, options: ['id' => 'experience_id'])]
     public function update(
-        ExperienceService    $service,
-        ExperienceRepository $repository,
-        CategoryRepository   $categoryRepository,
-        ExperienceUpdateRequest    $request,
-        Experience           $experience): Response
+        ExperienceService       $service,
+        ExperienceRepository    $repository,
+        CategoryRepository      $categoryRepository,
+        ExperienceUpdateRequest $request,
+        Experience              $experience): Response
     {
         $res = $service->update($repository, $request, $categoryRepository, $experience);
         return $this->json([
