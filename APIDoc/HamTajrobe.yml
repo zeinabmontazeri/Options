@@ -58,3 +58,7 @@ paths:
     $ref: ./Host/Experiences/Experiences_Create_Get.yml
   /api/v1/host/experiences/{experience_id}:
     $ref: ./Host/Experiences/Experiences_Patch_Delete.yml
+  /api/v1/host/experiences/{experience_id}/events/{event_id}:
+    $ref: ./Host/Update_Delete_EventByHost.yml
+
+

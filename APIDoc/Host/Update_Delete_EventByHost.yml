@@ -1,0 +1,4 @@
+patch:
+  $ref: ./UpdateEventByHost.yml
+delete:
+  $ref: ./DeleteEventByHost.yml
