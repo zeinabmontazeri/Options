@@ -163,6 +163,51 @@ class HostController extends AbstractController
         ], Response::HTTP_OK);
     }
 
+    /**
+     * Set result of approval request
+     *
+     * Approve or reject a request, send `REJECTED` for reject and `ACCEPTED` for accept
+     * @OA\RequestBody(
+     *    required=true,
+     *    description="Provide All Data Below",
+     *    @OA\JsonContent(
+     *       required={"request_id","status"},
+     *       @OA\Property(property="request_id", type="integer", format="integer", example="2"),
+     *       @OA\Property(property="status", type="enum", format="text", example="REJECTED"),
+     *    ),
+     * )
+     * @OA\Response(
+     *         response="200",
+     *         description="ok",
+     *         content={
+     *             @OA\MediaType(
+     *                 mediaType="application/json",
+     *                 @OA\Schema(
+     *                     @OA\Property(
+     *                         property="status",
+     *                         type="string",
+     *                         description="for 200 is success"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="data",
+     *                         type="object",
+     *                     ),
+     *                     @OA\Property(
+     *                         property="message",
+     *                         type="message",
+     *                         description="The action message",
+     *                     ),
+     *                     example={
+     *                             "status": "success",
+     *                             "data": null,
+     *                             "message": "The requested action has been applied successfully"
+     *                     }
+     *                 )
+     *             )
+     *         }
+     *     )
+     *
+     */
     #[Route('/hosts/approve', name: 'app_admin_host_approve_host',methods: 'POST')]
     #[AcceptableRoles(User::ROLE_ADMIN)]
     public function approveHost(
