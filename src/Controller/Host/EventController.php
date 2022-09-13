@@ -28,7 +28,7 @@ class EventController extends AbstractController
             'data' => [
                 'id' => $createdEvent->getId()
             ],
-            'message' => "event created successfully",
+            'message' => "Event created successfully",
             'status' => 'success'
         ], Response::HTTP_OK);
     }

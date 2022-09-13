@@ -1148,7 +1148,6 @@ nelmio_api_doc:
                 schema:
                   type: object
                   required:
-                  - event_id
                   - comment
                   properties:
                     comment:
@@ -1254,6 +1253,90 @@ nelmio_api_doc:
                         type: string
                         description: Status of the response.
                         example: success
+      /api/v1/host/experiences/{experience_id}/events:
+        post:
+          tags:
+          - Host
+          summary: Create an event by approved host.
+          security:
+          - jwt: []
+          description: 'An approved host can create an event for an experience.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - capacity
+                  - duration
+                  - price
+                  - isOnline
+                  - startsAt
+                  - address
+                  - link
+                  example:
+                    capacity: 10
+                    duration: 2
+                    price: 100000
+                    isOnline: false
+                    startsAt: 2020-12-12 12:00:00+00:00
+                    address: Tehran, Iran
+                    link: https://www.google.com
+          responses:
+            '200':
+              description: Created event.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        description: Information about the created event.
+                        properties:
+                          id:
+                            type: integer
+                            description: Unique id of the created event.
+                            example: 1
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                        example: Event created successfully
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: success
+            '400':
+              description: If key of post param is not provided.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          comment:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                    example:
+                      status: failed
+                      message: Validation failed on provided data".
+                      details:
+                        price:
+                        - This value should not be null.
   areas:
     default:
       path_patterns:
