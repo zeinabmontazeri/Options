@@ -4,21 +4,20 @@ namespace App\Service;
 
 use App\Entity\Event;
 use App\Entity\Experience;
-use App\Exception\ValidationException;
 use App\Repository\EventRepository;
 use App\Request\EventRequest;
 use App\Request\EventUpdateRequest;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Component\Validator\Exception\ValidatorException;
 
 class EventService
 {
-    public function __construct(private EventRepository $eventRepository, private Security $security)
+    public function __construct(
+        private readonly EventRepository $eventRepository,
+        private readonly Security        $security)
     {
     }
 
