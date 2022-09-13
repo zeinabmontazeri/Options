@@ -1,0 +1,94 @@
+get:
+  tags:
+    - Host
+  summary: Get host order report.
+  security:
+    - jwt: [ ]
+  description: >
+    Get eventId in path parameter and get order report of that event.
+  parameters:
+    - name: eventId
+      required: true
+      in: path
+      description: >
+        The id of the event to get its order report.
+      schema:
+        type: integer
+  responses:
+    "200":
+      description: List of total Income and list of users who bought tickets.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  Event Data:
+                    type: object
+                    properties:
+                      Experience Title:
+                        type: string
+                        description: Title of the experience.
+                        example: "Experience Title"
+                      Event Capacity:
+                        type: integer
+                        description: Capacity of the event.
+                        example: 23
+                      Event Remaining Capacity:
+                        type: integer
+                        description: Remaining capacity of the event.
+                        example: 23
+                  Total Income:
+                    type: integer
+                    description: Total income of the event.
+                    example: 100000
+                  List of users Information:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                          description: Id of user.
+                          example: 1
+                        fullName:
+                          type: string
+                          description: FullName of the user.
+                          example: Major King
+                        age:
+                          type: integer
+                          description: Age of the user.
+                          example: 12
+                        gender:
+                          type: string
+                          description: Gender of the user.
+                          example:
+              message:
+                type: string
+                description: Message of the response.
+                example: "show orders information for this event is successfully."
+              status:
+                type: string
+                description: Status of the response.
+                example: "success"
+    '403':
+      description: The user has not sufficient permission to access this end point.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Result of the action
+              message:
+                type: string
+                description: A description about failure.
+            example:
+              status: failed
+              message: You're not allowed to access this resource.
+
+
+
