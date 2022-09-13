@@ -60,7 +60,6 @@ class EventService
             ],
             'message' => "show orders information for this event is successfully",
             'status' => 'success',
-            'code' => Response::HTTP_OK
         ];
     }
 

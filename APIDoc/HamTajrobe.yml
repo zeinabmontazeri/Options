@@ -48,4 +48,6 @@ paths:
     $ref: ./Experiencer/GetCategories.yml
   /api/v1/host/experiences/{experience_id}/events:
     $ref: ./Host/CreateEventByHost.yml
+  /api/v1/host/events/{event_id}/report:
+    $ref: ./Host/GetHostOrderReport.yml
 
