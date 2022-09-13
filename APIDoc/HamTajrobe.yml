@@ -36,4 +36,16 @@ paths:
     $ref: ./Experiencer/GetTrendingExperiences.yml
   /api/v1/experiences:
     $ref: ./Experiencer/GetExperiencesByFilter.yml
+  /api/v1/orders/{order_id}:
+    $ref: ./Experiencer/RemoveOrder.yml
+  /api/v1/events/add-to-cart:
+    $ref: ./Experiencer/OrderAnEvent.yml
+  /api/v1/orders:
+    $ref: ./Experiencer/GetUserOrders.yml
+  /api/v1/events/{event_id}/comments:
+    $ref: ./Experiencer/CreateComment.yml
+  /api/v1/categories:
+    $ref: ./Experiencer/GetCategories.yml
+  /api/v1/host/experiences/{experience_id}/events:
+    $ref: ./Host/CreateEventByHost.yml
 
