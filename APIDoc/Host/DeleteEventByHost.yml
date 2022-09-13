@@ -1,0 +1,66 @@
+tags:
+  - Host
+summary: Delete event by host.
+description: Delete event by host
+security:
+  - jwt: [ ]
+parameters:
+  - name: experience_id
+    required: true
+    in: path
+    description: >
+      The id of the experience.
+    schema:
+      type: integer
+  - name: event_id
+    required: true
+    in: path
+    description: >
+      The id of the event.
+    schema:
+      type: integer
+responses:
+  "200":
+    description: >
+      Event deleted successfully.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                type: string
+                description: always an empty array.
+              example: [ ]
+            message:
+              type: string
+              description: >
+                Message of the response.
+              example: Event deleted successfully.
+            status:
+              type: string
+              description: Result of the action
+              example: success
+  "400":
+    description: If uer wants to request delete event of other experience.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Result of the action
+            message:
+              type: string
+              description: A description about failure.
+            details:
+              type: string
+          example:
+            status: failed
+            message: This event does not belong to provided experience.
+            details: null
+
+
