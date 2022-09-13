@@ -1210,6 +1210,50 @@ nelmio_api_doc:
                       details:
                         eventId:
                         - This value should not be null.
+      /api/v1/categories:
+        get:
+          tags:
+          - Experiencer
+          summary: Get list of categories.
+          security:
+          - jwt: []
+          description: 'Get a list of all categories that created by admin.
+
+            '
+          responses:
+            '200':
+              description: List of all categories.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the category.
+                            name:
+                              type: string
+                              description: Name of the category.
+                            createdAt:
+                              type: string
+                              description: Creation date of the category.
+                          example:
+                            id: 1
+                            name: Sport
+                            createdAt: '2020-12-01T00:00:00.000Z'
+                      message:
+                        type: string
+                        description: Message of the response.
+                        example: successfully retrieve all categories.
+                      status:
+                        type: string
+                        description: Status of the response.
+                        example: success
   areas:
     default:
       path_patterns:
