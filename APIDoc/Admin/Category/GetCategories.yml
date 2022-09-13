@@ -51,7 +51,7 @@ responses:
               description: Result of the action
             message:
               type: string
-              description: A discription about failure.
+              description: A description about failure.
           example:
             status: failed
             message: AUTHORIZATION FAILED.

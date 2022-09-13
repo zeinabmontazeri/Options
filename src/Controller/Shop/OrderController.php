@@ -17,10 +17,10 @@ use App\Service\Shop\RemoveOrderService;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('api/v1')]
@@ -29,7 +29,7 @@ class OrderController extends AbstractController
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/orders/{order_id}/', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
+    #[Route('/orders/{order_id}', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
     #[ParamConverter('event', class: Order::class, options: ['id' => 'order_id'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function index(
@@ -46,17 +46,16 @@ class OrderController extends AbstractController
                 'status' => 'success'],
                 Response::HTTP_OK);
         } else {
-            throw new AccessDeniedHttpException(
+            throw new AccessDeniedException(
                 'You are not allowed to remove this order.');
         }
     }
 
-//    /
 
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/order/events', name: 'app_shop_order_event', requirements: ['event_id' => '\d+'], methods: ['POST'])]
+    #[Route('/events/add-to-cart', name: 'app_shop_order_event', methods: ['POST'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
     public function OrderAnEvent(
         OrderEventRequest $request,
@@ -83,7 +82,7 @@ class OrderController extends AbstractController
         $res = $orderService->getUserOrders($security->getUser()->getId());
         return $this->json([
             'data' => $res,
-            'message' => 'get all user\'s orders successfully',
+            'message' => 'User\'s orders successfully retrieved.',
             'status' => 'success',
         ], Response::HTTP_OK);
     }

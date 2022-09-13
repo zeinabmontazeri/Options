@@ -459,7 +459,7 @@ nelmio_api_doc:
                         description: Result of the action
                       message:
                         type: string
-                        description: A discription about failure.
+                        description: A description about failure.
                     example:
                       status: failed
                       message: AUTHORIZATION FAILED.
@@ -680,42 +680,40 @@ nelmio_api_doc:
                             id:
                               type: integer
                               description: Id of the event.
-                            price:
-                              type: number
-                              description: Price of the event.
                             capacity:
                               type: integer
                               description: Capacity of the event.
                             duration:
                               type: integer
                               description: Duration of the event.
+                            price:
+                              type: number
+                              description: Price of the event.
                             isOnline:
                               type: boolean
                               description: Is the event online or not.
                             startsAt:
                               type: string
                               description: Start date of the event.
-                            link:
-                              type: string
-                              description: Link to the event.
-                            address:
-                              type: string
-                              description: Address of the event.
                             createdAt:
                               type: string
                               description: Creation date of the event.
+                            registeredUser:
+                              type: integer
+                              description: Number of registered users for the event.
+                            status:
+                              type: string
+                              description: Status of the event.
                           example:
-                            id: 1,
-                            price: '49435.000'
-                            capacity: 95
+                            id: 15
+                            capacity: 23
                             duration: 120
-                            isOnline: 0
-                            startsAt: '2024-02-19T09:22:17+00:00'
-                            link: http://www.schumm.org/neque-provident-quasi-commodi-eligendi-porro-quasi.html
-                            address: '640 Blanda Hollow Apt. 147
-
-                              New Catalina, AK 80653'
+                            price: '75539.000'
+                            isOnline: true
+                            startsAt: '2019-11-27T09:16:34+00:00'
                             createdAt: '2022-09-12T09:52:07+00:00'
+                            registeredUsers: 6
+                            status: DRAFT
                       message:
                         type: string
                         description: All events successfully retrieved.
@@ -854,11 +852,11 @@ nelmio_api_doc:
                             category:
                               type: object
                               properties:
-                                categoryId:
+                                id:
                                   type: integer
                                   description: Id of category.
                                   example: 1
-                                categoryName:
+                                name:
                                   type: string
                                   description: Name of category.
                                   example: sport
@@ -869,14 +867,21 @@ nelmio_api_doc:
                             host:
                               type: object
                               properties:
-                                hostId:
+                                id:
                                   type: integer
                                   description: Id of host.
                                   example: 1
-                                hostName:
-                                  type: string
-                                  description: Name of host;
-                                  example: Elmira Behnava
+                                user:
+                                  type: object
+                                  properties:
+                                    firstName:
+                                      type: string
+                                      description: First name of host.
+                                      example: Ali
+                                    lastName:
+                                      type: string
+                                      description: Last name of host.
+                                      example: Rezaei
                             createdAt:
                               type: string
                               description: Creation date of the experience.
@@ -898,6 +903,191 @@ nelmio_api_doc:
                         type: string
                         description: Result of the action
                         example: success
+      /api/v1/orders/{order_id}:
+        delete:
+          tags:
+          - Experiencer
+          summary: Remove an order.
+          security:
+          - jwt: []
+          description: 'An authenticated experiencer can remove his/her order.
+
+            '
+          parameters:
+          - name: order_id
+            required: true
+            in: path
+            description: 'The id of the order to remove.
+
+              '
+            schema:
+              type: integer
+          responses:
+            '200':
+              description: The order is removed successfully.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: string
+                          description: always an empty array.
+                        example: []
+                      message:
+                        type: string
+                        description: Order Removed Successfully.
+                        example: Order Removed Successfully.
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: success
+            '400':
+              description: The requested experience does not exist.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: failed
+                      message:
+                        type: string
+                        description: A description about failure.
+                        example: Object not found
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED
+      /api/v1/events/add-to-cart:
+        post:
+          tags:
+          - Experiencer
+          summary: Order an event.
+          security:
+          - jwt: []
+          description: 'An authenticated experiencer can order an event.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - event_id
+                  properties:
+                    eventId:
+                      type: integer
+                      description: Id of the event to be ordered.
+                  example:
+                    eventId: 1
+          responses:
+            '200':
+              description: The event ordered.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        description: Information about the ordered event.
+                        properties:
+                          orderId:
+                            type: integer
+                            description: Unique id of the ordered event.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                      status:
+                        type: string
+                        description: Result of the action
+                    example:
+                      data:
+                        orderId: 1
+                      message: Order Created Successfully.
+                      status: success
+            '400':
+              description: If uer wants to request create order for unpublished event
+                or deactivated event.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          eventId:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                    example:
+                      status: failed
+                      message: Event is not published or deactivated.
+                      details:
+                        eventId:
+                        - Event is not published or deactivated.
+            '401':
+              description: Json payload is not provided.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        description: HTTP status code.
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      code: 401
+                      message: Invalid JWT Token
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
   areas:
     default:
       path_patterns:
