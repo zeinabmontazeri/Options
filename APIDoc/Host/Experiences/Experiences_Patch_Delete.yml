@@ -1,0 +1,4 @@
+delete:
+  $ref: ./DeleteExperiences.yml
+patch:
+  $ref: ./PatchExperiences.yml

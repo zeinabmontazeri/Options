@@ -27,6 +27,7 @@ class ExceptionFactory
                 $exceptionData['message'] = 'Validation failed on provided data';
             } else if (str_contains($exception->getMessage(), 'object not found by the @ParamConverter')) {
                 $exceptionData['message'] = 'Object not found';
+                $exceptionData['details'] = null;
             } else {
                 $exceptionData['message'] = $exception->getMessage();
             }
