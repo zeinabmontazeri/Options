@@ -4,7 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Experience;
 
-class GetExperienceEventListControllerTest extends BaseTestCase
+class ShopEventsListEventControllerTest extends BaseTestCase
 {
 
     protected function setUp(): void
@@ -19,7 +19,7 @@ class GetExperienceEventListControllerTest extends BaseTestCase
         $experienceEvents = $experiences->getEvents();
         $experienceId = $experiences->getId();
 
-        $this->client->request('GET', "/api/v1/shop/experiences/{$experienceId}/events/", []
+        $this->client->request('GET', "/api/v1/experiences/{$experienceId}/events", []
             , [], [
                 'CONTENT_TYPE' => 'application/json',
             ]);

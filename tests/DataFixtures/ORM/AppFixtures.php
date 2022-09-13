@@ -33,7 +33,7 @@ class AppFixtures extends Fixture
             ->setFirstName('Mehdi')
             ->setLastName('Seta')
             ->setCreatedAt(new \DateTimeImmutable())
-            ->setGender(EnumGender::MALE->value)
+            ->setGender(EnumGender::MALE)
             ->setRoles([User::ROLE_ADMIN]);
         $manager->persist($user);
         $manager->flush();
@@ -44,7 +44,7 @@ class AppFixtures extends Fixture
             ->setFirstName('Kakashi')
             ->setLastName('Hatake')
             ->setCreatedAt(new \DateTimeImmutable())
-            ->setGender(EnumGender::MALE->value)
+            ->setGender(EnumGender::MALE)
             ->setRoles([User::ROLE_HOST]);
         $manager->persist($user1);
         $manager->flush();
@@ -55,7 +55,7 @@ class AppFixtures extends Fixture
             ->setFirstName('Naruto')
             ->setLastName('Uzumaki')
             ->setCreatedAt(new \DateTimeImmutable())
-            ->setGender(EnumGender::MALE->value)
+            ->setGender(EnumGender::MALE)
             ->setRoles([User::ROLE_HOST]);
         $manager->persist($user2);
         $manager->flush();
@@ -66,7 +66,7 @@ class AppFixtures extends Fixture
             ->setFirstName('Susuke')
             ->setLastName('Uchiha')
             ->setCreatedAt(new \DateTimeImmutable())
-            ->setGender(EnumGender::MALE->value)
+            ->setGender(EnumGender::MALE)
             ->setRoles([User::ROLE_EXPERIENCER]);
         $manager->persist($user3);
         $manager->flush();

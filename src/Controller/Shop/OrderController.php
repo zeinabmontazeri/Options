@@ -29,10 +29,10 @@ class OrderController extends AbstractController
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/orders/{order_id}/', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
+    #[Route('/orders/{order_id}', name: 'app_remove_order', methods: ['DELETE'])]
     #[ParamConverter('event', class: Order::class, options: ['id' => 'order_id'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
-    public function index(
+    public function delete(
         Order              $order,
         RemoveOrderService $removeOrderService,
         OrderRepository    $orderRepository,
@@ -51,7 +51,7 @@ class OrderController extends AbstractController
         }
     }
 
-//    /
+
 
     /**
      * @throws JWTDecodeFailureException

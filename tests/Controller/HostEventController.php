@@ -4,7 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Event;
 
-class GetOrdersUsersInfoOfEventControllerTest extends BaseTestCase
+class HostEventController extends BaseTestCase
 {
     protected function setUp(): void
     {
@@ -12,7 +12,7 @@ class GetOrdersUsersInfoOfEventControllerTest extends BaseTestCase
         $this->setFixtureFromSourceName(['UserFixture', 'HostFixture', 'CategoryFixture', 'ExperienceFixture', 'ActiveEventFixture', 'OrderFixture']);
     }
 
-    public function testOrdersEvent()
+    public function testHostCanGetEventReport()
     {
         $events = $this->entityManager->getRepository(Event::class)->findAll();
         foreach ($events as $event) {

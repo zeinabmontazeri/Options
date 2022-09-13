@@ -23,7 +23,7 @@ class AdminCategoryControllerTest extends BaseTestCase
     public function testAdminCanGetsAllCategories()
     {
         $token = $this->getToken(User::ROLE_ADMIN);
-        $this->client->request('GET', '/api/v1/admins/categories', []
+        $this->client->request('GET', '/api/v1/admin/categories', []
             , [], [
                 'HTTP_AUTHORIZATION' => 'Bearer ' . $token,
                 'CONTENT_TYPE' => 'application/json',
@@ -36,7 +36,7 @@ class AdminCategoryControllerTest extends BaseTestCase
     public function testOthersCouldNotGetAllCategories()
     {
         $token = $this->getToken(User::ROLE_HOST);
-        $this->client->request('GET', '/api/v1/admins/categories', []
+        $this->client->request('GET', '/api/v1/admin/categories', []
             , [], [
                 'HTTP_AUTHORIZATION' => 'Bearer ' . $token,
                 'CONTENT_TYPE' => 'application/json',

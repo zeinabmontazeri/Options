@@ -4,7 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Experience;
 
-class GetTrendingExperienceControllerTest extends BaseTestCase
+class ShopTrendingExperienceControllerTest extends BaseTestCase
 {
     protected function setUp(): void
     {
@@ -16,7 +16,7 @@ class GetTrendingExperienceControllerTest extends BaseTestCase
     {
         $experiences = $this->entityManager->getRepository(Experience::class)->getTrendingExperiences();
 
-        $this->client->request('GET', '/api/v1/shop/experiences/trending/', []
+        $this->client->request('GET', '/api/v1/experiences/trending', []
             , [], [
                 'CONTENT_TYPE' => 'application/json',
             ]);

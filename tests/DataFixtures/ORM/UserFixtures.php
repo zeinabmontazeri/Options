@@ -15,9 +15,6 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserFixtures extends Fixture
 {
     private UserPasswordHasherInterface $hasher;
-    public const ADMIN_USER_REFERENCE = 'admin-user';
-    public const EXPERIENCER_USER_REFERENCE = 'experiencer-user';
-    public const HOST_USER_REFERENCE = 'host-user';
 
     public function __construct(UserPasswordHasherInterface $hasher)
     {
@@ -34,7 +31,6 @@ class UserFixtures extends Fixture
             ->setCreatedAt(new \DateTimeImmutable())
             ->setGender(EnumGender::MALE)
             ->setRoles([User::ROLE_ADMIN]);
-        $this->addReference(self::ADMIN_USER_REFERENCE, $adminUser);
         $manager->persist($adminUser);
         $manager->flush();
 
@@ -58,7 +54,6 @@ class UserFixtures extends Fixture
             ->setGender(EnumGender::MALE)
             ->setRoles([User::ROLE_EXPERIENCER]);
         $manager->persist($experiencerUser);
-        $this->addReference(self::EXPERIENCER_USER_REFERENCE, $experiencerUser);
 
         $manager->flush();
 
@@ -68,7 +63,6 @@ class UserFixtures extends Fixture
             ->setApprovalStatus(EnumPermissionStatus::ACCEPTED)
             ->setLevel(EnumHostBusinessClassStatus::NORMAL);
         $manager->persist($hostUser);
-        $this->addReference(self::HOST_USER_REFERENCE, $hostUser);
 
         $manager->flush();
     }
