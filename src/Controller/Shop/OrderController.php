@@ -82,7 +82,7 @@ class OrderController extends AbstractController
         $res = $orderService->getUserOrders($security->getUser()->getId());
         return $this->json([
             'data' => $res,
-            'message' => 'get all user\'s orders successfully',
+            'message' => 'User\'s orders successfully retrieved.',
             'status' => 'success',
         ], Response::HTTP_OK);
     }

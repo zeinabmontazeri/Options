@@ -40,4 +40,6 @@ paths:
     $ref: ./Experiencer/RemoveOrder.yml
   /api/v1/events/add-to-cart:
     $ref: ./Experiencer/OrderAnEvent.yml
+  /api/v1/orders:
+    $ref: ./Experiencer/GetUserOrders.yml
 
