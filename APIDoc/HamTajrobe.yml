@@ -17,6 +17,10 @@ tags:
     description: End-points to authenticate user and provide refresh token.
   - name: Admin
     description: End-points which are just accessible to the admin user.
+  - name: Host
+    description: End-points which are just accessible to host users.
+  - name: Experiencer
+    description: End-points which are just accessible to experiencer users.
 paths:
   /api/v1/auth/login:
     $ref: ./Auth/Login.yml
@@ -50,4 +54,7 @@ paths:
     $ref: ./Host/CreateEventByHost.yml
   /api/v1/host/events/{event_id}/report:
     $ref: ./Host/GetHostOrderReport.yml
-
+  /api/v1/host/experiences:
+    $ref: ./Host/Experiences/Experiences_Create_Get.yml
+  /api/v1/host/experiences/{experience_id}:
+    $ref: ./Host/Experiences/Experiences_Patch_Delete.yml

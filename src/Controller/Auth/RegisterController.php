@@ -6,6 +6,7 @@ use App\Request\UserRegisterRequest;
 use App\Service\UserRegisterService;
 use Doctrine\DBAL\Exception;
 use OpenApi\Annotations as OA;
+use OpenApi\Annotations\Post as OAPost;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,6 +18,9 @@ class RegisterController extends AbstractController
      * Register new user
      *
      * Creates new user if all fields are valid
+     * @OAPost(
+     *  security = {{}}
+     * )
      * @OA\Tag(name="Auth")
      * @OA\RequestBody(
      *    required=true,
@@ -99,8 +103,7 @@ class RegisterController extends AbstractController
     public function index(
         UserRegisterRequest $validatedRequest,
         UserRegisterService $userRegisterService
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $userRegisterService->register($validatedRequest);
         //TODO: We can generate token for user here
         return $this->json([

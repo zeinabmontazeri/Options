@@ -1,0 +1,45 @@
+tags:
+  - Host
+summary: Host gets all whom experiences.
+security:
+  - jwt: []
+description: >
+  This end-point is accessible to host users to returns all registered experiences.
+responses:
+  '200':
+    description: List of all host experiences
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Result of the action
+            data:
+              type: array
+              description: List of all experiences which belong to hosts.
+              items:
+                type: string
+            message:
+              type: string
+              description: A message describing result of the action.
+          example:
+            status: success
+            message: Successfully retrieve all experience
+  '403':
+    description: The user has not sufficient permission to access this end point.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Result of the action
+            message:
+              type: string
+              description: A discription about failure.
+          example:
+            status: failed
+            message: AUTHORIZATION FAILED.

@@ -1,6 +1,6 @@
 get:
   tags:
-    - Orders
+    - Experiencer
   summary: Order checkout
   security:
     - jwt: []
@@ -27,6 +27,11 @@ get:
               status:
                 type: string
                 description: Result of the action.
+              details:
+                type: array
+                items:
+                  type: string
+                description: List of validation errors on this field
               message:
                 type: string
                 description: Description about what happened.
