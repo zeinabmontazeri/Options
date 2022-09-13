@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 class Media
@@ -18,6 +19,7 @@ class Media
     private ?Experience $experience = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['experiencer' , 'host'])]
     private ?string $fileName = null;
 
     public function getId(): ?int
