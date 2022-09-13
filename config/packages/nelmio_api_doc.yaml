@@ -1,0 +1,2005 @@
+nelmio_api_doc:
+  documentation:
+    openapi: 3.0.0
+    info:
+      title: Ham  Tajrobe
+      version: '1'
+      description: A place to share awesome experiences
+    components:
+      securitySchemes:
+        jwt:
+          type: http
+          description: JWT authentication token
+          scheme: bearer
+          bearerFormat: JWT
+    security:
+    - jwt: []
+    tags:
+    - name: Auth
+      description: End-points to authenticate user and provide refresh token.
+    - name: Admin
+      description: End-points which are just accessible to the admin user.
+    - name: Host
+      description: End-points which are just accessible to host users.
+    - name: Experiencer
+      description: End-points which are just accessible to experiencer users.
+    paths:
+      /api/v1/auth/login:
+        post:
+          tags:
+          - Auth
+          summary: Login end-point
+          security: []
+          description: 'Login a user by the given credentials. It returns a `token`
+            and a `refresh_token`.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - phoneNumber
+                  - password
+                  properties:
+                    phoneNumber:
+                      type: string
+                      description: Phone number is the unique identifier of the use.
+                    password:
+                      type: string
+                      description: User's password.
+                    role:
+                      type: string
+                      description: The role to be logged in with.
+                  example:
+                    phoneNumber: '9121234567'
+                    password: pass_1234
+                    role: role_experiencer
+          responses:
+            '200':
+              description: User authenticated successfully.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: object
+                        description: Data payload returned from the server.
+                        properties:
+                          id:
+                            type: integer
+                            description: Id of the created user.
+                          token:
+                            type: string
+                            description: JWT to be used while working with application.
+                          refresh_token:
+                            type: string
+                            description: The refresh token to get new JWT if it expired.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      data:
+                        id: 1
+                        token: a jwt token
+                        refresh_token: a refresh token
+                      message: User authenticated successfully.
+            '400':
+              description: A required parameter is missing or a variable format is
+                wrong.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      details: null
+                      message: The key "password" is required.
+            '401':
+              description: User provided invalid credentials.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      message: Invalid Credentials.
+      /api/v1/auth/refresh:
+        post:
+          tags:
+          - Auth
+          summary: Refresh Token end-point
+          security: []
+          description: 'Login a user by the given refresh token. It returns a new
+            `token` and a new `refresh_token`.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - refresh_token
+                  properties:
+                    refresh_token:
+                      type: string
+                      description: The refresh token stored from previous step.
+                  example:
+                    refresh_token: ae2e57ed81c8bd795d8b841a2bfa555edc2b12677d883323f617cfb8e9a42e24b5887d01e6e964c7df5e8c4374fe1084bf3c6921157e6ada595d7b2c3cc35906
+          responses:
+            '200':
+              description: Token has been refreshed successfully.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: object
+                        description: Data payload returned from the server.
+                        properties:
+                          id:
+                            type: integer
+                            description: Id of the created user.
+                          token:
+                            type: string
+                            description: JWT to be used while working with application.
+                          refresh_token:
+                            type: string
+                            description: The refresh token to get new JWT if it expired.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      data:
+                        id: 1
+                        token: a jwt token
+                        refresh_token: a refresh token
+                      message: User authenticated successfully.
+            '401':
+              description: User provided invalid credentials.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        description: Response code
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      code: 401
+                      message: JWT Refresh Token Not Found.
+      /api/v1/auth/logout:
+        post:
+          tags:
+          - Auth
+          summary: Logout end-point
+          security: []
+          description: 'Invalidates the refresh token.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - refresh_token
+                  properties:
+                    refresh_token:
+                      type: string
+                      description: the refresh token of user.
+                  example:
+                    refresh_token: 8a4d4faea9090fd01b07724b1f56b4731ae7c046aae3e1e6ee0d642a8ff5142a332ab447d956d8c3422f09bb62730df4f87e97f43ac3d1f4de0ceafc79ad3cc5
+          responses:
+            '200':
+              description: User logged out successfully.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: object
+                        description: Date payload returned from the server.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      data: null
+                      message: The supplied refresh_token has been invalidated.
+            '400':
+              description: A required parameter is missing or a variable format is
+                wrong.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: object
+                        description: Details of the validation errors on fields.
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      data: null
+                      message: No refresh_token found.
+      /api/v1/orders/{order_id}/checkout:
+        get:
+          tags:
+          - Experiencer
+          summary: Order checkout
+          security:
+          - jwt: []
+          description: 'If the order is purchasable redirect experiencer to bank page.
+
+            '
+          parameters:
+          - name: order-id
+            required: true
+            in: path
+            description: 'The id of the order to be purchased.
+
+              '
+            schema:
+              type: integer
+          responses:
+            '303':
+              description: Experiencer is redirected to bank page.
+            '400':
+              description: The user is trying to purchase a wrong order
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action.
+                      details:
+                        type: array
+                        items:
+                          type: string
+                        description: List of validation errors on this field
+                      message:
+                        type: string
+                        description: Description about what happened.
+                    example:
+                      status: failed
+                      messaage: The order id(order-id) is not purchasable.
+      /api/v1/admin/categories:
+        post:
+          tags:
+          - Admin
+          summary: Admin creates a new category
+          security:
+          - jwt: []
+          description: 'Using this end point admin creates a new category.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      type: string
+                      description: Name of the new category
+                  example:
+                    name: Skydiving
+          responses:
+            '200':
+              description: Admin created a new category
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: object
+                        description: Information about the created category.
+                        properties:
+                          id:
+                            type: integer
+                            description: Unique id of the created category.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      data:
+                        id: 10
+                      message: category successfully created
+            '400':
+              description: User provided wrong input.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      details:
+                        name:
+                        - This field should not be blank.
+                      message: Validation error.
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
+        get:
+          tags:
+          - Admin
+          summary: Admin gets all categories
+          security:
+          - jwt: []
+          description: 'This end-point is accessible to admin and returns all registered
+            categories.
+
+            '
+          responses:
+            '200':
+              description: List of all categories
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: array
+                        description: List of all experiences' categories.
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Index of category.
+                            name:
+                              type: string
+                              description: Name of the category.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      data:
+                      - id: 1
+                        name: Painting
+                      - id: 2
+                        name: Caligraphy
+                      message: successfully retrieve all categories
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
+      /api/v1/admin/categories/{category_id}:
+        delete:
+          tags:
+          - Admin
+          summary: Admin deletes a category
+          security:
+          - jwt: []
+          description: 'This end-point is accessible to admin and delete a registered
+            categories.
+
+            '
+          parameters:
+          - name: category_id
+            required: true
+            in: path
+            description: 'The id of the category to be deleted.
+
+              '
+            schema:
+              type: integer
+          responses:
+            '200':
+              description: A category just deleted.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: array
+                        items: {}
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      data: null
+                      message: category successfully deleted
+            '400':
+              description: The requested category does not exist.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      details: null
+                      message: Object not found
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
+        patch:
+          tags:
+          - Admin
+          summary: Admin updates a category
+          security:
+          - jwt: []
+          description: 'This end-point is accessible to admin and update a categories.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - name
+                  properties:
+                    name:
+                      type: string
+                      description: Name of the category to be updated.
+                  example:
+                    name: Skydiving
+          parameters:
+          - name: category_id
+            required: true
+            in: path
+            description: 'The id of the category to be updated.
+
+              '
+            schema:
+              type: integer
+          responses:
+            '200':
+              description: The category updated.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: array
+                        description: List of all experiences' categories.
+                        items:
+                          type: string
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      data: null
+                      message: category successfully deleted
+            '400':
+              description: The requested category does not exist.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      details: null
+                      message: Object not found
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
+      /api/v1/experiences/{experience_id}/events:
+        get:
+          tags:
+          - Experiencer
+          summary: Get all experience events.
+          security:
+          - jwt: []
+          description: 'Get a valid experience id in path parameter and get all events
+            of that experience.
+
+            '
+          parameters:
+          - name: experienceId
+            required: true
+            in: path
+            description: 'The id of the experience to get its events.
+
+              '
+            schema:
+              type: integer
+          responses:
+            '200':
+              description: A list of events of the experience.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the event.
+                            capacity:
+                              type: integer
+                              description: Capacity of the event.
+                            duration:
+                              type: integer
+                              description: Duration of the event.
+                            price:
+                              type: number
+                              description: Price of the event.
+                            isOnline:
+                              type: boolean
+                              description: Is the event online or not.
+                            startsAt:
+                              type: string
+                              description: Start date of the event.
+                            createdAt:
+                              type: string
+                              description: Creation date of the event.
+                            registeredUser:
+                              type: integer
+                              description: Number of registered users for the event.
+                            status:
+                              type: string
+                              description: Status of the event.
+                          example:
+                            id: 15
+                            capacity: 23
+                            duration: 120
+                            price: '75539.000'
+                            isOnline: true
+                            startsAt: '2019-11-27T09:16:34+00:00'
+                            createdAt: '2022-09-12T09:52:07+00:00'
+                            registeredUsers: 6
+                            status: DRAFT
+                      message:
+                        type: string
+                        description: All events successfully retrieved.
+                        example: All events successfully retrieved.
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: success
+            '400':
+              description: The requested experience does not exist.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: failed
+                      message:
+                        type: string
+                        description: A description about failure.
+                        example: Object not found
+      /api/v1/experiences/trending:
+        get:
+          tags:
+          - Experiencer
+          summary: Get Trending Experiences.
+          security:
+          - jwt: []
+          description: 'Get Trending Experiences based on number of registered users.
+
+            '
+          responses:
+            '200':
+              description: A list of trending experiences.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the experience.
+                            description:
+                              type: string
+                              description: Description of the experience.
+                            title:
+                              type: string
+                              description: Title of the experience.
+                            createdAt:
+                              type: string
+                              description: Creation date of the experience.
+                          example:
+                            id: 1
+                            description: atmosphere of joy.
+                            title: Buzz
+                            createdAt: '2020-12-12T12:12:12.000Z'
+                      message:
+                        type: string
+                        description: Message of the response.
+                        example: Experiences Successfully Retrieved
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: success
+      /api/v1/experiences:
+        get:
+          tags:
+          - Experiencer
+          summary: Get Experiences By filter.
+          security:
+          - jwt: []
+          description: 'We can filter experiences by these filters: (purchasable,
+            host, category). Host and Category filters can be list and all filters
+            can used in chain.
+
+            '
+          parameters:
+          - name: purchasable
+            required: false
+            in: query
+            description: 'Filter experiences by purchasable.
+
+              '
+            schema:
+              type: boolean
+          - name: host
+            required: false
+            in: query
+            description: 'Filter experiences by host.
+
+              '
+            example: host=1 or host=[1,2,3]
+            schema:
+              type: array
+              items:
+                type: integer
+          - name: category
+            required: false
+            in: query
+            description: 'Filter experiences by category.
+
+              '
+            schema:
+              type: array
+              items:
+                type: integer
+            example: category=1 or category=[1,2,3]
+          responses:
+            '200':
+              description: List of experiences that filtered.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the experience.
+                              example: 1
+                            title:
+                              type: string
+                              description: Title of the experience.
+                              example: poetry
+                            category:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  description: Id of category.
+                                  example: 1
+                                name:
+                                  type: string
+                                  description: Name of category.
+                                  example: sport
+                            description:
+                              type: string
+                              description: Description of the experience.
+                              example: soluta
+                            host:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  description: Id of host.
+                                  example: 1
+                                user:
+                                  type: object
+                                  properties:
+                                    firstName:
+                                      type: string
+                                      description: First name of host.
+                                      example: Ali
+                                    lastName:
+                                      type: string
+                                      description: Last name of host.
+                                      example: Rezaei
+                            createdAt:
+                              type: string
+                              description: Creation date of the experience.
+                            media:
+                              type: array
+                              items:
+                                type: string
+                              description: array of media urls.
+                              example: []
+                            status:
+                              type: string
+                              description: status of experience.
+                              example: CANCELED
+                      message:
+                        type: string
+                        description: Experiences Successfully Retrieved.
+                        example: Experiences Successfully Retrieved.
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: success
+      /api/v1/orders/{order_id}:
+        delete:
+          tags:
+          - Experiencer
+          summary: Remove an order.
+          security:
+          - jwt: []
+          description: 'An authenticated experiencer can remove his/her order.
+
+            '
+          parameters:
+          - name: order_id
+            required: true
+            in: path
+            description: 'The id of the order to remove.
+
+              '
+            schema:
+              type: integer
+          responses:
+            '200':
+              description: The order is removed successfully.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: string
+                          description: always an empty array.
+                        example: []
+                      message:
+                        type: string
+                        description: Order Removed Successfully.
+                        example: Order Removed Successfully.
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: success
+            '400':
+              description: The requested experience does not exist.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: failed
+                      message:
+                        type: string
+                        description: A description about failure.
+                        example: Object not found
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED
+      /api/v1/events/add-to-cart:
+        post:
+          tags:
+          - Experiencer
+          summary: Order an event.
+          security:
+          - jwt: []
+          description: 'An authenticated experiencer can order an event.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - event_id
+                  properties:
+                    eventId:
+                      type: integer
+                      description: Id of the event to be ordered.
+                  example:
+                    eventId: 1
+          responses:
+            '200':
+              description: The event ordered.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        description: Information about the ordered event.
+                        properties:
+                          orderId:
+                            type: integer
+                            description: Unique id of the ordered event.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                      status:
+                        type: string
+                        description: Result of the action
+                    example:
+                      data:
+                        orderId: 1
+                      message: Order Created Successfully.
+                      status: success
+            '400':
+              description: If uer wants to request create order for unpublished event
+                or deactivated event.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          eventId:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                    example:
+                      status: failed
+                      message: Event is not published or deactivated.
+                      details:
+                        eventId:
+                        - Event is not published or deactivated.
+            '401':
+              description: Json payload is not provided.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      code:
+                        type: integer
+                        description: HTTP status code.
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      code: 401
+                      message: Invalid JWT Token
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
+      /api/v1/orders:
+        get:
+          tags:
+          - Experiencer
+          summary: Get User Orders.
+          security:
+          - jwt: []
+          description: 'Authenticated Experience can get his/her orders.
+
+            '
+          responses:
+            '200':
+              description: List of user orders.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            orderId:
+                              type: integer
+                              description: Id of the order.
+                              example: 1
+                            eventId:
+                              type: integer
+                              description: Id of the event.
+                              example: 1
+                            title:
+                              type: string
+                              description: Title of the experience.
+                              example: poetry
+                            status:
+                              type: string
+                              description: Status of the order.
+                              example: PENDING
+                      message:
+                        type: string
+                        description: Message of the response.
+                        example: Orders Successfully Retrieved
+      /api/v1/events/{event_id}/comments:
+        post:
+          tags:
+          - Experiencer
+          summary: Create a comment.
+          security:
+          - jwt: []
+          description: 'An authenticated user can create comment for an event.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - comment
+                  properties:
+                    comment:
+                      type: string
+                      description: Comment to be added.
+                  example:
+                    comment: This is a comment.
+          responses:
+            '200':
+              description: The comment created.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        description: Information about the created comment.
+                        properties:
+                          commentId:
+                            type: integer
+                            description: Unique id of the created comment.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                      status:
+                        type: string
+                        description: Result of the action
+                    example:
+                      data:
+                        commentId: 1
+                      message: The user commented successfully.
+                      status: success
+            '400':
+              description: If key of post param is not provided.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          comment:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                    example:
+                      status: failed
+                      message: Event is not published or deactivated.
+                      details:
+                        eventId:
+                        - This value should not be null.
+      /api/v1/categories:
+        get:
+          tags:
+          - Experiencer
+          summary: Get list of categories.
+          security:
+          - jwt: []
+          description: 'Get a list of all categories that created by admin.
+
+            '
+          responses:
+            '200':
+              description: List of all categories.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              description: Id of the category.
+                            name:
+                              type: string
+                              description: Name of the category.
+                            createdAt:
+                              type: string
+                              description: Creation date of the category.
+                          example:
+                            id: 1
+                            name: Sport
+                            createdAt: '2020-12-01T00:00:00.000Z'
+                      message:
+                        type: string
+                        description: Message of the response.
+                        example: successfully retrieve all categories.
+                      status:
+                        type: string
+                        description: Status of the response.
+                        example: success
+      /api/v1/host/experiences/{experience_id}/events:
+        post:
+          tags:
+          - Host
+          summary: Create an event by approved host.
+          security:
+          - jwt: []
+          description: 'An approved host can create an event for an experience.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - capacity
+                  - duration
+                  - price
+                  - isOnline
+                  - startsAt
+                  - address
+                  - link
+                  example:
+                    capacity: 10
+                    duration: 2
+                    price: 100000
+                    isOnline: false
+                    startsAt: 2020-12-12 12:00:00+00:00
+                    address: Tehran, Iran
+                    link: https://www.google.com
+          responses:
+            '200':
+              description: Created event.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        description: Information about the created event.
+                        properties:
+                          id:
+                            type: integer
+                            description: Unique id of the created event.
+                            example: 1
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                        example: Event created successfully
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: success
+            '400':
+              description: If key of post param is not provided.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          comment:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                    example:
+                      status: failed
+                      message: Validation failed on provided data".
+                      details:
+                        price:
+                        - This value should not be null.
+      /api/v1/host/events/{event_id}/report:
+        get:
+          tags:
+          - Host
+          summary: Get host order report.
+          security:
+          - jwt: []
+          description: 'Get eventId in path parameter and get order report of that
+            event.
+
+            '
+          parameters:
+          - name: eventId
+            required: true
+            in: path
+            description: 'The id of the event to get its order report.
+
+              '
+            schema:
+              type: integer
+          responses:
+            '200':
+              description: List of total Income and list of users who bought tickets.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          Event Data:
+                            type: object
+                            properties:
+                              Experience Title:
+                                type: string
+                                description: Title of the experience.
+                                example: Experience Title
+                              Event Capacity:
+                                type: integer
+                                description: Capacity of the event.
+                                example: 23
+                              Event Remaining Capacity:
+                                type: integer
+                                description: Remaining capacity of the event.
+                                example: 23
+                          Total Income:
+                            type: integer
+                            description: Total income of the event.
+                            example: 100000
+                          List of users Information:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  description: Id of user.
+                                  example: 1
+                                fullName:
+                                  type: string
+                                  description: FullName of the user.
+                                  example: Major King
+                                age:
+                                  type: integer
+                                  description: Age of the user.
+                                  example: 12
+                                gender:
+                                  type: string
+                                  description: Gender of the user.
+                                  example: null
+                      message:
+                        type: string
+                        description: Message of the response.
+                        example: show orders information for this event is successfully.
+                      status:
+                        type: string
+                        description: Status of the response.
+                        example: success
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      message: You're not allowed to access this resource.
+      /api/v1/host/experiences:
+        post:
+          tags:
+          - Host
+          summary: Host creates a new experience
+          security:
+          - jwt: []
+          description: 'Using this end point host creates a new experience.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  required:
+                  - title
+                  - categoryName
+                  - description
+                  properties:
+                    title:
+                      type: string
+                      description: Title of the new experience
+                    categoryName:
+                      type: string
+                      description: Category of the new experience
+                    description:
+                      type: string
+                      description: Description of the new experience
+                  example:
+                    title: Skydiving
+                    categoryName: Sport
+                    description: In this experince you feel how it is like to be free.
+          responses:
+            '200':
+              description: Host created a new experience.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: object
+                        description: Information about the created experience.
+                        properties:
+                          id:
+                            type: integer
+                            description: Unique id of the created experience.
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      data:
+                        id: 10
+                      message: Experience successfully created
+            '400':
+              description: User provided wrong input.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      details:
+                        name:
+                        - This field should not be blank.
+                      message: Validation error.
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
+            '404':
+              description: Host tried to assign a category to the experience which
+                does not exist.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      messaage:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      message: Category name does not exist.
+        get:
+          tags:
+          - Host
+          summary: Host gets all whom experiences.
+          security:
+          - jwt: []
+          description: 'This end-point is accessible to host users to returns all
+            registered experiences.
+
+            '
+          responses:
+            '200':
+              description: List of all host experiences
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: array
+                        description: List of all experiences which belong to hosts.
+                        items:
+                          type: string
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      message: Successfully retrieve all experience
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
+      /api/v1/host/experiences/{experience_id}:
+        delete:
+          tags:
+          - Host
+          summary: Host deletes an experience
+          security:
+          - jwt: []
+          description: 'This end-point is accessible to host and deletes whom registered
+            expereinces.
+
+            '
+          parameters:
+          - name: experience_id
+            required: true
+            in: path
+            description: 'The id of the experience to be deleted.
+
+              '
+            schema:
+              type: integer
+          responses:
+            '200':
+              description: An experience just deleted.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      data:
+                        type: array
+                        items: {}
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                    example:
+                      status: success
+                      data: null
+                      message: category successfully deleted
+            '400':
+              description: The requested experience does not exist.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: array
+                            description: List of validation errors on this field
+                            items:
+                              type: string
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      details: null
+                      message: Object not found
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
+        patch:
+          tags:
+          - Host
+          summary: Host updates an experience
+          security:
+          - jwt: []
+          description: 'This end-point is accessible to hosts and updates an experience.
+
+            '
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                      description: Name of the experience to be updated.
+                      example: Skydiving
+                    description:
+                      type: string
+                      description: A description about the experience to be updated.
+                      example: Feel the life from an upper position.
+                    categoryName:
+                      type: string
+                      description: Updated category for the experience.
+                      example: Sport
+          parameters:
+          - name: experience_id
+            required: true
+            in: path
+            description: 'The id of the experience to be updated.
+
+              '
+            schema:
+              type: integer
+            example: 1
+          responses:
+            '200':
+              description: The category updated.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: success
+                      data:
+                        type: array
+                        items: {}
+                        example: []
+                      message:
+                        type: string
+                        description: A message describing result of the action.
+                        example: Experience successfully updated
+            '400':
+              description: User provided wrong input.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      details:
+                        type: object
+                        description: Details of the validation errors on fields.
+                        properties:
+                          fieldName:
+                            type: string
+                            description: List of validation errors on this field
+                      message:
+                        type: string
+                        description: A discription about failure.
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A discription about failure.
+                    example:
+                      status: failed
+                      message: AUTHORIZATION FAILED.
+            '404':
+              description: Description of the error occurred.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: failed
+                      message:
+                        type: string
+                        description: A discription about failure.
+                        example: Category name does not exist.
+      /api/v1/host/experiences/{experience_id}/events/{event_id}:
+        patch:
+          tags:
+          - Host
+          summary: Update an event of a host.
+          security:
+          - jwt: []
+          description: 'Host can update any field of own event.
+
+            '
+          parameters:
+          - name: experience_id
+            required: true
+            in: path
+            description: 'The id of the experience.
+
+              '
+            schema:
+              type: integer
+          - name: event_id
+            required: true
+            in: path
+            description: 'The id of the event.
+
+              '
+            schema:
+              type: integer
+          requestBody:
+            required: true
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    isOnline:
+                      type: integer
+                      description: '1 if the event is online, 0 if the event is offline.
+
+                        '
+                      example: 1
+                    duration:
+                      type: integer
+                      description: Duration of the event.
+                      example: 120
+                    capacity:
+                      type: integer
+                      description: Capacity of the event.
+                      example: 23
+                    price:
+                      type: integer
+                      description: Price of the event.
+                      example: 100000
+                    startsAt:
+                      type: string
+                      description: Start date of the event.
+                      example: '2021-01-01 00:00:00'
+                    link:
+                      type: string
+                      description: Link of the event.
+                      example: https://www.google.com
+                    address:
+                      type: string
+                      description: Address of the event.
+                      example: Tehran, Iran
+                    status:
+                      type: string
+                      description: 'Status of the event. It can be "PUBLISHED", "CANCELED",
+                        "DRAFT".
+
+                        '
+                      example: DRAFT
+          responses:
+            '200':
+              description: Event updated successfully.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          id:
+                            type: integer
+                            description: Id of the event that updated.
+                            example: 1
+                      message:
+                        type: string
+                        description: Message of the response.
+                        example: Event updated successfully.
+                      status:
+                        type: string
+                        description: Status of the response.
+                        example: success
+            '400':
+              description: The requested experience does not exist.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: failed
+                      message:
+                        type: string
+                        description: A description about failure.
+                        example: Validation failed on provided data
+                      details:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            field:
+                              type: string
+                              description: Name of the field that has error.
+                              example: startsAt
+                            message:
+                              type: string
+                              description: Description of the error.
+                              example: The startsAt field is required.
+        delete:
+          tags:
+          - Host
+          summary: Delete event by host.
+          description: Delete event by host
+          security:
+          - jwt: []
+          parameters:
+          - name: experience_id
+            required: true
+            in: path
+            description: 'The id of the experience.
+
+              '
+            schema:
+              type: integer
+          - name: event_id
+            required: true
+            in: path
+            description: 'The id of the event.
+
+              '
+            schema:
+              type: integer
+          responses:
+            '200':
+              description: 'Event deleted successfully.
+
+                '
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: string
+                          description: always an empty array.
+                        example: []
+                      message:
+                        type: string
+                        description: 'Message of the response.
+
+                          '
+                        example: Event deleted successfully.
+                      status:
+                        type: string
+                        description: Result of the action
+                        example: success
+            '400':
+              description: If uer wants to request delete event of other experience.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                      details:
+                        type: string
+                    example:
+                      status: failed
+                      message: This event does not belong to provided experience.
+                      details: null
+  areas:
+    default:
+      path_patterns:
+      - ^/api(?!/(doc|v1\/checkoutCallback|v1\/auth\/refresh))
