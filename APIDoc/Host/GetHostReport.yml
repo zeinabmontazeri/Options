@@ -1,0 +1,58 @@
+get:
+  tags:
+    - Host
+  summary: Get total host report
+  security:
+    - jwt: [ ]
+  description: >
+    Get list of total income, event, order for host
+  responses:
+    "200":
+      description: list of total report
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  totalIncome:
+                    type: integer
+                    description: total income from events order.
+                  totalEvent:
+                    type: integer
+                    description: number of all events.
+                  totalOrder:
+                    type: integer
+                    description: number of all orders from events.
+                example:
+                  totalIncome: 150000
+                  totalEvent: 6
+                  totalOrder: 40
+              message:
+                type: string
+                description: Message of the response.
+                example: Successfully retrieve total report.
+              status:
+                type: string
+                description: Status of the response.
+                example: success
+    '403':
+      description: The user has not sufficient permission to access this end point.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Result of the action
+              message:
+                type: string
+                description: A description about failure.
+            example:
+              status: failed
+              message: You're not allowed to access this resource.
+
+

@@ -666,7 +666,7 @@ nelmio_api_doc:
 
             '
           parameters:
-          - name: experienceId
+          - name: experience_id
             required: true
             in: path
             description: 'The id of the experience to get its events.
@@ -1291,8 +1291,8 @@ nelmio_api_doc:
                     capacity: 10
                     duration: 2
                     price: 100000
-                    isOnline: false
-                    startsAt: 2020-12-12 12:00:00+00:00
+                    isOnline: 0
+                    startsAt: '2020-12-12 12:00:00'
                     address: Tehran, Iran
                     link: https://www.google.com
           responses:
@@ -2054,6 +2054,65 @@ nelmio_api_doc:
                       status: failed
                       message: This event does not belong to provided experience.
                       details: null
+      /api/v1/host/report:
+        get:
+          tags:
+          - Host
+          summary: Get total host report
+          security:
+          - jwt: []
+          description: 'Get list of total income, event, order for host
+
+            '
+          responses:
+            '200':
+              description: list of total report
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          totalIncome:
+                            type: integer
+                            description: total income from events order.
+                          totalEvent:
+                            type: integer
+                            description: number of all events.
+                          totalOrder:
+                            type: integer
+                            description: number of all orders from events.
+                        example:
+                          totalIncome: 150000
+                          totalEvent: 6
+                          totalOrder: 40
+                      message:
+                        type: string
+                        description: Message of the response.
+                        example: Successfully retrieve total report.
+                      status:
+                        type: string
+                        description: Status of the response.
+                        example: success
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      message: You're not allowed to access this resource.
       /api/v1/host/experiences/{experience_id}/report:
         get:
           tags:

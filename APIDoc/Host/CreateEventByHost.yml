@@ -25,8 +25,8 @@ post:
             capacity: 10
             duration: 2
             price: 100000
-            isOnline: false
-            startsAt: 2020-12-12 12:00:00
+            isOnline: 0
+            startsAt: "2020-12-12 12:00:00"
             address: Tehran, Iran
             link: https://www.google.com
   responses:
