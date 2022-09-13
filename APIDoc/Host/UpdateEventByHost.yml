@@ -1,115 +1,114 @@
-patch:
-  tags:
-    - Host
-  summary: Update an event of a host.
-  security:
-    - jwt: [ ]
-  description: >
-    Host can update any field of own event.
-  parameters:
-    - name: experience_id
-      required: true
-      in: path
-      description: >
-        The id of the experience.
-      schema:
-        type: integer
-    - name: event_id
-      required: true
-      in: path
-      description: >
-        The id of the event.
-      schema:
-        type: integer
-  requestBody:
+tags:
+  - Host
+summary: Update an event of a host.
+security:
+  - jwt: [ ]
+description: >
+  Host can update any field of own event.
+parameters:
+  - name: experience_id
     required: true
+    in: path
+    description: >
+      The id of the experience.
+    schema:
+      type: integer
+  - name: event_id
+    required: true
+    in: path
+    description: >
+      The id of the event.
+    schema:
+      type: integer
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        properties:
+          isOnline:
+            type: integer
+            description: >
+              1 if the event is online, 0 if the event is offline.
+            example: 1
+          duration:
+            type: integer
+            description: Duration of the event.
+            example: 120
+          capacity:
+            type: integer
+            description: Capacity of the event.
+            example: 23
+          price:
+            type: integer
+            description: Price of the event.
+            example: 100000
+          startsAt:
+            type: string
+            description: Start date of the event.
+            example: "2021-01-01 00:00:00"
+          link:
+            type: string
+            description: Link of the event.
+            example: "https://www.google.com"
+          address:
+            type: string
+            description: Address of the event.
+            example: "Tehran, Iran"
+          status:
+            type: string
+            description: >
+              Status of the event. It can be "PUBLISHED", "CANCELED", "DRAFT".
+            example: DRAFT
+responses:
+  "200":
+    description: Event updated successfully.
     content:
       application/json:
         schema:
           type: object
           properties:
-            isOnline:
-              type: integer
-              description: >
-                1 if the event is online, 0 if the event is offline.
-              example: 1
-            duration:
-              type: integer
-              description: Duration of the event.
-              example: 120
-            capacity:
-              type: integer
-              description: Capacity of the event.
-              example: 23
-            price:
-              type: integer
-              description: Price of the event.
-              example: 100000
-            startsAt:
+            data:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  description: Id of the event that updated.
+                  example: 1
+            message:
               type: string
-              description: Start date of the event.
-              example: "2021-01-01 00:00:00"
-            link:
-              type: string
-              description: Link of the event.
-              example: "https://www.google.com"
-            address:
-              type: string
-              description: Address of the event.
-              example: "Tehran, Iran"
+              description: Message of the response.
+              example: "Event updated successfully."
             status:
               type: string
-              description: >
-                Status of the event. It can be "PUBLISHED", "CANCELED", "DRAFT".
-              example: DRAFT
-  responses:
-    "200":
-      description: Event updated successfully.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              data:
+              description: Status of the response.
+              example: "success"
+  '400':
+    description: The requested experience does not exist.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Result of the action
+              example: failed
+            message:
+              type: string
+              description: A description about failure.
+              example: Validation failed on provided data
+            details:
+              type: array
+              items:
                 type: object
                 properties:
-                  id:
-                    type: integer
-                    description: Id of the event that updated.
-                    example: 1
-              message:
-                type: string
-                description: Message of the response.
-                example: "Event updated successfully."
-              status:
-                type: string
-                description: Status of the response.
-                example: "success"
-    '400':
-      description: The requested experience does not exist.
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              status:
-                type: string
-                description: Result of the action
-                example: failed
-              message:
-                type: string
-                description: A description about failure.
-                example: Validation failed on provided data
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    field:
-                      type: string
-                      description: Name of the field that has error.
-                      example: "startsAt"
-                    message:
-                      type: string
-                      description: Description of the error.
-                      example: "The startsAt field is required."
+                  field:
+                    type: string
+                    description: Name of the field that has error.
+                    example: "startsAt"
+                  message:
+                    type: string
+                    description: Description of the error.
+                    example: "The startsAt field is required."
