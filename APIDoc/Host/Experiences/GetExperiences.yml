@@ -6,6 +6,37 @@ security:
 description: >
   This end-point is accessible to host users to returns all registered experiences.
 responses:
+# {
+#   "data": {
+#     "results": [
+#       {
+#         "id": 6,
+#         "description": "et",
+#         "title": "vero",
+#         "createdAt": "2022-09-12T08:23:56+00:00",
+#         "status": "DRAFT",
+#         "approvalStatus": "REJECTED",
+#         "deletedAt": null
+#       },
+#       {
+#         "id": 16,
+#         "description": "vel",
+#         "title": "quia",
+#         "createdAt": "2022-09-12T08:23:56+00:00",
+#         "status": "DRAFT",
+#         "approvalStatus": "REJECTED",
+#         "deletedAt": null
+#       }
+#     ],
+#     "current_page": 1,
+#     "per_page": 10,
+#     "total": 2,
+#     "next_page": "http://127.0.0.1:8000/api/v1/host/experiences?page=1&perpage=10",
+#     "prev_page": "http://127.0.0.1:8000/api/v1/host/experiences?page=1&perpage=10",
+#     "first_page": "http://127.0.0.1:8000/api/v1/host/experiences?page=1&perpage=10",
+#     "last_page": "http://127.0.0.1:8000/api/v1/host/experiences?page=1&perpage=10"
+#   },
+# }
   '200':
     description: List of all host experiences
     content:
@@ -17,15 +48,70 @@ responses:
               type: string
               description: Result of the action
             data:
-              type: array
+              type: object
               description: List of all experiences which belong to hosts.
-              items:
-                type: string
+              properties:
+                results:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        description: Id of the experience
+                      description:
+                        type: string
+                        description: A small note about description.
+                      title:
+                        type: string
+                        description: Title of the experience
+                      createdAt:
+                        type: string
+                        description: Date at which the experience created
+                      approvalStatus:
+                        type: string
+                        description: Is experience approved by admin
+                current_page:
+                  type: integer
+                  description: Index of the current page
+                per_page:
+                  type: integer
+                  description: How many experience to be shown in each page.
+                total:
+                  type: integer
+                  description: How many pages exist.
+                next_page:
+                  type: string
+                  description: Url of the next page
+                prev_page:
+                  type: string
+                  description: Url of the previous page
+                first_page:
+                  type: string
+                  description: Url of the first page
+                last_page:
+                  type: string
+                  description: Url of the last page
             message:
               type: string
               description: A message describing result of the action.
           example:
             status: success
+            data:
+              results:
+                - id: 1
+                  title: Awesome Experience
+                  description : A simple description about experience
+                  createdAt: "2020-09-15"
+                  status: DRAFT
+                  approvalStatus: PENDING
+              current_page: 1
+              per_page: 10
+              total: 50
+              next_page: ./next_page
+              prev_page: ./prev_page
+              first_page: ./first_page
+              last_page: ./last_page
             message: Successfully retrieve all experience
   '403':
     description: The user has not sufficient permission to access this end point.

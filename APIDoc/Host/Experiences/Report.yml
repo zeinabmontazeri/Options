@@ -1,0 +1,66 @@
+get:
+  tags:
+    - Host
+  summary: Report of the experience.
+  security:
+    - jwt: [ ]
+  description: >
+    Returns a report about one of the hosts experiences. 
+  parameters:
+    - name: experience_id
+      required: true
+      in: path
+      description: The id of the experience to get its report.
+      schema:
+        type: integer
+  responses:
+    "200":
+      description: List of total Income and list of users who bought tickets.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Status of the response.
+                example: "success"
+              data:
+                type: object
+                properties:
+                  experience_id:
+                    type: integer
+                    description: The unique id of the experience.
+                    example: 1
+                  totalIncome:
+                    type: integer
+                    description: Total money raised out of the experiences.
+                    example: 1000000
+                  totalEvent:
+                    type: integer
+                    description: Total events established for this experience
+                    example: 5
+                  totalOrder:
+                    type: integer
+                    description: Count of orders of this experience
+                    example: 20
+              message:
+                type: string
+                description: Message of the response.
+                example: "show orders information for this event is successfully."
+    '403':
+      description: The user has not sufficient permission to access this end point.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Result of the action
+              message:
+                type: string
+                description: A description about failure.
+            example:
+              status: failed
+              message: You're not allowed to access this resource.

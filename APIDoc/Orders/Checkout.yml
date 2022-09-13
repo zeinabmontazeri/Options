@@ -7,7 +7,7 @@ get:
   description: >
     If the order is purchasable redirect experiencer to bank page.
   parameters:
-    - name: order-id
+    - name: order_id
       required: true
       in: path
       description: >

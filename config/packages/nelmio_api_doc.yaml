@@ -284,7 +284,7 @@ nelmio_api_doc:
 
             '
           parameters:
-          - name: order-id
+          - name: order_id
             required: true
             in: path
             description: 'The id of the order to be purchased.
@@ -1587,15 +1587,70 @@ nelmio_api_doc:
                         type: string
                         description: Result of the action
                       data:
-                        type: array
+                        type: object
                         description: List of all experiences which belong to hosts.
-                        items:
-                          type: string
+                        properties:
+                          results:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  description: Id of the experience
+                                description:
+                                  type: string
+                                  description: A small note about description.
+                                title:
+                                  type: string
+                                  description: Title of the experience
+                                createdAt:
+                                  type: string
+                                  description: Date at which the experience created
+                                approvalStatus:
+                                  type: string
+                                  description: Is experience approved by admin
+                          current_page:
+                            type: integer
+                            description: Index of the current page
+                          per_page:
+                            type: integer
+                            description: How many experience to be shown in each page.
+                          total:
+                            type: integer
+                            description: How many pages exist.
+                          next_page:
+                            type: string
+                            description: Url of the next page
+                          prev_page:
+                            type: string
+                            description: Url of the previous page
+                          first_page:
+                            type: string
+                            description: Url of the first page
+                          last_page:
+                            type: string
+                            description: Url of the last page
                       message:
                         type: string
                         description: A message describing result of the action.
                     example:
                       status: success
+                      data:
+                        results:
+                        - id: 1
+                          title: Awesome Experience
+                          description: A simple description about experience
+                          createdAt: '2020-09-15'
+                          status: DRAFT
+                          approvalStatus: PENDING
+                        current_page: 1
+                        per_page: 10
+                        total: 50
+                        next_page: ./next_page
+                        prev_page: ./prev_page
+                        first_page: ./first_page
+                        last_page: ./last_page
                       message: Successfully retrieve all experience
             '403':
               description: The user has not sufficient permission to access this end
@@ -1999,6 +2054,73 @@ nelmio_api_doc:
                       status: failed
                       message: This event does not belong to provided experience.
                       details: null
+      /api/v1/host/experiences/{experience_id}/report:
+        get:
+          tags:
+          - Host
+          summary: Report of the experience.
+          security:
+          - jwt: []
+          description: "Returns a report about one of the hosts experiences. \n"
+          parameters:
+          - name: experience_id
+            required: true
+            in: path
+            description: The id of the experience to get its report.
+            schema:
+              type: integer
+          responses:
+            '200':
+              description: List of total Income and list of users who bought tickets.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Status of the response.
+                        example: success
+                      data:
+                        type: object
+                        properties:
+                          experience_id:
+                            type: integer
+                            description: The unique id of the experience.
+                            example: 1
+                          totalIncome:
+                            type: integer
+                            description: Total money raised out of the experiences.
+                            example: 1000000
+                          totalEvent:
+                            type: integer
+                            description: Total events established for this experience
+                            example: 5
+                          totalOrder:
+                            type: integer
+                            description: Count of orders of this experience
+                            example: 20
+                      message:
+                        type: string
+                        description: Message of the response.
+                        example: show orders information for this event is successfully.
+            '403':
+              description: The user has not sufficient permission to access this end
+                point.
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        description: Result of the action
+                      message:
+                        type: string
+                        description: A description about failure.
+                    example:
+                      status: failed
+                      message: You're not allowed to access this resource.
   areas:
     default:
       path_patterns:
