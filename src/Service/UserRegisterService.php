@@ -3,7 +3,9 @@
 namespace App\Service;
 
 use App\Entity\Host;
+use App\Entity\UpgradeRequest;
 use App\Entity\User;
+use App\Entity\UserUpgradeRequest;
 use App\Repository\UserRepository;
 use App\Request\UserRegisterRequest;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,20 +36,22 @@ class UserRegisterService
         try {
             $user = new User;
             $user->setPhoneNumber($request->phoneNumber)
-                ->setFirstName($request->firstName)
-                ->setLastName($request->lastName)
-                ->setBirthDate($request->birthDate)
-                ->setGender($request->gender)
-                ->setRoles([$request->role])
-                ->setPassword($this->hasher->hashPassword($user, $request->password));
+            ->setFirstName($request->firstName)
+            ->setLastName($request->lastName)
+            ->setBirthDate($request->birthDate)
+            ->setGender($request->gender)
+            ->setRoles(["ROLE_EXPERIENCER"])
+            ->setPassword($this->hasher->hashPassword($user, $request->password));
 
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
             if ($request->role === "ROLE_HOST") {
-                $host = new Host();
-                $host->setUser($user);
-                $this->entityManager->persist($host);
+                $req = new UpgradeRequest();
+                $req->setUser($user);
+                $req->setMessage("Wants to be host as new user");
+
+                $this->entityManager->persist($req);
                 $this->entityManager->flush();
             }
             $this->entityManager->getConnection()->commit();

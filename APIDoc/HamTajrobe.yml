@@ -11,7 +11,7 @@ components:
       scheme: bearer
       bearerFormat: JWT
 security:
-  - jwt: []
+  - jwt: [ ]
 tags:
   - name: Auth
     description: End-points to authenticate user and provide refresh token.
@@ -24,12 +24,28 @@ tags:
 paths:
   /api/v1/auth/login:
     $ref: ./Auth/Login.yml
+  /api/v1/auth/refresh:
+    $ref: ./Auth/Refresh.yml
+  /api/v1/auth/logout:
+    $ref: ./Auth/Logout.yml
   /api/v1/orders/{order_id}/checkout:
     $ref: ./Orders/Checkout.yml
   /api/v1/admin/categories:
     $ref: ./Admin/Category/Categories_Create_Get.yml
   /api/v1/admin/categories/{category_id}:
     $ref: ./Admin/Category/Categories_Patch_Delete.yml
+  /api/v1/experiences/{experience_id}/events:
+    $ref: ./Experiencer/GetExperienceEvents.yml
+  /api/v1/experiences/trending:
+    $ref: ./Experiencer/GetTrendingExperiences.yml
+  /api/v1/experiences:
+    $ref: ./Experiencer/GetExperiencesByFilter.yml
+  /api/v1/orders/{order_id}:
+    $ref: ./Experiencer/RemoveOrder.yml
+  /api/v1/events/add-to-cart:
+    $ref: ./Experiencer/OrderAnEvent.yml
+  /api/v1/orders:
+    $ref: ./Experiencer/GetUserOrders.yml
   /api/v1/host/experiences:
     $ref: ./Host/Experiences/Experiences_Create_Get.yml
   /api/v1/host/experiences/{experience_id}:

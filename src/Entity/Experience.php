@@ -26,40 +26,47 @@ class Experience
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['experience'])]
+    #[Groups(['experience' , 'host' , 'experiencer'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['experience'])]
+    #[Groups(['experience' , 'host' , 'experiencer'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Unique]
-    #[Groups(['experience'])]
+    #[Groups(['experience' , 'host' , 'experiencer'])]
     private ?string $title = null;
 
     #[ORM\Column]
-    #[Groups(['experience'])]
+    #[Groups(['experience' ,'experiencer' , 'host'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'experiences')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['experiencer'])]
     private ?Host $host = null;
 
     #[ORM\ManyToOne(inversedBy: 'experiences')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['host' , 'experiencer'])]
     private ?Category $category = null;
 
     #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class ,cascade: ['remove'])]
     private Collection $events;
 
     #[ORM\Column(name: 'status', enumType: EnumEventStatus::class)]
+    #[Groups(['host' , 'experiencer'])]
     private EnumEventStatus $status = EnumEventStatus::DRAFT;
 
     #[ORM\Column(name: 'approvalStatus', enumType: EnumPermissionStatus::class)]
+    #[Groups(['host' , 'experiencer'])]
     private EnumPermissionStatus $approvalStatus = EnumPermissionStatus::PENDING;
 
-    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Media::class)]
+
+
+    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Media::class, cascade: ['remove'])]
+    #[Groups(['experiencer' , 'host'])]
     private Collection $media;
 
     public function __construct()

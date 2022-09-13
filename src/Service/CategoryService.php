@@ -15,8 +15,8 @@ class CategoryService
     public function getAll(CategoryRepository $repository): array
     {
         $categories = $repository->findAll();
-        $categoryCollection = DtoFactory::getInstance(Category::class);
-        return $categoryCollection->toArray($categories);
+        $categoryCollection = DtoFactory::getInstance();
+        return $categoryCollection->toArray($categories , ['category']);
     }
 
     public function create(CategoryRepository $repository, CategoryRequest $request): array

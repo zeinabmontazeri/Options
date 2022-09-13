@@ -1,0 +1,42 @@
+get:
+  tags:
+    - Experiencer
+  summary: Get User Orders.
+  security:
+    - jwt: [ ]
+  description: >
+    Authenticated Experience can get his/her orders.
+  responses:
+    "200":
+      description: List of user orders.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    orderId:
+                      type: integer
+                      description: Id of the order.
+                      example: 1
+                    eventId:
+                        type: integer
+                        description: Id of the event.
+                        example: 1
+                    title:
+                      type: string
+                      description: Title of the experience.
+                      example: poetry
+                    status:
+                      type: string
+                      description: Status of the order.
+                      example: "PENDING"
+
+              message:
+                type: string
+                description: Message of the response.
+                example: "Orders Successfully Retrieved"

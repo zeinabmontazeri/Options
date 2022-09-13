@@ -4,5 +4,5 @@ namespace App\DTO;
 
 interface CollectionInterface
 {
-    public function toArray(array $entities): array;
+    public function toArray(array $entities, array $groups = null): array;
 }
