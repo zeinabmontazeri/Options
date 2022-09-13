@@ -1,34 +1,34 @@
 tags:
-  - Admin
-summary: Admin updates a category
+  - Host
+summary: Host creates a new experience
 security:
   - jwt: []
 description: >
-  This end-point is accessible to admin and update a categories.
+  Using this end point host creates a new experience.
 requestBody:
   required: true
   content:
     application/json:
       schema:
         type: object
-        required: [name]
+        required: [title, categoryName, description]
         properties:
-          name:
+          title:
             type: string
-            description: Name of the category to be updated.
+            description: Title of the new experience
+          categoryName:
+            type: string
+            description: Category of the new experience
+          description:
+            type: string
+            description: Description of the new experience
         example:
-          name: Skydiving
-parameters:
-  - name: category_id
-    required: true
-    in: path
-    description: >
-      The id of the category to be updated.
-    schema:
-      type: integer
+          title: Skydiving
+          categoryName: Sport
+          description: In this experince you feel how it is like to be free.
 responses:
   '200':
-    description: The category updated.
+    description: Host created a new experience.
     content:
       application/json:
         schema:
@@ -38,19 +38,22 @@ responses:
               type: string
               description: Result of the action
             data:
-              type: array
-              description: List of all experiences' categories.
-              items:
-                type: string
+              type: object
+              description: Information about the created experience.
+              properties:
+                id:
+                  type: integer
+                  description: Unique id of the created experience.
             message:
               type: string
               description: A message describing result of the action.
           example:
             status: success
             data:
-            message: category successfully deleted
+              id: 10
+            message: Experience successfully created
   '400':
-    description: The requested category does not exist.
+    description: User provided wrong input.
     content:
       application/json:
         schema:
@@ -74,8 +77,25 @@ responses:
           example:
             status: failed
             details:
-            message: Object not found
-
+              name:
+                - This field should not be blank.
+            message: Validation error.
+  '404':
+    description: Host tried to assign a category to the experience which does not exist.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Result of the action
+            messaage:
+              type: string
+              description: A discription about failure.
+          example:
+            status: failed
+            message: Category name does not exist.
   '403':
     description: The user has not sufficient permission to access this end point.
     content:

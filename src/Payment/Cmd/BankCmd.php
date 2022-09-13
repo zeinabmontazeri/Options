@@ -2,8 +2,8 @@
 
 namespace App\Payment\Cmd;
 
-use App\Entity\TransactionCmdEnum;
-use App\Entity\TransactionStatusEnum;
+use App\Entity\Enums\TransactionCmdEnum;
+use App\Entity\Enums\TransactionStatusEnum;
 
 abstract class BankCmd
 {

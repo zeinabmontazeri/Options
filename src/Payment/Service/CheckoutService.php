@@ -2,7 +2,7 @@
 
 namespace App\Payment\Service;
 
-use App\Entity\TransactionStatusEnum;
+use App\Entity\Enums\TransactionStatusEnum;
 use App\Payment\BankOperatonManager;
 use App\Payment\Cmd\PaymentResponseCmd;
 use App\Payment\Event\PurchaseFailEvent;

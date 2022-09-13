@@ -1,31 +1,38 @@
 tags:
-  - Admin
-summary: Admin updates a category
+  - Host
+summary: Host updates an experience
 security:
   - jwt: []
 description: >
-  This end-point is accessible to admin and update a categories.
+  This end-point is accessible to hosts and updates an experience.
 requestBody:
   required: true
   content:
     application/json:
       schema:
         type: object
-        required: [name]
         properties:
-          name:
+          title:
             type: string
-            description: Name of the category to be updated.
-        example:
-          name: Skydiving
+            description: Name of the experience to be updated.
+            example: Skydiving
+          description:
+            type: string
+            description: A description about the experience to be updated.
+            example: Feel the life from an upper position.
+          categoryName:
+            type: string
+            description: Updated category for the experience.
+            example: Sport
 parameters:
-  - name: category_id
+  - name: experience_id
     required: true
     in: path
     description: >
-      The id of the category to be updated.
+      The id of the experience to be updated.
     schema:
       type: integer
+    example: 1
 responses:
   '200':
     description: The category updated.
@@ -37,20 +44,17 @@ responses:
             status:
               type: string
               description: Result of the action
+              example: success
             data:
               type: array
-              description: List of all experiences' categories.
-              items:
-                type: string
+              items: {}
+              example: []
             message:
               type: string
               description: A message describing result of the action.
-          example:
-            status: success
-            data:
-            message: category successfully deleted
+              example: Experience successfully updated
   '400':
-    description: The requested category does not exist.
+    description: User provided wrong input.
     content:
       application/json:
         schema:
@@ -64,18 +68,26 @@ responses:
               description: Details of the validation errors on fields.
               properties:
                 fieldName:
-                  type: array
+                  type: string
                   description: List of validation errors on this field
-                  items:
-                    type: string
             message:
               type: string
               description: A discription about failure.
-          example:
-            status: failed
-            details:
-            message: Object not found
-
+  '404':
+    description: Description of the error occurred.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+              description: Result of the action
+              example: failed
+            message:
+              type: string
+              description: A discription about failure.
+              example: Category name does not exist.
   '403':
     description: The user has not sufficient permission to access this end point.
     content:

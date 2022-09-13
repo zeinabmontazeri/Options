@@ -2,7 +2,7 @@
 
 namespace App\Payment\Event;
 
-use App\Entity\TransactionOriginEnum;
+use App\Entity\Enums\TransactionOriginEnum;
 use Symfony\Contracts\EventDispatcher\Event;
 
 class PurchaseFailEvent extends Event

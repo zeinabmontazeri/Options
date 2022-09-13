@@ -1,34 +1,21 @@
 tags:
-  - Admin
-summary: Admin updates a category
+  - Host
+summary: Host deletes an experience
 security:
   - jwt: []
 description: >
-  This end-point is accessible to admin and update a categories.
-requestBody:
-  required: true
-  content:
-    application/json:
-      schema:
-        type: object
-        required: [name]
-        properties:
-          name:
-            type: string
-            description: Name of the category to be updated.
-        example:
-          name: Skydiving
+  This end-point is accessible to host and deletes whom registered expereinces.
 parameters:
-  - name: category_id
+  - name: experience_id
     required: true
     in: path
     description: >
-      The id of the category to be updated.
+      The id of the experience to be deleted.
     schema:
       type: integer
 responses:
   '200':
-    description: The category updated.
+    description: An experience just deleted.
     content:
       application/json:
         schema:
@@ -39,9 +26,7 @@ responses:
               description: Result of the action
             data:
               type: array
-              description: List of all experiences' categories.
-              items:
-                type: string
+              items: {}
             message:
               type: string
               description: A message describing result of the action.
@@ -49,8 +34,9 @@ responses:
             status: success
             data:
             message: category successfully deleted
+
   '400':
-    description: The requested category does not exist.
+    description: The requested experience does not exist.
     content:
       application/json:
         schema:
