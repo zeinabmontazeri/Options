@@ -7,7 +7,7 @@ get:
   description: >
     Get a valid experience id in path parameter and get all events of that experience.
   parameters:
-    - name: experience_id
+    - name: experienceId
       required: true
       in: path
       description: >

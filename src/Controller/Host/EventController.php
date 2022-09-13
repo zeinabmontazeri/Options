@@ -38,7 +38,7 @@ class EventController extends AbstractController
     #[AcceptableRoles(User::ROLE_HOST, User::ROLE_ADMIN)]
     public function getReport(Event $event, EventService $service): JsonResponse
     {
-        return $this->json($service->getOrdersInfo($event));
+        return $this->json($service->getOrdersInfo($event), Response::HTTP_OK);
     }
 
     #[Route('/experiences/{experience_id}/events/{event_id}', name: 'app_host_update_event', methods: ['PATCH'])]
