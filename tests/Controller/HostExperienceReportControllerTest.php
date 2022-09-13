@@ -18,7 +18,7 @@ class HostExperienceReportControllerTest extends BaseTestCase
     public function testHostCanGetTotalReport()
     {
         $token = $this->getToken(User::ROLE_HOST);
-        $this->client->request('GET', "/api/v1/hosts/report", []
+        $this->client->request('GET', "/api/v1/host/report", []
             , [], [
                 'HTTP_AUTHORIZATION' => 'Bearer ' . $token,
                 'CONTENT_TYPE' => 'application/json',
@@ -35,7 +35,7 @@ class HostExperienceReportControllerTest extends BaseTestCase
             ->getExperiences()
             ->first()
             ->getId();
-        $this->client->request('GET', "/api/v1/hosts/experiences/$experienceId/report", []
+        $this->client->request('GET', "/api/v1/host/experiences/$experienceId/report", []
             , [], [
                 'HTTP_AUTHORIZATION' => 'Bearer ' . $token,
                 'CONTENT_TYPE' => 'application/json',

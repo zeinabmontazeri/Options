@@ -1,4 +1,4 @@
 {
   "status": "failed",
-  "data": "AUTHORIZATION FAILED."
+  "message": "AUTHORIZATION FAILED."
 }

@@ -17,7 +17,7 @@ class HostExperienceControllerTest extends BaseTestCase
     public function testHostCanGetAllOwnExperience()
     {
         $token = $this->getToken(User::ROLE_HOST);
-        $this->client->request('GET', "/api/v1/hosts/experiences", []
+        $this->client->request('GET', "/api/v1/host/experiences", []
             , [], [
                 'HTTP_AUTHORIZATION' => 'Bearer ' . $token,
                 'CONTENT_TYPE' => 'application/json',
@@ -32,9 +32,9 @@ class HostExperienceControllerTest extends BaseTestCase
         $content = [
             'title' => 'this title.',
             'description' => ' this is description.',
-            'category_name' => 'cat-1'
+            'categoryName' => 'cat-1'
         ];
-        $this->client->request('Post', "/api/v1/hosts/experiences", []
+        $this->client->request('Post', "/api/v1/host/experiences", []
             , [], [
                 'HTTP_AUTHORIZATION' => 'Bearer ' . $token,
                 'CONTENT_TYPE' => 'application/json',

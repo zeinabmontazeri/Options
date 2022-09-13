@@ -35,7 +35,8 @@ class GetExperienceEventListFixture extends Fixture
                 ->setPhoneNumber($faker->regexify('/^09\d{9}$/'))
                 ->setFirstName($faker->firstName)
                 ->setLastName($faker->lastName)
-                ->setCreatedAt($faker->dateTime)->setGender($faker->randomElements(EnumGender::cases())[0]->value)
+                ->setCreatedAt($faker->dateTime)
+                ->setGender($faker->randomElements(EnumGender::cases())[0])
                 ->setRoles(['ROLE_HOST']);
             $manager->persist($user);
             $manager->flush();

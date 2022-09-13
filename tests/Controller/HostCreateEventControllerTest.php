@@ -3,10 +3,9 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Experience;
-use App\Entity\User;
 use Faker\Factory;
 
-class CreateEventControllerTest extends BaseTestCase
+class HostCreateEventControllerTest extends BaseTestCase
 {
     protected function setUp(): void
     {

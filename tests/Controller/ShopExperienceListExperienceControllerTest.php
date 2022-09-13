@@ -4,7 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Experience;
 
-class GetAllExperienceByFilterControllerTest extends BaseTestCase
+class ShopExperienceListExperienceControllerTest extends BaseTestCase
 {
     protected function setUp(): void
     {
@@ -15,7 +15,7 @@ class GetAllExperienceByFilterControllerTest extends BaseTestCase
     public function testGetAllExperiences()
     {
         $experiences = $this->entityManager->getRepository(Experience::class)->findAll();
-        $this->client->request('GET', '/api/v1/shop/experiences', []
+        $this->client->request('GET', '/api/v1/experiences', []
             , [], [
                 'CONTENT_TYPE' => 'application/json',
             ]);
@@ -29,7 +29,7 @@ class GetAllExperienceByFilterControllerTest extends BaseTestCase
     public function testGetExperienceByFilter()
     {
         $experiences = $this->entityManager->getRepository(Experience::class)->findAll();
-        $this->client->request('GET', '/api/v1/shop/experiences',
+        $this->client->request('GET', '/api/v1/experiences',
             ["host"=>1, "purchasable"=>true, "category"=>1]
             , [], [
                 'CONTENT_TYPE' => 'application/json',

@@ -9,36 +9,26 @@ use App\Entity\Enums\EnumPermissionStatus;
 use App\Entity\Event;
 use App\Entity\Experience;
 use App\Entity\Order;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 class RemoveOrderFixtures extends Fixture
 {
-
-    private UserPasswordHasherInterface $hasher;
-
-    public function __construct(UserPasswordHasherInterface $hasher)
-    {
-        $this->hasher = $hasher;
-    }
-
     public function load(ObjectManager $manager): void
     {
-
-        $userExperiencer = $this->getReference(UserFixtures::EXPERIENCER_USER_REFERENCE);
-        $hostUser = $this->getReference(UserFixtures::HOST_USER_REFERENCE);
+        $userExperiencer = $manager->getRepository(User::class)->findOneBy(['phoneNumber' => '09136971826']);
+        $hostUser = $manager->getRepository(User::class)->findOneBy(['phoneNumber' => '09919979109'])->getHost();
 
         $faker = Factory::create();
-
 
         $category = new Category();
         $category->setName($faker->word)
             ->setCreatedAt($faker->dateTime);
         $manager->persist($category);
         $manager->flush();
-
 
         $experience = new Experience();
         $experience->setTitle($faker->word)

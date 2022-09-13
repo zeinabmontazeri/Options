@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('api/v1')]
@@ -29,10 +30,10 @@ class OrderController extends AbstractController
     /**
      * @throws JWTDecodeFailureException
      */
-    #[Route('/orders/{order_id}', name: 'app_remove_order', requirements: ['id' => '\d+'], methods: ["DELETE"])]
+    #[Route('/orders/{order_id}', name: 'app_remove_order', methods: ['DELETE'])]
     #[ParamConverter('event', class: Order::class, options: ['id' => 'order_id'])]
     #[AcceptableRoles(User::ROLE_EXPERIENCER)]
-    public function index(
+    public function delete(
         Order              $order,
         RemoveOrderService $removeOrderService,
         OrderRepository    $orderRepository,
@@ -51,6 +52,7 @@ class OrderController extends AbstractController
         }
     }
 
+//    /
 
     /**
      * @throws JWTDecodeFailureException
