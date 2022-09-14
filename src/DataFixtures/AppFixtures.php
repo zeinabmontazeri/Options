@@ -120,6 +120,10 @@ class AppFixtures extends Fixture
         $manager->persist($category3);
         $manager->flush();
 
+        $category4 = new Category();
+        $category4->setName('uncategorized');
+        $manager->persist($category4);
+        $manager->flush();
 
         $experience = new Experience();
         $experience->setApprovalStatus(EnumPermissionStatus::PENDING)
