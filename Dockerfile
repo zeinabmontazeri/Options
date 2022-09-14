@@ -55,11 +55,12 @@ COPY translations /app/translations/
 COPY .env /app/
 COPY db_check.php /app/
 COPY phpunit.xml.dist /app/
+COPY APIDoc /app/APIDoc/
 
 
 # migrate database
 #RUN ["symfony", "console", "doctrine:migrations:migrate", "--no-interaction"]
-RUN (crontab -l ; echo "* * * * * cd /app && symfony console app:host:update-business-class") | crontab -
+RUN (crontab -l ; echo "0 23 * * * cd /app && symfony console app:host:update-business-class") | crontab -
 
 EXPOSE 8000
 RUN ["symfony", "console", "lexik:jwt:generate-keypair", "--overwrite", "--no-interaction"]
