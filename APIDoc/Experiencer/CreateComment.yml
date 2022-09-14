@@ -1,6 +1,9 @@
 post:
   tags:
     - Experiencer
+    - Admin
+    - Host
+    - Guest
   summary: Create a comment.
   security:
     - jwt: [ ]

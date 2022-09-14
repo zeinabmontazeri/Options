@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class PaymentController extends AbstractController
 {
     public function __construct(
-        private CheckoutService      $checkoutCallbackService,
+        private CheckoutService $checkoutCallbackService,
     )
     {
     }

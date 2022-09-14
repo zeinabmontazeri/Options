@@ -1,6 +1,7 @@
 get:
   tags:
     - Host
+    - Admin
   summary: Get host order report.
   security:
     - jwt: [ ]
