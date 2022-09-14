@@ -1,6 +1,9 @@
 get:
   tags:
     - Experiencer
+    - Host
+    - Guest
+    - Admin
   summary: Get Trending Experiences.
   security:
     - jwt: [ ]

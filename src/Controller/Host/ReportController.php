@@ -42,6 +42,7 @@ class ReportController extends AbstractController
 
     #[Route('/experiences/{experience_id}/report', name: 'app_host_experience_report', methods: 'GET')]
     #[ParamConverter('experience', class: Experience::class, options: ['id' => 'experience_id'])]
+    #[AcceptableRoles(User::ROLE_HOST)]
     public function preciseReport(
         HostReportService $hostReportService,
         HostRepository    $hostRepository,

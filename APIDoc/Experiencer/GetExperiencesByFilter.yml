@@ -1,6 +1,9 @@
 get:
   tags:
     - Experiencer
+    - Host
+    - Admin
+    - Guest
   summary: Get Experiences By filter.
   security:
     - jwt: [ ]
