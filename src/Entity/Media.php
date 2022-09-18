@@ -19,7 +19,7 @@ class Media
     private ?Experience $experience = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['experiencer' , 'host'])]
+    #[Groups(['experiencer', 'host'])]
     private ?string $fileName = null;
 
     public function getId(): ?int
@@ -55,7 +55,7 @@ class Media
     {
         $fileFormat = $file->getClientOriginalExtension();
         $fileName = $file->getClientOriginalName();
-        $fileNameSave = base64_encode($fileName).'_'.base64_encode($this->getExperience()->getId()).'_'.uniqid().'.'.$fileFormat;
+        $fileNameSave = base64_encode($fileName) . '_' . base64_encode($this->getExperience()->getId()) . '_' . uniqid() . '.' . $fileFormat;
         $file->move('./media', $fileNameSave);
         return $fileNameSave;
     }

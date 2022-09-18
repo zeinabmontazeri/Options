@@ -65,7 +65,7 @@ class ExperienceRepository extends ServiceEntityRepository
         return $baseQuery->getQuery()->getResult();
     }
 
-    public function getAllPaginated($perPage,$page)
+    public function getAllPaginated($perPage,$page): array
     {
         $queryBuilder = $this->createQueryBuilder('entity');
         $queryBuilder

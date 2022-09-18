@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ExperienceRepository::class)]
 #[ORM\HasLifecycleCallbacks]
 #[Gedmo\SoftDeleteable(fieldName: 'deletedAt', timeAware: false, hardDelete: true)]
-#[ORM\Cache(usage: 'READ_WRITE' , region: 'locking')]
+#[ORM\Cache(usage: 'READ_WRITE', region: 'locking')]
 class Experience
 {
     use SoftDeleteableEntity;
@@ -26,20 +26,20 @@ class Experience
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['experience' , 'host' , 'experiencer'])]
+    #[Groups(['experience', 'host', 'experiencer'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['experience' , 'host' , 'experiencer'])]
+    #[Groups(['experience', 'host', 'experiencer'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\Unique]
-    #[Groups(['experience' , 'host' , 'experiencer'])]
+    #[Groups(['experience', 'host', 'experiencer'])]
     private ?string $title = null;
 
     #[ORM\Column]
-    #[Groups(['experience' ,'experiencer' , 'host'])]
+    #[Groups(['experience', 'experiencer', 'host'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'experiences')]
@@ -49,24 +49,23 @@ class Experience
 
     #[ORM\ManyToOne(inversedBy: 'experiences')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['host' , 'experiencer'])]
+    #[Groups(['host', 'experiencer'])]
     private ?Category $category = null;
 
-    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class ,cascade: ['remove'])]
+    #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Event::class, cascade: ['remove'])]
     private Collection $events;
 
     #[ORM\Column(name: 'status', enumType: EnumEventStatus::class)]
-    #[Groups(['host' , 'experiencer'])]
+    #[Groups(['host', 'experiencer'])]
     private EnumEventStatus $status = EnumEventStatus::DRAFT;
 
     #[ORM\Column(name: 'approvalStatus', enumType: EnumPermissionStatus::class)]
-    #[Groups(['host' , 'experiencer'])]
+    #[Groups(['host', 'experiencer'])]
     private EnumPermissionStatus $approvalStatus = EnumPermissionStatus::PENDING;
 
 
-
     #[ORM\OneToMany(mappedBy: 'experience', targetEntity: Media::class, cascade: ['remove'])]
-    #[Groups(['experiencer' , 'host'])]
+    #[Groups(['experiencer', 'host'])]
     private Collection $media;
 
     public function __construct()

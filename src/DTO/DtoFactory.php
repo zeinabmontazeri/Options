@@ -5,7 +5,7 @@ namespace App\DTO;
 class DtoFactory
 {
 
-    public static function getInstance()
+    public static function getInstance(): Collection
     {
         return new Collection();
     }

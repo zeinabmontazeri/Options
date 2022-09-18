@@ -20,11 +20,11 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['category' , 'experiencer' , 'host'])]
+    #[Groups(['category', 'experiencer', 'host'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['experiencer' , 'category' , 'host'])]
+    #[Groups(['experiencer', 'category', 'host'])]
     private ?string $name = null;
 
     #[ORM\Column]
